@@ -1,0 +1,12 @@
+build
+tumor2d/src/nixTumor2d.py
+tumor2d/src/tumor_if_wrap.c
+tumor2d/src/tumor_if_wrap.cpp
+__pycache__
+*.so
+.idea
+tumor2d/nixTumor2d.py
+dist
+tumor2d.egg-info
+.cache
+tumor2d/src/tumor_if_wrap.cxx

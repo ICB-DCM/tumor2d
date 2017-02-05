@@ -1,4 +1,4 @@
-import _nixTumor2d
+import tumor2d.src.nixTumor2d as nixTumor2d
 import numpy as np
 
 max_seed = 2147483647
@@ -26,22 +26,30 @@ class Tumor2dExperiment:
 
 class Tumor2dSimulation:
     def __init__(self, val_gc, val_ecm, val_prolif):
-        self.val_gc = val_gc
-        self.val_ecm = val_ecm
-        self.val_prolif = val_prolif
+        self.growth_curve = val_gc
+        self.extra_cellular_matrix = val_ecm
+        self.proliferation = val_prolif
 
 
 def tumor2d_simulate(initial_radius=12.0, initial_quiescent_fraction=0.75,  max_celldivision_rate=0.0417,
                      ecm_threshold_quiescence=0.010, emc_productionrate=0.005, ecm_degradationrate=0.0008,
                      endtime=500, outputrate=24, profiletime=408, profiledepth=1000, randseed=np.nan):
+    """
+    Tumor2d simulation.
+    *Not* according to the published paper.
+
+    Parameters
+    ----------
+
+    """
     if np.isnan(randseed):
-        np.random.randint(max_seed)
+        randseed = np.random.randint(max_seed)
     profiletime /= 24
-    growth_curve, ecm_prof, prolif_prof = _nixTumor2d.tumor2d_interface(initial_radius, initial_quiescent_fraction,
-                                                                        max_celldivision_rate, ecm_threshold_quiescence,
-                                                                        emc_productionrate, ecm_degradationrate,
-                                                                        endtime, outputrate, profiletime, profiledepth,
-                                                                        randseed)
+    growth_curve, ecm_prof, prolif_prof = nixTumor2d.tumor2d_interface(initial_radius, initial_quiescent_fraction,
+                                                                       max_celldivision_rate, ecm_threshold_quiescence,
+                                                                       emc_productionrate, ecm_degradationrate,
+                                                                       endtime, outputrate, profiletime, profiledepth,
+                                                                       randseed)
     result = Tumor2dSimulation(growth_curve, ecm_prof, prolif_prof)
     return result
 
@@ -63,9 +71,9 @@ def tumor2d_statistic(num_reps=10, initial_radius=12.0, initial_quiescent_fracti
                                 emc_productionrate=emc_productionrate, ecm_degradationrate=ecm_degradationrate,
                                 endtime=endtime, outputrate=outputrate, profiletime=profiletime,
                                 profiledepth=profiledepth, randseed=seed_simu)
-        full_data_gc[i] = simu.val_gc
-        full_data_ecm[i] = simu.val_ecm
-        full_data_prolif[i] = simu.val_prolif
+        full_data_gc[i] = simu.growth_curve
+        full_data_ecm[i] = simu.extra_cellular_matrix
+        full_data_prolif[i] = simu.proliferation
     mean_gc = np.mean(full_data_gc, axis=0)
     mean_ecm = np.mean(full_data_ecm, axis=0)
     mean_prolif = np.mean(full_data_prolif, axis=0)

@@ -1,29 +1,16 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Tumor2d simulation **not** according to the paper. 
 
-### What is this repository for? ###
+### Installation ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+It is required, that SWIG is installed.
 
-### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+Currently not possible to make a package via ``python setup.py bdist_wheel``
+relieably.
+The reason is, that ``build_ext`` has to be run before the other installation steps
+so that the SWIG generated ``.py`` is properly included.
+However, it works to run ``python setup.py build_ext --inplace``, possibly followed
+by ``python setup.py bdist_wheel``, as the SWIG generated ``.py`` file is
+then already there.
