@@ -11,7 +11,7 @@ class Build_ext_first(setuptools.command.install.install):
 
 
 tumor2d_ext = Extension(
-    name='nixTumor2d',
+    name='_nixTumor2d',
     sources=(['tumor2d/src/tumor_if.i']
              + [f for f in glob("tumor2d/src/*.cpp")
                 if f != "tumor2d/src/tumor_if_wrap.cpp"]),
