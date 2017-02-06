@@ -33,7 +33,7 @@ class Tumor2dSimulation:
 
 def tumor2d_simulate(initial_radius=12.0, initial_quiescent_fraction=0.75,  max_celldivision_rate=0.0417,
                      ecm_threshold_quiescence=0.010, emc_productionrate=0.005, ecm_degradationrate=0.0008,
-                     endtime=500, outputrate=24, profiletime=408, profiledepth=1000, randseed=np.nan):
+                     endtime=500, outputrate=24, profiletime=408, profiledepth=1000, randseed=None):
     """
     Tumor2d simulation.
     *Not* according to the published paper.
@@ -42,7 +42,7 @@ def tumor2d_simulate(initial_radius=12.0, initial_quiescent_fraction=0.75,  max_
     ----------
 
     """
-    if np.isnan(randseed):
+    if randseed is None:
         randseed = np.random.randint(max_seed)
     profiletime /= 24
     growth_curve, ecm_prof, prolif_prof = nixTumor2d.tumor2d_interface(initial_radius, initial_quiescent_fraction,

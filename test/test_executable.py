@@ -23,4 +23,4 @@ def test_different_seed_different_result():
     assert ((sim1['extra_cellular_matrix'] != sim2['extra_cellular_matrix']).any()
             or (sim1['growth_curve'] != sim2['growth_curve']).any()
             or (sim1['proliferation'] != sim2['proliferation']).any()
-    )
+            )
