@@ -10,6 +10,8 @@ class Build_ext_first(setuptools.command.install.install):
         return setuptools.command.install.install.run(self)
 
 gsl_cflags = run(["gsl-config", "--cflags"], stdout=PIPE).stdout.decode().split(" ")
+if gsl_cflags[-1] == "\n":
+    gsl_cflags = gsl_cflags[:-1]
 
 gsl_include = [flag[2:] for flag in gsl_cflags if flag.startswith("-I")]
 
