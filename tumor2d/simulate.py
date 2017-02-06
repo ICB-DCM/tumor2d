@@ -2,6 +2,10 @@ from ._tumorutil import tumor2d_simulate
 import numpy as np
 
 
+def nr_valid(arr):
+    return len(arr) - len(np.nonzero((arr[::-1] == 0).cumprod())[0])
+
+
 def simulate(division_rate=4.7e-2,
              initial_spheroid_radius=1.2e1,
              initial_quiescent_cell_fraction=7.5e-1,
@@ -24,6 +28,23 @@ def simulate(division_rate=4.7e-2,
 
         First table on page e4
 
+        The zeros are not missing data.
+        They are actual biology.
+        Do not discard them.
+
+
+    Returns
+    -------
+
+    The return vectors (can) contain lots of zeros at the end.
+    These can be ignored.
+
+    For
+
+      * growth_curve: the array entries correspond to time
+       * extra_cellular_matrix and proliferation: array entries correspond
+         to radial distance, measured at the time point profiletime
+
     """
     res = tumor2d_simulate(max_celldivision_rate=division_rate,
                            initial_radius=initial_spheroid_radius,
@@ -32,6 +53,12 @@ def simulate(division_rate=4.7e-2,
                            ecm_degradationrate=ecm_degradation_rate,
                            ecm_threshold_quiescence=ecm_division_threshold,
                            randseed=randseed)
-    return dict(growth_curve=np.array(res.growth_curve),
-                extra_cellular_matrix=np.array(res.extra_cellular_matrix),
-                proliferation=np.array(res.proliferation))
+
+    # convert tu numpy
+    growth_curve = np.array(res.growth_curve)
+    extra_cellular_matrix_profile = np.array(res.extra_cellular_matrix)
+    proliferation_profile = np.array(res.proliferation)
+
+    return dict(growth_curve=growth_curve,
+                extra_cellular_matrix_profile=extra_cellular_matrix_profile,
+                proliferation_profile=proliferation_profile)
