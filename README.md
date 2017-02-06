@@ -7,8 +7,14 @@ Tumor2d simulation **not** according to the paper.
 It is required,
 
 * that SWIG is installed,
+  * either use your system package manager, or ``conda install swig``
+    if running anaconda
 * GSL (gnu scientific library) is installed
-* BLAS is installed.
+  * again, either use your system package manager, or ``conda install gsl``
+    if running anaconda`
+* BLAS is installed
+  * use your system package manager, if not installed. It should be already installed
+    if you're running anaconda (e.g. the MKL or OpenBLAS)
 
 
 Then,
