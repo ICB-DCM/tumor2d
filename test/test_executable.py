@@ -1,8 +1,26 @@
-from tumor2d import tumor2d_simulate
+from tumor2d import simulate
 
 
-def test_can_be_run():
-    sim = tumor2d_simulate()
-    assert len(sim.extra_cellular_matrix) > 0
-    assert len(sim.growth_curve) > 0
-    assert len(sim.proliferation) > 0
+def test_result_non_empty():
+    sim = simulate()
+    assert len(sim['extra_cellular_matrix']) > 0
+    assert len(sim['growth_curve']) > 0
+    assert len(sim['proliferation']) > 0
+
+
+def test_same_seed_same_result():
+    sim1 = simulate(randseed=1)
+    sim2 = simulate(randseed=1)
+    assert (sim1['extra_cellular_matrix'] == sim2['extra_cellular_matrix']).all()
+    assert (sim1['growth_curve'] == sim2['growth_curve']).all()
+    assert (sim1['proliferation'] == sim2['proliferation']).all()
+
+
+def test_different_seed_different_result():
+    sim1 = simulate(randseed=1)
+    sim2 = simulate(randseed=2)
+
+    assert ((sim1['extra_cellular_matrix'] != sim2['extra_cellular_matrix']).any()
+            or (sim1['growth_curve'] != sim2['growth_curve']).any()
+            or (sim1['proliferation'] != sim2['proliferation']).any()
+    )

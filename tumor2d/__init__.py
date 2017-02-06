@@ -1,1 +1,3 @@
-from .tumorutil import tumor2d_simulate
+from .simulate import simulate
+
+__all__ = ["simulate"]
