@@ -9,12 +9,13 @@ class Build_ext_first(setuptools.command.install.install):
         self.run_command("build_ext")
         return setuptools.command.install.install.run(self)
 
-gsl_cflags = run(["gsl-config", "--cflags"], stdout=PIPE).stdout.decode().split(" ")
-if gsl_cflags[-1] == "\n":
-    gsl_cflags = gsl_cflags[:-1]
+gsl_cflags = (run(["gsl-config", "--cflags"], stdout=PIPE)
+              .stdout
+              .decode()
+              .strip("\n")
+              .split(" "))
 
 gsl_include = [flag[2:] for flag in gsl_cflags if flag.startswith("-I")]
-
 
 tumor2d_ext = Extension(
     name='_nixTumor2d',
@@ -24,7 +25,7 @@ tumor2d_ext = Extension(
     libraries=["gsl", "gslcblas", "m"],
     swig_opts=['-c++', '-modern'],
     include_dirs=gsl_include,
-    extra_compile_args=["-DDIMENSIONS=2"] + gsl_cflags)
+    extra_compile_args=["-DDIMENSIONS=2"])
 
 setup(
     ext_modules=[tumor2d_ext],
