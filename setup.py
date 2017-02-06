@@ -9,7 +9,9 @@ class Build_ext_first(setuptools.command.install.install):
         self.run_command("build_ext")
         return setuptools.command.install.install.run(self)
 
-gsl_cflags = run(["gsl-config", "--cflags"], stdout=PIPE).stdout.decode()
+gsl_cflags = run(["gsl-config", "--cflags"], stdout=PIPE).stdout.decode().split(" ")
+
+gsl_include = [flag[2:] for flag in gsl_cflags if flag.startswith("-I")]
 
 
 tumor2d_ext = Extension(
@@ -19,7 +21,8 @@ tumor2d_ext = Extension(
                 if f != "tumor2d/src/tumor_if_wrap.cpp"]),
     libraries=["gsl", "gslcblas", "m"],
     swig_opts=['-c++', '-modern'],
-    extra_compile_args=["-DDIMENSIONS=2"] + gsl_cflags.split(" "))
+    include_dirs=gsl_include,
+    extra_compile_args=["-DDIMENSIONS=2"] + gsl_cflags)
 
 setup(
     ext_modules=[tumor2d_ext],
