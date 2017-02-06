@@ -22,10 +22,10 @@ tumor2d_ext = Extension(
     sources=(['tumor2d/src/tumor_if.i']
              + [f for f in glob("tumor2d/src/*.cpp")
                 if f != "tumor2d/src/tumor_if_wrap.cpp"]),
-    libraries=["gsl", "gslcblas", "m"],
+    libraries=["gsl", "gslcblas", "m", "gomp"],
     swig_opts=['-c++', '-modern'],
     include_dirs=gsl_include,
-    extra_compile_args=["-DDIMENSIONS=2"])
+    extra_compile_args=["-DDIMENSIONS=2", "-fopenmp"])
 
 setup(
     ext_modules=[tumor2d_ext],
