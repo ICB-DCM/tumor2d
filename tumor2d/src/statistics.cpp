@@ -350,14 +350,3 @@ void mvnrnd( double *x, double *mean, double **s2, int n, unsigned int *p_seed)
 
 
 }
-
-#include <gsl/gsl_sort.h>
-#include <gsl/gsl_statistics_double.h>
-double quantile( double *x, int n, double f)
-{
-	double tmp[n];
-	for( int i=0; i<n; i++) tmp[i] = x[i];
-	gsl_sort( tmp, 1, n);
-	return gsl_stats_quantile_from_sorted_data ( tmp, 1, n, f);
-}
-

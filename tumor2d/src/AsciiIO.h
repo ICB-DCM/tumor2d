@@ -23,6 +23,6 @@ int readFileColumn( const char* filename, double *&col, int icol);
 int readFileColumn( char** filename, int n, double **&col, int icol);
 
 enum   compare_mode{ mean_vs_mean, mean_vs_single};
-double compare( comparison_t d1, comparison_t d2, char mode );
+//double compare( comparison_t d1, comparison_t d2, char mode );
 
 #endif /* SRC_TUMOR3D_ASCIIIO_H_ */
