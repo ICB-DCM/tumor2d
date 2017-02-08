@@ -262,7 +262,7 @@ double GetDistanceToClosestFreeNeighbor(VoronoiDiagram *voronoiDiagram,
 }
 
 void refineSurrounding(VoronoiDiagram *voronoiDiagram, VoronoiCell *cell,
-		ActionTree *actionList, AgentList *agentArray, int scale) {
+		ActionTree *actionList, AgentList *agentArray, int scale){
 	int index; // = floor(cell->position[0])*voronoiDiagram->xN[1] + floor(cell->position[1]);
 	int x = (int) floor(cell->position[0]);
 	int y = (int) floor(cell->position[1]);
@@ -1285,11 +1285,12 @@ void statisticsOfSpheroid(VoronoiDiagram* voronoiDiagram,
 double InitialOxygenConcentration = 1.;
 double InitialGlucoseConcentration = 1.;
 
-double montecarlo(double InitialRadius, double InitialQuiescentFraction, double MaxCellDivisionRate, 
+double montecarlo(double InitialRadius, double InitialQuiescentFraction, double MaxCellDivisionRate, double DivisionDepth,
 					double ECMThresholdQuiescence, double ECMProductionRate, double ECMDegradationRate,
 					double EndTimeIn, double OutputRate, double profileTime, int profileDepth, int rand_seed,
 					std::vector<double> &gc_out, std::vector<double> &ecm_out, std::vector<double> &prolif_out)
 {
+    ReentranceProbabilityReferenceLength = DivisionDepth;
 
 	// Time
 	double Time, Last_Time, EndEndTime, EndTime;
@@ -1568,19 +1569,10 @@ double montecarlo(double InitialRadius, double InitialQuiescentFraction, double 
 		char latticeFilename[512], testFilename[512];
 		int  latticeSize = 100;
 		sprintf(latticeFilename, "staticdata/%ipow%i", latticeSize, DIMENSIONS);
-		//sprintf(testFilename,    "staticdata/%ipow%i.qele", latticeSize, DIMENSIONS);
+
 
 		voronoiDiagramTmp = VoronoiDiagram::newVoronoiDiagram( latticeSize, latticeSize, (DIMENSIONS == 2 ? 1 : latticeSize));
-		//if(false && access( testFilename, F_OK ) != -1 ) {
-		    // file exists
-			//fprintf(stderr, "Reading Voronoi Lattice from File... \n");
-		//	voronoiDiagram = new VoronoiDiagram(latticeFilename, voronoiDiagramTmp);
-		//} else {
-		    // file doesn't exist
-			//fprintf(stderr, "Create new Voronoi Lattice \n");
-		//voronoiDiagramTmp->writeToFile( latticeFilename);
 		voronoiDiagram = new VoronoiDiagram(latticeFilename, voronoiDiagramTmp);
-		//}
 	}
 	voronoiDiagram->boundaryThickness = 1.;
 

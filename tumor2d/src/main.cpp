@@ -15,6 +15,7 @@ int main( int argc, char **argv)
 	double ECMThresholdQuiescence = 0.010;
 	double ECMProductionRate = 0.005;
 	double ECMDegradationRate = 0.0008;
+	double DivisionDepth = 100;
 	double EndTime     = 1000;
 	double OutputRate = 24;
 	double profileTime  = 800/24;
@@ -28,7 +29,7 @@ int main( int argc, char **argv)
 	gc_out.reserve((int)(EndTime / OutputRate));  
 	ecm_out.reserve(profileDepth);
 	prolif_out.reserve(profileDepth);
-	double epsilon = montecarlo(InitialRadius, InitialQuiescentFraction, MaxCellDivisionRate, 
+	double epsilon = montecarlo(InitialRadius, InitialQuiescentFraction, MaxCellDivisionRate, DivisionDepth,
 							ECMThresholdQuiescence, ECMProductionRate, ECMDegradationRate,
 							EndTime, OutputRate, profileTime, profileDepth, rand_seed,
 							gc_out, ecm_out, prolif_out);

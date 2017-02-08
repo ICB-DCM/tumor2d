@@ -32,8 +32,9 @@ class Tumor2dSimulation:
 
 
 def tumor2d_simulate(initial_radius=12.0, initial_quiescent_fraction=0.75,  max_celldivision_rate=0.0417,
-                     ecm_threshold_quiescence=0.010, emc_productionrate=0.005, ecm_degradationrate=0.0008,
-                     endtime=500, outputrate=24, profiletime=408, profiledepth=1000, randseed=None):
+                     division_depth=100, ecm_threshold_quiescence=0.010, emc_productionrate=0.005,
+                     ecm_degradationrate=0.0008, endtime=500, outputrate=24, profiletime=408, profiledepth=1000,
+                     randseed=None):
     """
     Tumor2d simulation.
     *Not* according to the published paper.
@@ -46,7 +47,8 @@ def tumor2d_simulate(initial_radius=12.0, initial_quiescent_fraction=0.75,  max_
         randseed = np.random.randint(max_seed)
     profiletime /= 24
     growth_curve, ecm_prof, prolif_prof = nixTumor2d.tumor2d_interface(initial_radius, initial_quiescent_fraction,
-                                                                       max_celldivision_rate, ecm_threshold_quiescence,
+                                                                       max_celldivision_rate, division_depth,
+                                                                       ecm_threshold_quiescence,
                                                                        emc_productionrate, ecm_degradationrate,
                                                                        endtime, outputrate, profiletime, profiledepth,
                                                                        randseed)
@@ -55,8 +57,9 @@ def tumor2d_simulate(initial_radius=12.0, initial_quiescent_fraction=0.75,  max_
 
 
 def tumor2d_statistic(num_reps=10, initial_radius=12.0, initial_quiescent_fraction=0.75,  max_celldivision_rate=0.0417,
-                      ecm_threshold_quiescence=0.010, emc_productionrate=0.005, ecm_degradationrate=0.0008,
-                      endtime=500, outputrate=24, profiletime=408, profiledepth=1000, randseed=np.nan):
+                      division_depth=100, ecm_threshold_quiescence=0.010, emc_productionrate=0.005,
+                      ecm_degradationrate=0.0008, endtime=500, outputrate=24, profiletime=408, profiledepth=1000,
+                      randseed=np.nan):
     if np.isnan(randseed):
         randseed = np.random.randint(max_seed)
     np.random.seed(randseed)
@@ -67,6 +70,7 @@ def tumor2d_statistic(num_reps=10, initial_radius=12.0, initial_quiescent_fracti
         seed_simu = np.random.randint(max_seed)
         simu = tumor2d_simulate(initial_radius=initial_radius, initial_quiescent_fraction=initial_quiescent_fraction,
                                 max_celldivision_rate=max_celldivision_rate,
+                                division_depth=division_depth,
                                 ecm_threshold_quiescence=ecm_threshold_quiescence,
                                 emc_productionrate=emc_productionrate, ecm_degradationrate=ecm_degradationrate,
                                 endtime=endtime, outputrate=outputrate, profiletime=profiletime,

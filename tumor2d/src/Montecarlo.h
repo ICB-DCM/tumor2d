@@ -55,7 +55,7 @@
 // GLOBAL VARIABLES
 extern int Case;	
 
-double montecarlo( double InitialRadius, double InitialQuiescentFraction, double MaxCellDivisionRate, 
+double montecarlo( double InitialRadius, double InitialQuiescentFraction, double MaxCellDivisionRate,double DivisionDepth,
 				double ECMThresholdQuiescence, double ECMProductionRate, double ECMDegradationRate,
 				double EndTime, double OutputRate, double profileTime, int profileDepth, int rand_seed,
 				std::vector<double> &gc_out, std::vector<double> &ecm_out, std::vector<double> &prolif_out);
