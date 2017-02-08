@@ -1,3 +1,3 @@
-from .simulate import simulate
+from .simulate import simulate, nr_valid
 
-__all__ = ["simulate"]
+__all__ = ["simulate", "nr_valid"]
