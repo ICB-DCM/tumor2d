@@ -1,7 +1,12 @@
 import tumor2d.src.nixTumor2d as nixTumor2d
 import numpy as np
+import logging
 
 max_seed = 2147483647
+
+logging.basicConfig()
+logger = logging.getLogger("TUMOR2D")
+logger.setLevel("DEBUG")
 
 
 class Tumor2dExperiment:
@@ -46,12 +51,15 @@ def tumor2d_simulate(initial_radius=12.0, initial_quiescent_fraction=0.75,  max_
     if randseed is None:
         randseed = np.random.randint(max_seed)
     profiletime /= 24
+    pars = str(locals())
+    logger.debug(f"START:{pars}")
     growth_curve, ecm_prof, prolif_prof = nixTumor2d.tumor2d_interface(initial_radius, initial_quiescent_fraction,
                                                                        max_celldivision_rate, division_depth,
                                                                        ecm_threshold_quiescence,
                                                                        emc_productionrate, ecm_degradationrate,
                                                                        endtime, outputrate, profiletime, profiledepth,
                                                                        randseed)
+    logger.debug(f"DONE:{pars}")
     result = Tumor2dSimulation(growth_curve, ecm_prof, prolif_prof)
     return result
 
