@@ -4,7 +4,7 @@ import logging
 
 max_seed = 2147483647
 
-logging.basicConfig()
+logging.basicConfig(level="DEBUG")
 logger = logging.getLogger("TUMOR2D")
 logger.setLevel("DEBUG")
 
