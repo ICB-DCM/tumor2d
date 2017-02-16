@@ -27,7 +27,7 @@ tumor2d_ext = Extension(
                 if f != "tumor2d/src/tumor_if_wrap.cpp"]),
     libraries=["m"] + omp_liraries,
     swig_opts=['-c++', '-modern'],
-    extra_compile_args=["-DDIMENSIONS=2"] + omp_compile_args)
+    extra_compile_args=["-DDIMENSIONS=2", "-g"] + omp_compile_args)
 
 setup(
     ext_modules=[tumor2d_ext],
