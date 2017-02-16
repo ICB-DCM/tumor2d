@@ -2139,7 +2139,10 @@ VoronoiCell* growCell( VoronoiDiagram *voronoiDiagram, Agent* cell, int &shift, 
 					if( cell->location[i]->extendedNeighborhood[ii]->isFree()){
 						distance = pow( cell->location[i]->extendedNeighborhood[ii]->position[0], 2.) 
 					                 + pow( cell->location[i]->extendedNeighborhood[ii]->position[1], 2.)
-					      	         + pow( cell->location[i]->extendedNeighborhood[ii]->position[2], 2.);
+					                 #if(DIMENSIONS == 3)
+					      	         + pow( cell->location[i]->extendedNeighborhood[ii]->position[2], 2.)
+					      	         #endif
+					      	         ;
 						if( distance < minDistance || closestExtendedNeighborCell==NULL){
 							minDistance = distance;
 							closestExtendedNeighborCell = cell->location[i]->extendedNeighborhood[ii];

@@ -2025,10 +2025,13 @@ double montecarlo(double InitialRadius, double InitialQuiescentFraction, double 
 		case 4:
 		case 5:
 			fprintf(stderr, "Initialize Vessel Network...\n");
+			//@ author Emmanuel
+			#if(DIMENSIONS == 3)
 			SetRegularInitialVesselNetwork(voronoiDiagram, agentArray,
 					actionList, centralCell, DistanceToInitialCellArray,
 					BranchingProbability, BranchingLength);
 			fprintf(stderr, "...finished\n");
+			#endif
 			break;
 		}
 

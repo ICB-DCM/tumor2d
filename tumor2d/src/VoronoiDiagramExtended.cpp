@@ -3934,78 +3934,10 @@ void checkDelaunayCondition( VoronoiDiagram *voronoiDiagram, VoronoiCell **newCe
 				for( l=0; l<NR_TETRAHEDRON_POINTS && voronoiDiagram->voronoiCells[ii]!=voronoiDiagram->tetrahedra[i]->vertices[l]; l++);
 				if( 	l==NR_TETRAHEDRON_POINTS &&
 					getDistanceOfPointToCircumsphere( voronoiDiagram->voronoiCells[ii], voronoiDiagram->tetrahedra[i]) < 0.){
-					fprintf( stderr, "... Delaunay Condition is not valid!!! :-(\n");
-					/*fprintf( stderr, "%i\n", voronoiDiagram->tetrahedra[i]->index);
-					fprintf( stderr, "%i\n", voronoiDiagram->tetrahedra[i]->vertices[0]->index);
-					fprintf( stderr, "%i\n", voronoiDiagram->tetrahedra[i]->vertices[1]->index);
-					fprintf( stderr, "%i\n", voronoiDiagram->tetrahedra[i]->vertices[2]->index);
-					//fprintf( stderr, "%i\n", voronoiDiagram->tetrahedra[i]->vertices[3]->index);
-					fprintf( stderr, "%i\n", voronoiDiagram->voronoiCells[ii]->index);
-					fprintf( stderr, "%f\n", voronoiDiagram->voronoiCells[ii]->position[0]);
-					fprintf( stderr, "%f\n", voronoiDiagram->voronoiCells[ii]->position[1]);*/
-					//fprintf( stderr, "%f\n", voronoiDiagram->voronoiCells[ii]->position[2]);
-
-					/*fprintf( stderr, "tet %i (%i [%p] %i [%p] %i [%p]) should not contain point %i [%p] (%lf %lf)\n",
-										voronoiDiagram->tetrahedra[i]->index,
-										voronoiDiagram->tetrahedra[i]->vertices[0]->index,
-										voronoiDiagram->tetrahedra[i]->vertices[0],
-										voronoiDiagram->tetrahedra[i]->vertices[1]->index,
-										voronoiDiagram->tetrahedra[i]->vertices[1],
-										voronoiDiagram->tetrahedra[i]->vertices[2]->index,
-										voronoiDiagram->tetrahedra[i]->vertices[2],
-										voronoiDiagram->voronoiCells[ii]->index,
-										voronoiDiagram->voronoiCells[ii],
-										voronoiDiagram->voronoiCells[ii]->position[0],
-										voronoiDiagram->voronoiCells[ii]->position[1]);
-*/
-					fprintf( stderr, "tet %i (%i %i %i %i) should not contain point %i (%lf %lf %lf)\n",
-						voronoiDiagram->tetrahedra[i]->index,
-						voronoiDiagram->tetrahedra[i]->vertices[0]->index,
-						voronoiDiagram->tetrahedra[i]->vertices[1]->index,
-						voronoiDiagram->tetrahedra[i]->vertices[2]->index,
-						voronoiDiagram->tetrahedra[i]->vertices[3]->index,
-						voronoiDiagram->voronoiCells[ii]->index,
-						voronoiDiagram->voronoiCells[ii]->position[0],
-						voronoiDiagram->voronoiCells[ii]->position[1],
-						voronoiDiagram->voronoiCells[ii]->position[2]);
-					fprintf( stderr, "vertex %i (%lf %lf %lf)\n",
-							voronoiDiagram->tetrahedra[i]->vertices[0]->index,
-							voronoiDiagram->tetrahedra[i]->vertices[0]->position[0],
-							voronoiDiagram->tetrahedra[i]->vertices[0]->position[1],
-							voronoiDiagram->tetrahedra[i]->vertices[0]->position[2]);
-					fprintf( stderr, "vertex %i (%lf %lf %lf)\n",
-							voronoiDiagram->tetrahedra[i]->vertices[1]->index,
-							voronoiDiagram->tetrahedra[i]->vertices[1]->position[0],
-							voronoiDiagram->tetrahedra[i]->vertices[1]->position[1],
-							voronoiDiagram->tetrahedra[i]->vertices[1]->position[2]);
-					fprintf( stderr, "vertex %i (%lf %lf %lf)\n",
-							voronoiDiagram->tetrahedra[i]->vertices[2]->index,
-							voronoiDiagram->tetrahedra[i]->vertices[2]->position[0],
-							voronoiDiagram->tetrahedra[i]->vertices[2]->position[1],
-							voronoiDiagram->tetrahedra[i]->vertices[2]->position[2]);
-					fprintf( stderr, "vertex %i (%lf %lf %lf)\n",
-							voronoiDiagram->tetrahedra[i]->vertices[3]->index,
-							voronoiDiagram->tetrahedra[i]->vertices[3]->position[0],
-							voronoiDiagram->tetrahedra[i]->vertices[3]->position[1],
-							voronoiDiagram->tetrahedra[i]->vertices[3]->position[2]);
-					/*fprintf( stderr, "distance of point to circumsphere of tet = %e\n", getDistanceOfPointToCircumsphere( voronoiDiagram->voronoiCells[ii], voronoiDiagram->tetrahedra[i]));
-					fprintf( stderr, "distance of point to circumsphere of tet = %e\n", getDistanceOfPointToCircumsphere( voronoiDiagram->tetrahedra[i]->vertices[0], voronoiDiagram->tetrahedra[i]));
-					fprintf( stderr, "distance of point to circumsphere of tet = %e\n", getDistanceOfPointToCircumsphere( voronoiDiagram->tetrahedra[i]->vertices[1], voronoiDiagram->tetrahedra[i]));
-					fprintf( stderr, "distance of point to circumsphere of tet = %e\n", getDistanceOfPointToCircumsphere( voronoiDiagram->tetrahedra[i]->vertices[2], voronoiDiagram->tetrahedra[i]));
-					fprintf( stderr, "distance of point to circumsphere of tet = %e\n", getDistanceOfPointToCircumsphere( voronoiDiagram->tetrahedra[i]->vertices[3], voronoiDiagram->tetrahedra[i]));*/
 
 					exit( 0);
 				}
-			}else{
-				//fprintf( stderr, "Point %i is not part of the triangulation and thus will be ignored!\n", voronoiDiagram->voronoiCells[ii]->index);
 			}
-			/*for( ii=0; ii<countNewCells; ii++){
-				for( l=0; l<NR_TETRAHEDRON_POINTS && newCell[ii]!=voronoiDiagram->tetrahedra[i]->vertices[l]; l++);
-				if( l==NR_TETRAHEDRON_POINTS && getDistanceOfPointToCircumsphere( newCell[ii], voronoiDiagram->tetrahedra[i]) < 0){
-					fprintf( stderr, "... Delaunay Condition is not valid!!! :-(\n");
-					exit( 0);
-				}
-			}*/
 		}
 	}
 
@@ -4055,34 +3987,25 @@ void VoronoiDiagram::getConvexHull( double thresholdDistance)
 				countFramePointsInTet++;
 				tt = t;
 				ff = f;
-				//fprintf( stderr, "(f) ");
 			}
 		}
-		//fprintf( stderr, "\n");
-		//fprintf( stderr, "INFO: tet %i contains %i frame points\n", i, countFramePoints);
 
 
 		int j, jj;
 		double dist = 0.;
 		double maxDist = 0.;
 		if( countFramePointsInTet==1){
-//		if( countFramePointsInTet>=1){
-			/*fprintf( stderr, "INFO: vertice %i of tet %i (%i %i %i %i) contains frame point %i\n",
-			         this->tetrahedra[i]->vertices[tt]->index, i,
-			         this->tetrahedra[i]->vertices[0]->index,
-			         this->tetrahedra[i]->vertices[1]->index,
-			         this->tetrahedra[i]->vertices[2]->index,
-			         this->tetrahedra[i]->vertices[3]->index,
-			         this->framePoints[ff]->index);
-			*/
 			for( j=0; j<NR_TETRAHEDRON_POINTS-1; j++){
 				for( jj=1; jj<NR_TETRAHEDRON_POINTS; jj++){
 					if( j!=tt && jj!=tt){
 						dist = pow( this->tetrahedra[i]->vertices[j]->position[0] - this->tetrahedra[i]->vertices[jj]->position[0], 2)
 						     + pow( this->tetrahedra[i]->vertices[j]->position[1] - this->tetrahedra[i]->vertices[jj]->position[1], 2)
-						     + pow( this->tetrahedra[i]->vertices[j]->position[2] - this->tetrahedra[i]->vertices[jj]->position[2], 2);
+						     // @author Emmanuel
+						     #if(DIMENSIONS == 3)
+						     + pow( this->tetrahedra[i]->vertices[j]->position[2] - this->tetrahedra[i]->vertices[jj]->position[2], 2)
+						     #endif
+						     ;
 						dist = sqrt( dist);
-						//fprintf( stderr, "INFO: distance of vertice %i and %i is %lf\n", this->tetrahedra[i]->vertices[j]->index, this->tetrahedra[i]->vertices[jj]->index, dist);
 						if( maxDist<dist)
 							maxDist = dist;
 					}
@@ -4171,7 +4094,11 @@ void VoronoiDiagram::getConvexHull( double thresholdDistance)
 				for( jj=j+1; jj<NR_FACE_POINTS; jj++){
 					dist = pow( tempFace[j]->position[0] - tempFace[jj]->position[0], 2)
 					     + pow( tempFace[j]->position[1] - tempFace[jj]->position[1], 2)
-					     + pow( tempFace[j]->position[2] - tempFace[jj]->position[2], 2);
+					     // @author Emmanuel
+					     #if(DIMENSIONS == 3)
+					     + pow( tempFace[j]->position[2] - tempFace[jj]->position[2], 2)
+					     #endif
+					     ;
 					dist = sqrt( dist);
 					//fprintf( stderr, "INFO: distance of face points %i and %i is %lf (%i-%i)\n", tempFace[j]->index, tempFace[jj]->index, dist, j, jj);
 					if( maxDist<dist)
@@ -4387,8 +4314,12 @@ void VoronoiDiagram::sortTetrahedra()
 		for( ii=0; ii<this->countTetrahedra-i-1; ii++)
 			if( this->tetrahedra[ii]->vertices[0]->index <= this->tetrahedra[ii+1]->vertices[0]->index &&
 				this->tetrahedra[ii]->vertices[1]->index <= this->tetrahedra[ii+1]->vertices[1]->index &&
-				this->tetrahedra[ii]->vertices[2]->index <= this->tetrahedra[ii+1]->vertices[2]->index &&
-				this->tetrahedra[ii]->vertices[3]->index <= this->tetrahedra[ii+1]->vertices[3]->index ){
+				this->tetrahedra[ii]->vertices[2]->index <= this->tetrahedra[ii+1]->vertices[2]->index
+				// @author Emmanuel
+				#if(DIMENSIONS == 3)
+				&& this->tetrahedra[ii]->vertices[3]->index <= this->tetrahedra[ii+1]->vertices[3]->index
+				#endif
+				 ){
 
 				Tetrahedron *temp      = this->tetrahedra[ii];
 				this->tetrahedra[ii]   = this->tetrahedra[ii+1];

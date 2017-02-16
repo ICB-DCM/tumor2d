@@ -6,6 +6,7 @@ def test_result_non_empty():
     assert len(sim['extra_cellular_matrix_profile']) > 0
     assert len(sim['growth_curve']) > 0
     assert len(sim['proliferation_profile']) > 0
+    assert sim['growth_curve'][0] < sim['growth_curve'][-1]
 
 
 def test_same_seed_same_result():

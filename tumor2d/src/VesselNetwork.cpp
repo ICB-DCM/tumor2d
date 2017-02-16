@@ -306,38 +306,7 @@ void SetRegularInitialVesselNetwork( VoronoiDiagram *voronoiDiagram, AgentList* 
 	if( !voronoiDiagram->domainSet)
 		voronoiDiagram->setDomain();
 	
-	// vessels in z-direction
-	/*for( double x = voronoiDiagram->xMin[0]+vesselOffSet[0]; x < voronoiDiagram->xMax[0]; x+=distanceBetweenVessels[0])
-	for( double y = voronoiDiagram->xMin[1]+vesselOffSet[1]; y < voronoiDiagram->xMax[1]; y+=distanceBetweenVessels[1]){
-		SetVessel( voronoiDiagram, agentArray, probTree,
-		           GetClosestGridPoint( voronoiDiagram, x, y, voronoiDiagram->xMin[2]), 
-		           GetClosestGridPoint( voronoiDiagram, x, y, voronoiDiagram->xMax[2]),
-		           branchingProbability, branchingLength);
-		//tempAngle += angleBetweenVessels;
 
-	}*/
-
-	// vessels in y-direction
-	/*for( double x = voronoiDiagram->xMin[0]+vesselOffSet[0]; x < voronoiDiagram->xMax[0]; x+=distanceBetweenVessels[0])
-	for( double z = voronoiDiagram->xMin[2]+vesselOffSet[2]; z < voronoiDiagram->xMax[2]; z+=distanceBetweenVessels[2]){
-		SetVessel( voronoiDiagram, agentArray, probTree,
-		           GetClosestGridPoint( voronoiDiagram, x, voronoiDiagram->xMin[1], z), 
-		           GetClosestGridPoint( voronoiDiagram, x, voronoiDiagram->xMax[1], z),
-		           branchingProbability, branchingLength);
-		//tempAngle += angleBetweenVessels;
-
-	}*/
-
-	// vessels in x-direction
-	/*for( double y = voronoiDiagram->xMin[1]+vesselOffSet[1]; y < voronoiDiagram->xMax[1]; y+=distanceBetweenVessels[1])
-	for( double z = voronoiDiagram->xMin[2]+vesselOffSet[2]; z < voronoiDiagram->xMax[2]; z+=distanceBetweenVessels[2]){
-		SetVessel( voronoiDiagram, agentArray, probTree,
-		           GetClosestGridPoint( voronoiDiagram, (voronoiDiagram->xMax[0]+voronoiDiagram->xMin[0])*0.5, y, z), 
-		           GetClosestGridPoint( voronoiDiagram, voronoiDiagram->xMax[0], y, z),
-		           branchingProbability, branchingLength);
-		//tempAngle += angleBetweenVessels;
-
-	}*/
 	
 	for( double x = voronoiDiagram->xMin[0]+vesselOffSet[0]; x < voronoiDiagram->xMax[0]; x+=distanceBetweenVessels[0])
 	for( double y = voronoiDiagram->xMin[1]+vesselOffSet[1]; y < voronoiDiagram->xMax[1]; y+=distanceBetweenVessels[1])
@@ -354,19 +323,9 @@ void SetRegularInitialVesselNetwork( VoronoiDiagram *voronoiDiagram, AgentList* 
 		           GetClosestGridPoint( voronoiDiagram, x, y, z                          ), 
 		           GetClosestGridPoint( voronoiDiagram, x, y, z+distanceBetweenVessels[2]),
 		           branchingProbability, branchingLength);
-		//tempAngle += angleBetweenVessels;
 
 	}
-	/* // THIN BUNDLE
-	for( double x = (voronoiDiagram->xMin[0]+voronoiDiagram->xMax[0])*0.5-4.-8.; x < (voronoiDiagram->xMin[0]+voronoiDiagram->xMax[0])*0.5+4.-8.; x+=4.)
-	for( double z = (voronoiDiagram->xMin[2]+voronoiDiagram->xMax[2])*0.5-4.; z < (voronoiDiagram->xMin[2]+voronoiDiagram->xMax[2])*0.5+4.; z+=4.){
-		SetVessel( voronoiDiagram, agentArray, probTree,
-		           GetClosestGridPoint( voronoiDiagram, x, voronoiDiagram->xMin[1], z), 
-		           GetClosestGridPoint( voronoiDiagram, x, voronoiDiagram->xMax[1], z),
-		           branchingProbability, branchingLength);
-		//tempAngle += angleBetweenVessels;
 
-	}*/
 }
 /*****************************************************************************/
 
