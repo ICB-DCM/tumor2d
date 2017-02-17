@@ -500,6 +500,9 @@ Action* newAction( int type, double rate){
 
 	Action* actions = ( Action*) malloc( sizeof( Action));
 
+    if (actions == NULL) {
+        printf("Got NULL pointer in newAction.\n");
+    }
 	// initialize action attributes	   
 	actions->type	= type;
 	actions->rate	= rate;

@@ -1,5 +1,6 @@
 from ._tumorutil import tumor2d_simulate
 import numpy as np
+from multiprocessing import Process, Pipe
 
 
 def nr_valid(arr):
@@ -47,14 +48,26 @@ def simulate(division_rate=4.7e-2,
          to radial distance, measured at the time point profiletime
 
     """
-    res = tumor2d_simulate(max_celldivision_rate=division_rate,
-                           initial_radius=initial_spheroid_radius,
-                           initial_quiescent_fraction=initial_quiescent_cell_fraction,
-                           division_depth=division_depth,
-                           emc_productionrate=ecm_production_rate,
-                           ecm_degradationrate=ecm_degradation_rate,
-                           ecm_threshold_quiescence=ecm_division_threshold,
-                           randseed=randseed)
+    kwargs = dict(max_celldivision_rate=division_rate,
+                  initial_radius=initial_spheroid_radius,
+                  initial_quiescent_fraction=initial_quiescent_cell_fraction,
+                  division_depth=division_depth,
+                  emc_productionrate=ecm_production_rate,
+                  ecm_degradationrate=ecm_degradation_rate,
+                  ecm_threshold_quiescence=ecm_division_threshold,
+                  randseed=randseed)
+
+    parent, child = Pipe()
+
+    def pipe_call(pipe, kwargs):
+        res = tumor2d_simulate(**kwargs)
+        pipe.send(res)
+
+    proc = Process(target=pipe_call, args=(child, kwargs), daemon=True)
+    proc.start()
+    res = parent.recv()
+    proc.join()
+
 
     # convert tu numpy
     growth_curve = np.array(res.growth_curve)
