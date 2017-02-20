@@ -1285,11 +1285,19 @@ void statisticsOfSpheroid(VoronoiDiagram* voronoiDiagram,
 double InitialOxygenConcentration = 1.;
 double InitialGlucoseConcentration = 1.;
 
-double montecarlo(double InitialRadius, double InitialQuiescentFraction, double MaxCellDivisionRate, double DivisionDepth,
-					double ECMThresholdQuiescence, double ECMProductionRate, double ECMDegradationRate,
+double montecarlo(double InitialRadius_in, double InitialQuiescentFraction_in, double MaxCellDivisionRate_in, double DivisionDepth_in,
+					double ECMThresholdQuiescence_in, double ECMProductionRate_in, double ECMDegradationRate_in,
 					double EndTimeIn, double OutputRate, double profileTime, int profileDepth, int rand_seed,
 					std::vector<double> &gc_out, std::vector<double> &ecm_out, std::vector<double> &prolif_out)
 {
+    double InitialRadius = InitialRadius_in;
+    double InitialQuiescentFraction = InitialQuiescentFraction_in;
+    MaxCellDivisionRate = MaxCellDivisionRate_in;
+    double DivisionDepth = DivisionDepth_in;
+	double ECMThresholdQuiescence = ECMThresholdQuiescence_in;
+	double ECMProductionRate = ECMProductionRate_in;
+	double ECMDegradationRate = ECMDegradationRate_in;
+
     ReentranceProbabilityReferenceLength = DivisionDepth;
 
 	// Time
