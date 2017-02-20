@@ -23,6 +23,7 @@ def store_gt():
         pass
 
     for nr, p in enumerate(pars):
+        f = os.path.join(base, str(nr))
         if not os.path.exists(f):
             results = tumor2d_simulate(**p)
             res_dict = dict(proliferation=results.proliferation,
@@ -33,3 +34,6 @@ def store_gt():
             np.savez(f, **res_dict)
         else:
             print("FILE EXISTS NOTHING DONE")
+
+
+store_gt()

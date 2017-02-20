@@ -21,8 +21,8 @@ bool VoronoiCell::USE_SYMBOLIC_EXTENDED_NEIGHBORHOOD = true;
 bool VoronoiCell::USE_DYNAMIC_EXTENDED_NEIGHBORHOOD = false;
 bool VoronoiCell::SHIFT_TO_UNOCCUPIED = false;
 
-double VoronoiCell::ECM_THRESHOLD_QUIESCENCE = 0.00;//0.003;
-double VoronoiCell::ECM_PRODUCTION_RATE = 0.0005; // 0.0003;
+double VoronoiCell::ECM_THRESHOLD_QUIESCENCE = 0.00;
+double VoronoiCell::ECM_PRODUCTION_RATE = 0.0005;
 double VoronoiCell::ECM_DEGRADATION_RATE = VoronoiCell::ECM_PRODUCTION_RATE / 0.15;
 
 
