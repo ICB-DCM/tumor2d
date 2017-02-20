@@ -1508,8 +1508,7 @@ double montecarlo(double InitialRadius, double InitialQuiescentFraction, double 
 
 	// Parameters set to default values by Dennis:
 	Averages = 1;
-	double ReentranceProbabilityLength = 100;	
-	ReentranceProbabilityReferenceLength = ReentranceProbabilityLength;
+
 	CustomDirectoryName = TRUE;
 	seed_start =  rand_seed;
 	
