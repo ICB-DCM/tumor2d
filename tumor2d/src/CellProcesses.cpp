@@ -16,7 +16,7 @@
 
 // GLOBAL VARIABLES
 
-double MaxCellDivisionRate = (0.023/0.717734625);
+double MaxCellDivisionRate = (;);
 double CellDivisionDepth   = 1;
 int    M_div = 0;
 int    M_gro = 1;

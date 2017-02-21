@@ -1,13 +1,13 @@
 from ._tumorutil import tumor2d_simulate
 import numpy as np
 from multiprocessing import Process, Pipe
-
+MAX_SEED = 2147483647
 
 def nr_valid(arr):
     return len(arr) - len(np.nonzero((arr[::-1] == 0).cumprod())[0])
 
 
-def simulate(division_rate=4.7e-2,
+def simulate(division_rate=4.17e-2,
              initial_spheroid_radius=1.2e1,
              initial_quiescent_cell_fraction=7.5e-1,
              division_depth=100,
@@ -48,6 +48,9 @@ def simulate(division_rate=4.7e-2,
          to radial distance, measured at the time point profiletime
 
     """
+    if randseed is None:
+        randseed = np.random.randint(MAX_SEED)
+
     kwargs = dict(max_celldivision_rate=division_rate,
                   initial_radius=initial_spheroid_radius,
                   initial_quiescent_fraction=initial_quiescent_cell_fraction,

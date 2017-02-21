@@ -50,7 +50,7 @@ def tumor2d_simulate(initial_radius=12.0, initial_quiescent_fraction=0.75,  max_
     # don't load at module level due to memory leaks in the original code
     import tumor2d.src.nixTumor2d as nixTumor2d
     if randseed is None:
-        randseed = np.random.randint(max_seed)
+        raise Exception("Randseed necessary.")
     profiletime /= 24
     pars = str(locals())
     logger.debug(f"START:{pars}")
