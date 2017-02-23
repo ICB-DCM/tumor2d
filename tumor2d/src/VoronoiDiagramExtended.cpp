@@ -2359,42 +2359,17 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 	assert(allPoints);
 	for( i=0; i<pi; i++)
 		allPoints[i] = points[i];
-		//pointsInvolved[i] = 2;
-
-	//printPoints( "Points: ", allPoints, api );
-
-
 
 
 	// CREATE NEW TETRAHEDRA FROM FACES
 		
 	int countAddedTetrahedra = 0;
-	//int last_minCountValidTetrahedra = 1;
-	//int minCountValidTetrahedra = fi;
-	//int countNotAddedFacesInAChain = 0;
+
 
 	for( i=0; pi!=0; i = (fi==0 ? 0 : (i+1)%fi)){ // for all faces
 
 		// STOP ENDLESS LOOP
 		if( countIts==2000){
-			fprintf( stderr, "WARNING: Apparently there is a Problem in removeVoronoiCell()\n");
-			//fprintf( stderr, "Algorithm imprisoned in endless loop while trying to remove point %i!\n", removedVoronoiCell->index);
-			fprintf( stderr, "Print Point coordinates to file\n");
-			/*FILE *fp;
-			fp = fopen( "errorPointSet.nodes", "w+");
-			fprintf( fp, "%i %i\n", voronoiDiagram->countVoronoiCells, DIMENSIONS);
-			int index = 0;
-			for( int v=0; v<voronoiDiagram->countVoronoiCells; v++)
-			if(voronoiDiagram->voronoiCells[v]->countNeighborCells>0 || voronoiDiagram->voronoiCells[v] == removedVoronoiCell){
-				if( voronoiDiagram->voronoiCells[v] == removedVoronoiCell)
-					fprintf( stderr, "Algorithm imprisoned in endless loop while trying to remove point %i!\n", index);
-
-				for( int p=0; p<DIMENSIONS; p++)
-					fprintf( fp, "%.20lf ", voronoiDiagram->voronoiCells[v]->position[p]);
-				fprintf( fp, "\n");
-				index++;
-			}
-			fclose( fp);*/
 
 			FILE *pFile = fopen( "errorPointSet.nodes", "w+");
 			int index = 0;
@@ -2419,20 +2394,16 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 
 
 		if( ti == timax){
-			//fprintf( stderr, "INFO: realloc: %i -> %i!\n", timax, timax + TETRAHEDRA_ARRAY_EXTENSION_SIZE);
 			tetrahedra = (Tetrahedron **) realloc( tetrahedra, sizeof(Tetrahedron*)*(timax + TETRAHEDRA_ARRAY_EXTENSION_SIZE));
 			assert(tetrahedra);
 			for( k=timax; k<timax + TETRAHEDRA_ARRAY_EXTENSION_SIZE;k++)
 				tetrahedra[k] = newTetrahedron();
 			timax += TETRAHEDRA_ARRAY_EXTENSION_SIZE;
 		}
-		//fprintf( stderr, "Complete new tetrahedron %i: (", ti);	
 		// set face as points of new tetrahedron
 		for( k=0; k<NR_FACE_POINTS; k++){
-			//fprintf( stderr, " %i", faces[i][k]->index);	
 			tetrahedra[ti]->vertices[k] = faces[i][k];
 		}
-		//fprintf( stderr, " ?)\n");	
 
 		// look for point to complete tetrahedron
 		int tetrahedronValid = 0;
@@ -2444,7 +2415,6 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 			// check if point is not contained yet by face
 			for( k=0; k<NR_FACE_POINTS && points[j]!=faces[i][k]; k++);
 			if( k==NR_FACE_POINTS){
-				//fprintf( stderr, "point %i is candidate to form a tetrahedron with face %i\n", points[j]->index, i);
 
 				// set point as point of new tetrahedron
 				tetrahedra[ti]->vertices[k] = points[j];
@@ -2455,17 +2425,7 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 
 				// removed point lies in the circumsphere?
 				if( getDistanceOfPointToCircumsphere( removedVoronoiCell, tetrahedra[ti]) < 0.){
-					// other points lie in the circumsphere?
-					/*for( k=0; k<pi; k++){ // for all points
-						// check if point is contained tetrahedron
-						for( l=0; l<NR_TETRAHEDRON_POINTS && points[k]!=tetrahedra[ti]->vertices[l]; l++);
-						if( l==NR_TETRAHEDRON_POINTS){
-							// is point in the new tetrahedrons circumsphere ???
-							if( getDistanceOfPointToCircumsphere( points[k], tetrahedra[ti]) < 0.){
-								tetrahedronValid = 0;
-							}					
-						}
-					}*/
+
 					for( k=0; k<api; k++){ // for all points
 						// check if point is contained tetrahedron
 						for( l=0; l<NR_TETRAHEDRON_POINTS && allPoints[k]!=tetrahedra[ti]->vertices[l]; l++);
@@ -2477,17 +2437,15 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 						}
 					}
 
-//#if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 					// tet exists already?
 					if( correspondingTetrahedron[i]!=NULL){
 						for( k=0; k<NR_TETRAHEDRON_POINTS && correspondingTetrahedron[i]->vertices[k]!=points[j]; k++);
 						if( k<NR_TETRAHEDRON_POINTS)
 							tetrahedronValid = 0;
 					}
-//#endif
+
 					
 				}else{
-					//fprintf( stderr, "WARNING: new tetrahedron %i is not valid: removed point is not within the circumsphere\n", ti);
 					//TEST 
 					tetrahedronValid = 0;
 				}
@@ -2496,54 +2454,32 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 					countValidTetrahedra++;
 					validPoint = points[j];
 				}
-				//printPoints( "test1 points:      ", allPoints, api );
+
 			}
 		}
 
-		//fprintf( stderr, "INFO: fi=%i, i=%i, ti=%i:  countValidTetrahedra=%i   < last_minCountValidTetrahedra=%i ?\n", fi, i, ti, countValidTetrahedra, last_minCountValidTetrahedra);
 
-		/*if( countValidTetrahedra > 1){
-			fprintf( stderr, "INFO: countValidTetrahedra = %i\n", countValidTetrahedra);
-			for( k=0; k<NR_FACE_POINTS; k++){
-				fprintf( stderr, " %i", faces[i][k]->index);
-				//tetrahedra[ti]->vertices[k] = faces[i][k];
-			}
-			fprintf( stderr, "\n");
-			if( countIts>1000)
-				countValidTetrahedra=1;
-		}
-		if( countValidTetrahedra < 1){
-			fprintf( stderr, "INFO: countValidTetrahedra = %i\n", countValidTetrahedra);
-			for( k=0; k<NR_FACE_POINTS; k++){
-				fprintf( stderr, " %i", faces[i][k]->index);
-				//tetrahedra[ti]->vertices[k] = faces[i][k];
-			}
-			fprintf( stderr, "\n");
-			exit( 0);
-		}*/
 
 		if( countValidTetrahedra == 1){
-		//if( countValidTetrahedra && countValidTetrahedra == last_minCountValidTetrahedra){
+
 			tetrahedra[ti]->vertices[DIMENSIONS] = validPoint;
 			tetrahedra[ti]->circumsphereInitialized = 0;
 
 			countAddedTetrahedra++;
 
 			// print new tetrahedron
-			//fprintf( stderr, "new tetrahedron %i is (", ti);	
+
 			for( k=0; k<NR_FACE_POINTS; k++){
 				addNeighbor( tetrahedra[ti]->vertices[k], validPoint);
 				addNeighbor( validPoint, tetrahedra[ti]->vertices[k]);
 				//fprintf( stderr, " %i", tetrahedra[ti]->vertices[k]->index);	
 			}
-			//fprintf( stderr, ")\n");	
+
 			
 
 			// DELETE USED FACE FROM LIST
 			fi--;
-			//fprintf( stderr, "Remove Face %i: (", i);	
 			for( k=0; k<NR_FACE_POINTS; k++){
-				//fprintf( stderr, " %i", faces[i][k]->index);	
 				for( l=0; faces[i][k]!=points[l]; l++);
 				pointsInvolved[l]--;
 				faces[i][k] = faces[fi][k];
@@ -2558,8 +2494,7 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 			correspondingTetrahedron[i] = correspondingTetrahedron[fi];
 
 #endif
-			
-			//fprintf( stderr, ")\n");	
+
 			i--;
 			// ADD OTHER FACES TO LIST
 			for( j=1; j<NR_TETRAHEDRON_POINTS; j++){ // for all new faces
@@ -2579,15 +2514,9 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 					// already in the list => delete face
 					k--;
 					fi--;
-					//fprintf( stderr, "Remove Face %i: (", k);	
 					for( l=0; l<NR_FACE_POINTS; l++){
-						//fprintf( stderr, " %i", faces[k][l]->index);
 						// deleted face has common points with previous deleted faces?	
 						for( m=0; faces[k][l]!=points[m]; m++);
-						/*if(m>=pi){
-							fprintf( stderr, "\n ERROR: face point not in point list!!!\n");	
-							exit( 0);
-						}*/
 						pointsInvolved[m]--;
 						if( pointsInvolved[m] == 0){
 							// delete from point list
@@ -2599,7 +2528,6 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 
 						faces[k][l]=faces[fi][l];
 					}
-					//fprintf( stderr, ")\n");
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 
@@ -2612,19 +2540,14 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 #endif
 
 				}else{
-					// not yet in the list => add face	
-					//fprintf( stderr, "Add Face %i: (", fi);	
+					// not yet in the list => add face
 					for( l=0; l<NR_FACE_POINTS; l++){
 						faces[fi][l]=tetrahedra[ti]->vertices[(j+l)%NR_TETRAHEDRON_POINTS];
-						//fprintf( stderr, " %i", faces[fi][l]->index);	
+
 						for( m=0; faces[fi][l]!=points[m]; m++);
-						/*if(m>=pi){
-							fprintf( stderr, "\n ERROR: face point not in point list!!!\n");	
-							exit( 0);
-						}*/
+
 						pointsInvolved[m]++;
 					}
-					//fprintf( stderr, ")\n");
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 
@@ -2636,44 +2559,19 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 				}
 	
 			}
-			//fprintf( stderr, "\n");	
 			tetrahedra[ti]->index = ti;
 			ti++;
 
-			//countNotAddedFacesInAChain = 0;				
-			//last_minCountValidTetrahedra = 1;
 		}
-		/*else{
-			countNotAddedFacesInAChain++;
-			if( countValidTetrahedra == 0){
-				fprintf( stderr, "ERROR: countValidTetrahedra == 0!!!\n");
-				exit( 0);
-			}
-		}
-		if( fi>0 && countNotAddedFacesInAChain == fi){
-			last_minCountValidTetrahedra = minCountValidTetrahedra;
-			minCountValidTetrahedra = fi;
-			countNotAddedFacesInAChain = 0;
-			fprintf( stderr, "\n WARNING: More than one posibility to include new tetrahedra: %i!\n", last_minCountValidTetrahedra);
-			fprintf( stderr, "INFO: ti=%i, fi=%i\n", ti, fi);
-			printPoints( "all points:  ", allPoints, api );
-			printPoints( "points left: ", points, pi );
-			voronoiDiagram->countTetrahedra = ti;
-			//checkDelaunayCondition( voronoiDiagram, NULL, 0);
-			//exit( 0);
-			//occurenceOfAmbiguity++;
-		}*/
 
 	}
 
 
 	// DELETE POINT
-	//free( removedVoronoiCell);
-	
+
 
 	// FREE ALLOCATED MEMORY
 
-	//deleteMatrix( A, NR_TETRAHEDRON_POINTS);
 	free( points);
 	free( pointsInvolved);
 	free( allPoints);
@@ -2696,10 +2594,6 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 
 
 
-	// FINAL TESTING
-	/*if( occurenceOfAmbiguity)
-		checkDelaunayCondition( voronoiDiagram, NULL, 0);
-	*/
 	
 }
 /*****************************************************************************/
@@ -2725,13 +2619,11 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 {
 	int j, k, l;
 
-	//double **A = newMatrix( DIMENSIONS + 1, DIMENSIONS + 1);
 
 	int count_faces_added = 0;
 	int count_common_faces_deleted = 0;
 	int count_tetrahedra_deleted = 0;
 	int count_tetrahedra_added = 0;
-	//int npr = 0;
 
 	// faces
 	int fi = 0;			// face counter
@@ -2744,7 +2636,6 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 	int timax = voronoiDiagram->maxTetrahedra;
 	Tetrahedron **tetrahedra = voronoiDiagram->tetrahedra;
 
-	//newVoronoiCell->index = voronoiDiagram->countVoronoiCells;
 
 
 	// DELAUNAY TRIANGULATION (WATSON)
@@ -2764,20 +2655,11 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 	Tetrahedron **usedTetStack = (Tetrahedron**) calloc( sizeof(Tetrahedron*), TETRAHEDRA_ARRAY_EXTENSION_SIZE);
 	assert(usedTetStack);
 
-	tetStack[0] = actualTet; //tetrahedra[0];
+	tetStack[0] = actualTet;
 	int tetStackLength = 1;
 	int usedTetStackLength = 0;
 
 
-	// TEST:
-	/*int test_count_tetrahedra_deleted = 0;
-	for( j=0; j<ti; j++){
-		if( getDistanceOfPointToCircumsphereCenter( newVoronoiCell, tetrahedra[j]) < getCircumsphereRadius( tetrahedra[j]))
-			test_count_tetrahedra_deleted++;
-	}*/
-	// END TEST
-
-	//fprintf( stderr, "look for all tetrahedra deleted by the point insertion\n");
 
 
 	do{
@@ -2796,38 +2678,14 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 		usedTetStackLength++;
 
 
-		// TEST
-		/*int i;
-		for( i=0; i<tetStackLength; i++)
-		{
-			for( j=0; j<actualTet->countNeighborTetrahedra; j++){
-				if( actualTet->neighborTetrahedra[j] == NULL)
-					exit( 0);
-
-				if( actualTet->neighborTetrahedra[j]->circumsphereInitialized == 1){
-					if( actualTet->neighborTetrahedra[j]->circumsphere[0] == 0.123456789)
-						exit( 0);
-				}
-			}
-
-			if( tetStack[i]->circumsphereInitialized == 1){
-				if( tetStack[i]->circumsphere[0] == 0.123456789)
-					exit( 0);
-			}
-		}*/
-
-
-		//fprintf( stderr, "INFO: Delete tet %i (%i, %i, %i, %i)!\n", actualTet->index, actualTet->vertices[0]->index, actualTet->vertices[1]->index, actualTet->vertices[2]->index, actualTet->vertices[3]->index);
 
 		// ADD NEIGHBOR TETRAHEDRA TO STACK
-		//int temp_tetStackLength = tetStackLength;
 		for( j=0; j<actualTet->countNeighborTetrahedra /*&& temp_tetStackLength == tetStackLength*/; j++){
 			if( tetStackLength + actualTet->countNeighborTetrahedra < maxTetStackLength){
 				maxTetStackLength += TETRAHEDRA_ARRAY_EXTENSION_SIZE;
 				tetStack = (Tetrahedron**) realloc( tetStack, sizeof(Tetrahedron*) * maxTetStackLength);
 				assert(tetStack);
 			}
-			//distanceToCircumsphereCenter = getDistanceOfPointToCircumsphereCenter( newVoronoiCell, actualTet->neighborTetrahedra[j]);
 			for( k=0; k<usedTetStackLength && usedTetStack[k]!=actualTet->neighborTetrahedra[j]; k++);
 			for( l=0; l<tetStackLength     && tetStack[l]!=actualTet->neighborTetrahedra[j];     l++);
 			// circumsphere contains new point ?
@@ -2835,10 +2693,9 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 			    getDistanceOfPointToCircumsphere( newVoronoiCell, actualTet->neighborTetrahedra[j]) < 0./*getCircumsphereRadius( actualTet->neighborTetrahedra[j])*/){
 				tetStack[tetStackLength] = actualTet->neighborTetrahedra[j];
 				tetStackLength++;
-				//fprintf( stderr, "INFO: Add neighbor tet %i (%i, %i, %i, %i) as candidate\n", actualTet->neighborTetrahedra[j]->index, actualTet->neighborTetrahedra[j]->vertices[0]->index, actualTet->neighborTetrahedra[j]->vertices[1]->index, actualTet->neighborTetrahedra[j]->vertices[2]->index, actualTet->neighborTetrahedra[j]->vertices[3]->index);
 
-			}//else
-				//fprintf( stderr, "INFO: Neighbor tet %i (%i, %i, %i, %i) doesn't contain new point\n", actualTet->neighborTetrahedra[j]->index, actualTet->neighborTetrahedra[j]->vertices[0]->index, actualTet->neighborTetrahedra[j]->vertices[1]->index, actualTet->neighborTetrahedra[j]->vertices[2]->index, actualTet->neighborTetrahedra[j]->vertices[3]->index);
+
+			}
 
 		}
 
@@ -2848,7 +2705,7 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 
 		Tetrahedron *actualTet = tetrahedra[j];
 		if( getDistanceOfPointToCircumsphere( newVoronoiCell, actualTet) < 0. /*getCircumsphereRadius( actualTet)*/){
-			//fprintf( stderr, "INFO: Delete tet %i (%i, %i, %i, %i)!\n", actualTet->index, actualTet->vertices[0]->index, actualTet->vertices[1]->index, actualTet->vertices[2]->index, actualTet->vertices[3]->index);
+
 
 #endif //TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 
@@ -2856,7 +2713,7 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 
 		// reallocation if nessessary
 		if( fi+NR_TETRAHEDRON_POINTS >= fimax){
-			//fprintf( stderr, "INFO: realloc: %i -> %i!\n", fimax, fimax + FACES_ARRAY_EXTENSION_SIZE);
+
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 			correspondingTetrahedron = (Tetrahedron**) realloc( correspondingTetrahedron, sizeof(Tetrahedron*) * (fimax + FACES_ARRAY_EXTENSION_SIZE));
 #endif
@@ -2877,7 +2734,6 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 
-			//fprintf( stderr, "INFO: save neighbor tet!\n");
 			for( l=0; l<actualTet->countNeighborTetrahedra &&
 				!tetrahedronContainsFace( actualTet->neighborTetrahedra[l]->vertices,
 				faces[fi]); l++);
@@ -2897,7 +2753,6 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 			for( dim=NR_FACE_POINTS; dim>1; dim--){
 				for( l=1; l<dim; l++){
 					// (memory address)
-					//if( faces[fi][l-1] > faces[fi][l])
 					// (point index)
 					if( faces[fi][l-1]->index > faces[fi][l]->index)
 					{
@@ -2928,12 +2783,6 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 
 		count_tetrahedra_deleted++;
 
-		/*for( k=0; k<ti; k++){
-			if( k != tetrahedra[k]->index){
-				fprintf( stderr, "ERROR: index of tet %i wrong: %i ! ti=%i\n", k, tetrahedra[k]->index, ti);
-				exit( 0);
-			}
-		}*/
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 
@@ -2953,9 +2802,7 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 
 		// DELETE COMMON FACES FROM LIST
 
-		//fprintf( stderr, "Number of Faces: fi=%d", fi);
 		for( j=0; j<fi-1; j++){
-			//fprintf( stderr, "Duplicate Check for Face %d\n", j);
 
 			// check for copy of face j
 			int duplicateFound = 0;
@@ -2964,8 +2811,7 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 				for( k=0; k<DIMENSIONS && faces[j][k] == faces[l][k]; k++); // for all points of the faces
 				if( k==DIMENSIONS && faces[j][k-1] == faces[l][k-1]){
 					duplicateFound++;
-					//fprintf( stderr, "%d. Face Duplicate found!!! Face %d (%d %d %d) and %d (%d %d %d) are equal. \n", duplicateFound, j, faces[j][0], faces[j][1], faces[j][2],  l, faces[l][0], faces[l][1], faces[l][2]);
-					//exit(0);
+
 
 					// remove neighborships
 					for( k=0; k<NR_FACE_POINTS; k++){
@@ -2974,7 +2820,7 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 					}
 
 					// remove face l
-					//int faceContainsInsertedPoint = 0;
+
 					for( k=0; k<NR_FACE_POINTS; k++){
 						faces[l][k]=faces[fi-1][k];
 					}
@@ -2982,7 +2828,7 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 					correspondingTetrahedron[l]=correspondingTetrahedron[fi-1];
 #endif
 					//if
-					//facesTetrahedronIndex[l]=facesTetrahedronIndex[fi-1];
+
 					fi--;
 					count_common_faces_deleted++;
 
@@ -3000,7 +2846,6 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 			}
 
 		}
-		//fprintf( stderr, "( after deleting common faces: fi=%d\n", fi);
 
 
 
@@ -3008,7 +2853,6 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 
 		for( j=0; j<fi; j++){ // for all faces
 			if( ti == timax){
-				//fprintf( stderr, "INFO: realloc: %i -> %i!\n", timax, timax + TETRAHEDRA_ARRAY_EXTENSION_SIZE);
 				tetrahedra = (Tetrahedron **) realloc( tetrahedra, sizeof(Tetrahedron*)*(timax + TETRAHEDRA_ARRAY_EXTENSION_SIZE));
 				assert(tetrahedra);
 				for( k=timax; k<timax + TETRAHEDRA_ARRAY_EXTENSION_SIZE;k++)
@@ -3016,19 +2860,14 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 				timax += TETRAHEDRA_ARRAY_EXTENSION_SIZE;
 			}
 
-			//tetrahedra[ti] = newTetrahedron();
-			//fprintf( stderr, "Add tetrahedra %d: (", ti);
 			for( k=0; k<NR_FACE_POINTS; k++){ // for all points of face
 				tetrahedra[ti]->vertices[k] = faces[j][k]; // set point of face
-				//fprintf( stderr, "%d ", tetrahedra[ti]->vertices[k]->index);
 				addNeighbor( newVoronoiCell, faces[j][k]);
 				addNeighbor( faces[j][k], newVoronoiCell);
 				addNeighbor( faces[j][k], faces[j][(k+1)%NR_FACE_POINTS]);
 				addNeighbor( faces[j][(k+1)%NR_FACE_POINTS], faces[j][k]);
 			}
 			tetrahedra[ti]->vertices[k] = newVoronoiCell; // set added point
-			//fprintf( stderr, "%d )\n", tetrahedra[ti]->vertices[k]->index);
-			//tetrahedra[ti]->included=1;
 			tetrahedra[ti]->countNeighborTetrahedra=0;
 			tetrahedra[ti]->circumsphereInitialized=0;
 			tetrahedra[ti]->index=ti;
@@ -3037,19 +2876,16 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 			ti++;
 
 		}
-		//fprintf( stderr, ", add %d Tetrehedra\n", fi);
-		//fprintf( stderr, "to %d already existing Tetrehedra\n", ti);
 
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 
 		// DESTINE NEIGHBORSHIPS OF NEW TETRAHEDRA
-		for( j=ti-fi/*-1*/; j<ti-1; j++){ // for each new tetrahedra j
-		//for( j=ti-fi-1; j<ti-1; j++){ // for each new tetrahedra j
+		for( j=ti-fi/*-1*/; j<ti-1; j++){
+
 
 
 			for( k=j+1; k<ti; k++){ // for all other new tetrahedra k
-				//fprintf( stderr, "Compare tetrahedra %i vs %i, max %i\n", j, k, ti);
 				if( countCommonPointOfTetrahedra( tetrahedra[j], tetrahedra[k]) == DIMENSIONS){
 					// j and k are neighbors
 					tetrahedra[j]->addTetrahedronNeighbor( tetrahedra[k]);
@@ -3060,7 +2896,6 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 
 		for( j=ti-fi/*-1*/; j<ti; j++){ // for each new tetrahedra j
 			for( k=0; k<fi; k++){ // for all surrounding tetrahedra k
-				//fprintf( stderr, "INFO: (%i)\n", k);
 				if( correspondingTetrahedron[k]!=NULL && countCommonPointOfTetrahedra( tetrahedra[j], correspondingTetrahedron[k]) == DIMENSIONS){
 					// j and k are neighbors
 					addOrReplaceTetrahedronNeighbor( tetrahedra[j], correspondingTetrahedron[k]);
@@ -3071,18 +2906,7 @@ void triangulateVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVor
 
 #endif
 
-	// ADD NEW POINT TO POINT ARRAY
-	/*if( voronoiDiagram->countVoronoiCells==voronoiDiagram->maxVoronoiCells){
-		voronoiDiagram->maxVoronoiCells += POINTS_ARRAY_EXTENSION_SIZE;
-		voronoiDiagram->voronoiCells = (VoronoiCell **) realloc( voronoiDiagram->voronoiCells, sizeof(VoronoiCell*) * voronoiDiagram->maxVoronoiCells);
-	}
-	voronoiDiagram->voronoiCells[voronoiDiagram->countVoronoiCells] = newVoronoiCell;
-	voronoiDiagram->countVoronoiCells++;
-	*/
 
-	// FREE MEMORY
-
-	//deleteMatrix( A, DIMENSIONS+1);
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 	free( correspondingTetrahedron);
@@ -3104,13 +2928,11 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 {
 	int j, k, l;
 
-	//double **A = newMatrix( DIMENSIONS + 1, DIMENSIONS + 1);
 
 	int count_faces_added = 0;
 	int count_common_faces_deleted = 0;
 	int count_tetrahedra_deleted = 0;
 	int count_tetrahedra_added = 0;
-	//int npr = 0;
 
 	// faces
 	int fi = 0;			// face counter
@@ -3147,15 +2969,7 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 	int usedTetStackLength = 0;	
 
 
-	// TEST:
-	/*int test_count_tetrahedra_deleted = 0;
-	for( j=0; j<ti; j++){
-		if( getDistanceOfPointToCircumsphereCenter( newVoronoiCell, tetrahedra[j]) < getCircumsphereRadius( tetrahedra[j]))
-			test_count_tetrahedra_deleted++;
-	}*/
-	// END TEST
 
-	//fprintf( stderr, "look for all tetrahedra deleted by the point insertion\n");
 
 
 	do{
@@ -3170,7 +2984,6 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 		usedTetStack[usedTetStackLength] = actualTet;
 		usedTetStackLength++;
 
-		//fprintf( stderr, "INFO: Delete tet %i (%i, %i, %i, %i)!\n", actualTet->index, actualTet->vertices[0]->index, actualTet->vertices[1]->index, actualTet->vertices[2]->index, actualTet->vertices[3]->index);
 
 		// ADD NEIGHBOR TETRAHEDRA TO STACK
 		//int temp_tetStackLength = tetStackLength;
@@ -3180,18 +2993,18 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 				tetStack = (Tetrahedron**) realloc( tetStack, sizeof(Tetrahedron*) * maxTetStackLength);
 				assert(tetStack);
 			}
-			//distanceToCircumsphereCenter = getDistanceOfPointToCircumsphereCenter( newVoronoiCell, actualTet->neighborTetrahedra[j]);
+
 			for( k=0; k<usedTetStackLength && usedTetStack[k]!=actualTet->neighborTetrahedra[j]; k++);
 			for( l=0; l<tetStackLength     && tetStack[l]!=actualTet->neighborTetrahedra[j];     l++);
-			// circumsphere contains new point ?
+
 			if( k==usedTetStackLength && l==tetStackLength &&
 			    getDistanceOfPointToCircumsphere( newVoronoiCell, actualTet->neighborTetrahedra[j]) < 0./*getCircumsphereRadius( actualTet->neighborTetrahedra[j])*/){
 				tetStack[tetStackLength] = actualTet->neighborTetrahedra[j];
 				tetStackLength++;
-				//fprintf( stderr, "INFO: Add neighbor tet %i (%i, %i, %i, %i) as candidate\n", actualTet->neighborTetrahedra[j]->index, actualTet->neighborTetrahedra[j]->vertices[0]->index, actualTet->neighborTetrahedra[j]->vertices[1]->index, actualTet->neighborTetrahedra[j]->vertices[2]->index, actualTet->neighborTetrahedra[j]->vertices[3]->index);
+
 
 			}//else
-				//fprintf( stderr, "INFO: Neighbor tet %i (%i, %i, %i, %i) doesn't contain new point\n", actualTet->neighborTetrahedra[j]->index, actualTet->neighborTetrahedra[j]->vertices[0]->index, actualTet->neighborTetrahedra[j]->vertices[1]->index, actualTet->neighborTetrahedra[j]->vertices[2]->index, actualTet->neighborTetrahedra[j]->vertices[3]->index);
+
 
 		}
 
@@ -3201,7 +3014,7 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 
 		Tetrahedron *actualTet = tetrahedra[j];
 		if( getDistanceOfPointToCircumsphere( newVoronoiCell, actualTet) < 0. /*getCircumsphereRadius( actualTet)*/){
-			//fprintf( stderr, "INFO: Delete tet %i (%i, %i, %i, %i)!\n", actualTet->index, actualTet->vertices[0]->index, actualTet->vertices[1]->index, actualTet->vertices[2]->index, actualTet->vertices[3]->index);
+
 
 #endif //TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 
@@ -3209,7 +3022,7 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 
 		// reallocation if nessessary 
 		if( fi+NR_TETRAHEDRON_POINTS >= fimax){
-			//fprintf( stderr, "INFO: realloc: %i -> %i!\n", fimax, fimax + FACES_ARRAY_EXTENSION_SIZE);
+
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 			correspondingTetrahedron = (Tetrahedron**) realloc( correspondingTetrahedron, sizeof(Tetrahedron*) * (fimax + FACES_ARRAY_EXTENSION_SIZE));
 			assert(correspondingTetrahedron);
@@ -3231,7 +3044,7 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 
-			//fprintf( stderr, "INFO: save neighbor tet!\n");
+
 			for( l=0; l<actualTet->countNeighborTetrahedra && 
 				!tetrahedronContainsFace( actualTet->neighborTetrahedra[l]->vertices, 
 				faces[fi]); l++);
@@ -3251,7 +3064,7 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 			for( dim=NR_FACE_POINTS; dim>1; dim--){
 				for( l=1; l<dim; l++){
 					// (memory address)
-					//if( faces[fi][l-1] > faces[fi][l])
+
 					// (point index)
 					if( faces[fi][l-1]->index > faces[fi][l]->index)
 					{
@@ -3281,12 +3094,7 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 				
 		count_tetrahedra_deleted++;
 
-		/*for( k=0; k<ti; k++){
-			if( k != tetrahedra[k]->index){
-				fprintf( stderr, "ERROR: index of tet %i wrong: %i ! ti=%i\n", k, tetrahedra[k]->index, ti);
-				exit( 0);
-			}
-		}*/
+
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 
@@ -3306,9 +3114,8 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 
 		// DELETE COMMON FACES FROM LIST
 
-		//fprintf( stderr, "Number of Faces: fi=%d", fi);
+
 		for( j=0; j<fi-1; j++){
-			//fprintf( stderr, "Duplicate Check for Face %d\n", j);
 
 			// check for copy of face j
 			int duplicateFound = 0;
@@ -3317,8 +3124,7 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 				for( k=0; k<DIMENSIONS && faces[j][k] == faces[l][k]; k++); // for all points of the faces
 				if( k==DIMENSIONS && faces[j][k-1] == faces[l][k-1]){
 					duplicateFound++;
-					//fprintf( stderr, "%d. Face Duplicate found!!! Face %d (%d %d %d) and %d (%d %d %d) are equal. \n", duplicateFound, j, faces[j][0], faces[j][1], faces[j][2],  l, faces[l][0], faces[l][1], faces[l][2]);
-					//exit(0);
+
 
 					// remove neighborships
 					for( k=0; k<NR_FACE_POINTS; k++){
@@ -3327,7 +3133,7 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 					}
 					
 					// remove face l
-					//int faceContainsInsertedPoint = 0;
+
 					for( k=0; k<NR_FACE_POINTS; k++){
 						faces[l][k]=faces[fi-1][k];
 					}
@@ -3335,7 +3141,7 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 					correspondingTetrahedron[l]=correspondingTetrahedron[fi-1];
 #endif
 					//if
-					//facesTetrahedronIndex[l]=facesTetrahedronIndex[fi-1];
+
 					fi--;
 					count_common_faces_deleted++;
 					
@@ -3353,15 +3159,13 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 			}		
 			
 		}
-		//fprintf( stderr, "( after deleting common faces: fi=%d\n", fi);
-			
+
 
 
 		// ADD NEW TETRAHEDRA TO LIST
 
 		for( j=0; j<fi; j++){ // for all faces
 			if( ti == timax){
-				//fprintf( stderr, "INFO: realloc: %i -> %i!\n", timax, timax + TETRAHEDRA_ARRAY_EXTENSION_SIZE);
 				tetrahedra = (Tetrahedron **) realloc( tetrahedra, sizeof(Tetrahedron*)*(timax + TETRAHEDRA_ARRAY_EXTENSION_SIZE));
 				if( tetrahedra==NULL){
 					fprintf( stderr, "ERROR reallocating memory for tetrahedron array!\n");
@@ -3372,19 +3176,15 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 				timax += TETRAHEDRA_ARRAY_EXTENSION_SIZE;
 			}
 
-			//tetrahedra[ti] = newTetrahedron();
-			//fprintf( stderr, "Add tetrahedra %d: (", ti);
 			for( k=0; k<NR_FACE_POINTS; k++){ // for all points of face
 				tetrahedra[ti]->vertices[k] = faces[j][k]; // set point of face
-				//fprintf( stderr, "%d ", tetrahedra[ti]->vertices[k]->index);
 				addNeighbor( newVoronoiCell, faces[j][k]);
 				addNeighbor( faces[j][k], newVoronoiCell);
 				addNeighbor( faces[j][k], faces[j][(k+1)%NR_FACE_POINTS]);
 				addNeighbor( faces[j][(k+1)%NR_FACE_POINTS], faces[j][k]);
 			}
 			tetrahedra[ti]->vertices[k] = newVoronoiCell; // set added point
-			//fprintf( stderr, "%d )\n", tetrahedra[ti]->vertices[k]->index);
-			//tetrahedra[ti]->included=1;
+
 			tetrahedra[ti]->countNeighborTetrahedra=0;
 			tetrahedra[ti]->circumsphereInitialized=0;
 			tetrahedra[ti]->index=ti;
@@ -3393,14 +3193,13 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 			ti++;
 
 		}
-		//fprintf( stderr, ", add %d Tetrehedra\n", fi);
+
 
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
            		
 		// DESTINE NEIGHBORSHIPS OF NEW TETRAHEDRA
 		for( j=ti-fi; j<ti; j++){ // for each new tetrahedra j
-		//for( j=ti-fi-1; j<ti-1; j++){ // for each new tetrahedra j
 
            		
 			for( k=j+1; k<ti; k++){ // for all other new tetrahedra k
@@ -3414,7 +3213,6 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
            		
 		for( j=ti-fi-1; j<ti; j++){ // for each new tetrahedra j
 			for( k=0; k<fi; k++){ // for all surrounding tetrahedra k
-				//fprintf( stderr, "INFO: (%i)\n", k);
 				if( correspondingTetrahedron[k]!=NULL && countCommonPointOfTetrahedra( tetrahedra[j], correspondingTetrahedron[k]) == DIMENSIONS){
 					// j and k are neighbors
 					addOrReplaceTetrahedronNeighbor( tetrahedra[j], correspondingTetrahedron[k]);
@@ -3434,9 +3232,6 @@ void insertVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* newVoronoiC
 	voronoiDiagram->voronoiCells[voronoiDiagram->countVoronoiCells] = newVoronoiCell;
 	voronoiDiagram->countVoronoiCells++;
 
-	// FREE MEMORY
-
-	//deleteMatrix( A, DIMENSIONS+1);
 
 #if TRACK_DELAUNAY_REGION_NEIGHBORHOOD
 	free( correspondingTetrahedron);
@@ -3486,7 +3281,6 @@ void initVoronoiCell( VoronoiCell *vc)
 
 VoronoiCell::VoronoiCell()
 {
-	//fprintf( stderr, "Empty Constructor of VoronoiCell was call, but not defined\n");
 	initVoronoiCell( this);
 
 	// neighborhood
@@ -3507,10 +3301,7 @@ VoronoiCell::VoronoiCell()
 
 VoronoiCell::VoronoiCell( double x, double y, double z)
 {
-	//fprintf( stderr, "Constructor of VoronoiCell was called\n");
-	// allocate memory
-	//VoronoiCell* newVoronoiCell = (VoronoiCell*) calloc( sizeof(VoronoiCell), 1);
-	//assert(newVoronoiCell);
+
 	initVoronoiCell( this);
 	
 	// initialize values
@@ -3844,10 +3635,6 @@ VoronoiDiagram* VoronoiDiagram::newVoronoiDiagram( int x, int y, int z){
 	newVoronoiDiagram->maxVoronoiCells = x*y*z;            // Anzahl der Punkte speichern
 	newVoronoiDiagram->voronoiCells = ( VoronoiCell**) malloc ( newVoronoiDiagram->countVoronoiCells * sizeof( VoronoiCell*));
 	assert(	newVoronoiDiagram->voronoiCells);
-	//for( i=0; i<newVoronoiDiagram->countVoronoiCells; i++)
-	//	newVoronoiDiagram->voronoiCells[i] = ( VoronoiCell*) malloc ( sizeof( VoronoiCell));
-
-
 
 	/* Punkte mit Nachbarn in Datei sichern */
 	int i=0;
@@ -3944,11 +3731,6 @@ void checkDelaunayCondition( VoronoiDiagram *voronoiDiagram, VoronoiCell **newCe
 	fprintf( stderr, "... Delaunay Condition is valid :-)\n");
 }
 
-/*
-Hey salut Luna!
-tu as encore reussi hier de prendre le dernier metro? Pour nous c'etait un peu chaud...en plus avec des trajets prolonges de la forme sinusoidaire a cause la biere ;) Je t'ecrit juste pour te proposer a boire quelque chose ce soir/weekend dans le cas que il te tombe le plafond sur la tete dans ta maison model ikea :) Il aura meme Chiara a Paris ce weekend je croit.
-
- */
 
 /*****************************************************************************/
 
@@ -3959,9 +3741,6 @@ void VoronoiDiagram::getConvexHull( double thresholdDistance)
 	this->convexFaces = (VoronoiCell ***)malloc( sizeof(VoronoiCell **) * this->countVoronoiCells);
 	this->countConvexFaces = 0;
 	this->maxConvexFaces = this->countVoronoiCells;
-	//int countConvexFaces;
-	//int maxConvexFaces;
-	//VoronoiCell ***convexFaces;
 
 	Tetrahedron ** innerTets = (Tetrahedron **)malloc( sizeof(Tetrahedron *) * this->countVoronoiCells);
 	int countInnerTets = 0;
@@ -3981,7 +3760,6 @@ void VoronoiDiagram::getConvexHull( double thresholdDistance)
 		int countFramePointsInTet = 0;
 		int tt = 0, ff = 0;
 		for( t=0; t<NR_TETRAHEDRON_POINTS; t++){
-			//fprintf( stderr, "%i ", this->tetrahedra[i]->vertices[t]->index);
 			for( f=0; f<this->countFramePoints && this->framePoints[f]!=this->tetrahedra[i]->vertices[t]; f++);
 			if( f<this->countFramePoints){
 				countFramePointsInTet++;
@@ -4011,9 +3789,7 @@ void VoronoiDiagram::getConvexHull( double thresholdDistance)
 					}
 				}
 			}
-		//}
 
-		//if( countFramePoints==1 && maxDist<thresholdDistance){
 			if( maxDist<thresholdDistance){
 				if( this->countConvexFaces == this->maxConvexFaces){
 					this->maxConvexFaces += FACES_ARRAY_EXTENSION_SIZE;

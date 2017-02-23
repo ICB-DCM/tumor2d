@@ -164,11 +164,11 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 			for(k = 0; k < axe_size[2]; k++)
 				{
 				if(TheCubes[i][j][k] == NULL)
-				{fprintf( stderr, "William said: No agent in this cube [%i,%i,%i]\n",i,j,k);count++;}
+				{count++;}
 				}
 			}
 		}
-	cerr << "William said: Number of errors is "<< count << endl;
+
 	if(count > 0){exit(1);}
 	#endif
 	
@@ -205,14 +205,7 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	//Definition of the diffusion timestep
 	//SPATIAL_UNIT is the unit of the mesh 1 = AgentDiameter*(Pi/6)^(1/3)
-	#if  VERBOSE>= 1
-	cerr << "William said: Spatial Unit = " << SPATIAL_UNIT << endl;
-	cerr << "William said: Oxygen diffusion coefficient = "<< Oxygen_Diffusion << endl;
-	cerr << "William said: Glucose diffusion coefficient = "<< Glucose_Diffusion << endl;
-	cerr << "William said: Growth factors diffusion coefficient = "<< GrowthFactors_Diffusion << endl;
-	cerr << "William said: Lactate factors diffusion coefficient = "<< Lactate_Diffusion << endl;
 
-	#endif
 
 	//insurance
 	if( customTimestep==0.)
@@ -220,9 +213,7 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	else
 		timestep = customTimestep;
 		
-	#if  VERBOSE>= 1
-	fprintf( stderr, "William said: dt = %.18f\n",timestep);
-	#endif
+
 	
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	//don't forget to initialize values because it's an initialization function
@@ -232,33 +223,21 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	//Store usefull values to avoid to compute them at each call
 	
 
-	#if  VERBOSE>= 1
-	cerr << "Nick asked: What the hell is spacestep ( = " << spacestep << ") ?" << endl;
-	cerr << "William answered: F*** Off spacestep is the unit of the mesh and it could not be 1.0, if I want to." << endl;
-	#endif
+
 
 	double alpha_oxygen = Oxygen_Diffusion*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
 	double alpha_glucose = Glucose_Diffusion*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
 	double alpha_growthfactors = GrowthFactors_Diffusion*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
 	double alpha_lactate = Lactate_Diffusion*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
 
-	#if  VERBOSE>= 1
-	cerr << "William said: alpha_oxygen = " << alpha_oxygen << endl;
-	cerr << "William said: alpha_glucose = " << alpha_glucose << endl;
-	cerr << "William said: alpha_growthfactors = " << alpha_growthfactors << endl;
-	cerr << "William said: alpha_lactate = " << alpha_lactate << endl;
-	#endif
+
 	
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	//Sensitivity analysis
 	if(Work_Parameter >= 0.)
 		{
 		ANGIOGENESIS_GROWTHFACTOR_THRESHOLD /= Work_Parameter;
-		#if  VERBOSE>= 1	
-		//cerr << " Work parameter has no effect" << endl;
-		cerr << "Division of the threshold for angiogenesis by " << Work_Parameter << endl;
-		cerr << "New threshold is : " << ANGIOGENESIS_GROWTHFACTOR_THRESHOLD << endl;
-		#endif	
+
 		}
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	

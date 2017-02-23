@@ -138,7 +138,6 @@ class Angiogenesis
 	void GiveMeTheSpeed();
 	void GiveMeTheShearStress();
 
-	void DefineParameters();
 	void VasculatureCreation();
 
 	//debug

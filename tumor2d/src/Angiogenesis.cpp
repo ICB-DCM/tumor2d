@@ -43,78 +43,14 @@ Angiogenesis::~Angiogenesis()
 
 void Angiogenesis::Initialize(AgentList *agentList)
 	{
-	#if VERBOSE >= 1
-	cout << "Angiogenesis said: Start initializing the vasculature" <<endl;
-	#endif
-
 
 	angioAgentList = agentList;
-	//VoronoiCell_Number = agentnumber;
-	//VoronoiCell_List = voronoiCells;
-
-	DefineParameters();
 	VasculatureCreation();
 	GiveMeTheBlood();
 
-	//to get rid of the vessels close to the border.
-	/*
-	int myCounter = 0;
-     	for(int i = nbrSlices - 1; i >= 0; i--)
-		{
-		if(Slice[i]->shear < MINSHEAR)
-			{
-			KillConnection(Slice[i]);
-			myCounter++;	
-			}
-		}
 
-	#if VERBOSE >= 1
-	printf("I deleted %i Slices\n",myCounter);
-	#endif
-
-	GiveMeTheBlood();
-
-	//to get rid of the vessels close to the border second turn.
-	myCounter = 0;
-     	for(int i = nbrSlices - 1; i >= 0; i--)
-		{
-		if(Slice[i]->shear < MINSHEAR)
-			{
-			KillConnection(Slice[i]);
-			myCounter++;	
-			}
-		}
-
-	#if VERBOSE >= 1
-	printf("I deleted %i Slices\n",myCounter);
-	#endif
-	*/
-
-
-
-	#if VERBOSE >= 1
-	cout << "Angiogenesis said: End initializing the vasculature" <<endl;
-	#endif
 	}
 
-
-void Angiogenesis::DefineParameters()
-	{
-
-	#if VERBOSE >= 1
-    	cout << "Thickness of the boundary Layer: " << BoundaryLayer << endl;
-        printf("Slices & Nodes:\n");
-        printf("Initial viscosity:= %f\n",INIT_VISCOSITY);
-        //Pressure stuff
-        printf("Pressure:\n");
-        printf("Pressure is a linear function from a corner to the opposite one\n");
-        printf("Error maximum for the computation:= %f\n",PRESSURE_EPSILON);
-        printf("InletPRESSURE:= %f\n",InletPRESSURE);
-        printf("OutletPRESSURE:= %f\n",OutletPRESSURE);
-        printf("Shear Stress Minimum to collapse: %f\n",MINSHEAR);
-     	#endif
-
-     }
 
 
 void Angiogenesis::KillSlice(Vessel_Unit *X)	
@@ -240,7 +176,6 @@ Vessel_Graph* Angiogenesis::FindMyNode(Agent *A)
 		{
 		if(Node[i]->p_agent == A){return Node[i];}
 		}
-	cout << "Angiogenesis::FindMyNode said ERREUR-----------------------"<<endl;
 	return NULL;
 	}
 
@@ -493,11 +428,6 @@ bool Angiogenesis::DoTheSprout(Vessel_Graph *N, ActionTree *p_list, VoronoiDiagr
 			cerr << "exiting the check.\n";
 			a_test++;
 			}
-
-		cerr << "tab x: " << tab[i]->position[0] << endl;
-		cerr << "tab y: " << tab[i]->position[1] << endl;
-		cerr << "tab z: " << tab[i]->position[2] << endl;
-		cerr << "tab s: " << tab[i]->getState() << endl;
 
 		//OUTPUT ALL THE SYSTEM THERE
 		exit(1);
