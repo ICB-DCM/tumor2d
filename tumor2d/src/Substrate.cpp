@@ -31,13 +31,6 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 #endif
 	{
 
-	#if VERBOSE >= 1
-	cerr << "William said: Verbosity set to " << VERBOSE <<endl;
-	#endif
-
-	#if VERBOSE >= 1
-	cerr << "William said: Here my function is initialized" <<endl;
-	#endif
 		
 
 	#ifdef __myOMP__
@@ -68,9 +61,7 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	
 	int i,j,k; //just indices
 	outputpath = thedirname;
-	#if VERBOSE >= 1
-	cerr << "William said: output directory set to " << outputpath << endl;
-	#endif
+
 
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	//Initialize the value of the initial or boundary conditions for glucose and oxygen
@@ -85,13 +76,6 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	lactate_dirichlet_value = Initial_Lactate;
 
 
-
-	#if VERBOSE >= 1
-	cerr << "William said: Initial oxygen Concentration =  " << Initial_Oxygen << endl;
-	cerr << "William said: Initial glucose Concentration =  " << Initial_Glucose << endl;
-	cerr << "William said: Initial lactate Concentration =  " << Initial_Lactate << endl;
-	cerr << "William said: Initial growth factors Concentration =  " << Initial_Growthfactors << endl;
-	#endif
 	
 	myVoronoiDiagram = voronoiDiagram;
 	voronoiCells =  voronoiDiagram->voronoiCells;
@@ -108,19 +92,7 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	for(i = 0; i < DIMENSIONS; i++)
 		{axe_size[i] = sizeofaxes[i];}
 
-	
-	#ifndef SQUARE_LATTICE
-	//for(i = 0; i < DIMENSIONS; i++)
-	//	{axe_size[i] += 1;}
-		#if VERBOSE >= 1
-		cerr << "William said: This is not a square lattice"<<endl;
-		#endif
-	
-	#else
-		#if VERBOSE >= 1
-		cerr << "William said: This is a square lattice"<<endl;
-		#endif
-	#endif
+
 	
 		
 
@@ -140,23 +112,6 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 
 	BoundaryLayer = 1.;
 
-	#if VERBOSE >= 1
-	cerr << "William said: xsize = " << axe_size[0] <<endl;
-	if(DIMENSIONS > 1)
-	cerr << "William said: ysize = " << axe_size[1] <<endl;
-	if(DIMENSIONS > 2)
-	cerr << "William said: zsize = " << axe_size[2] <<endl;
-
-	cerr << "William said: the total number of Agent is " << voronoiDiagram->countVoronoiCells << ". Do you agree Nick?" <<endl;
-
-	cerr << "William said: xminDOMAIN =  " << xminDOMAIN << endl;
-	cerr << "William said: yminDOMAIN =  " << yminDOMAIN << endl;
-	cerr << "William said: zminDOMAIN =  " << zminDOMAIN << endl;
-
-	cerr << "William said: xmaxDOMAIN =  " << xmaxDOMAIN << endl;
-	cerr << "William said: ymaxDOMAIN =  " << ymaxDOMAIN << endl;
-	cerr << "William said: zmaxDOMAIN =  " << zmaxDOMAIN << endl;
-	#endif
 	//The maximum number of bridges (they won't all be used) is 3*(m*m*m) = 3*agentnumber
 	//it's not 6 because, bridges are shared between two voronoiCells.
 	
@@ -2296,7 +2251,7 @@ void Substrate::Output_QualityControl(double *tab, int factor,char *filename)
 			}
 		myfile.close();
 		}
-	else{cerr << "Unable to open file qualitycontrol-"<< timestep << endl; exit(1);}
+	else{ exit(1);}
 	
 	}
 #endif

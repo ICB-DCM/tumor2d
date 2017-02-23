@@ -45,28 +45,21 @@ void Vessel_Unit::Compute_theta()
 	if(X >= 0 && Y>= 0)
 		{
 		theta = acos(X/l) - Pi/2;
-		if(isnan(theta))
-		cout << "Vessel_Unit::Compute_theta said pb 1" << X <<"," << l << endl;
+
 		}
 	if(X < 0 && Y>= 0)
 		{
 		theta =  - Pi/2 + acos(X/l);
-		if(isnan(theta))
-		cout << "Vessel_Unit::Compute_theta said pb 2" << endl;
 		}
 	
 	if(X >= 0 && Y < 0)
 		{
 		theta = -acos(X/l) - Pi/2;
-		if(isnan(theta))
-		cout << "Vessel_Unit::Compute_theta said pb 3" << endl;
 		}
 
 	if(X < 0 && Y < 0)
 		{
 		theta = -acos(X/l) - Pi/2;
-		if(isnan(theta))
-		cout << "Vessel_Unit::Compute_theta said pb 4" << endl;
 		}	
 
 	}

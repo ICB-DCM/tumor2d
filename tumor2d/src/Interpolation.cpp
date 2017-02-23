@@ -34,7 +34,6 @@ double getHeight( double *p0, double *p1, double *p2, double *p3){
 	// normalize normal vector
 	double length = sqrt( pow(normal[0],2.) + pow(normal[1],2.) + pow(normal[2],2.));
 	if( length==0.){
-		//std::cerr << "WARNING: Couldn't determine normal to plane:" << std::endl << p1 << std::endl << p2 << std::endl << p3 << std::endl;
 		return 0.;
 	}
 	normal[0] /= length;
@@ -43,8 +42,6 @@ double getHeight( double *p0, double *p1, double *p2, double *p3){
 
 	// distance: D = n*(v-pi), i=1,2 or 3
 	return fabs( normal[0]*(p0[0]-p1[0]) + normal[1]*(p0[1]-p1[1]) + normal[2]*(p0[2]-p1[2]));
-//	return fabs(a*v->point().x() + b*v->point().y() + c*v->point().z() + d) /
-//			sqrt( a*a + b*b + c*c);
 }
 
 double getDistance( double *p1, double *p2){

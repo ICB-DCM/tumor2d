@@ -298,12 +298,10 @@ void Angiogenesis::VasculatureCreation() //Initialization of the function
 	Node[i]->CountBranches++;
 	Node[i]->branch = (Vessel_Graph**) realloc(Node[i]->branch, sizeof(Vessel_Graph*) * Node[i]->CountBranches);
 	Node[i]->edge = (Vessel_Unit**) realloc(Node[i]->edge, sizeof(Vessel_Unit*) * Node[i]->CountBranches);
-	//Node[i]->branch[Node[i]->CountBranches - 1] = (Vessel_Graph *) GetCellData(Node[i]->p_voronoiCell->neighborCells[j])->pTissueData;
 	Node[i]->branch[Node[i]->CountBranches - 1] = FindMyNode(GetAgent( GetVoronoiCell( Node[i]->p_agent )->neighborCells[j] ));
 				}
 
-			//if(Node[i]->CountBranches > 4)
-			//{cout << "CountBranches: " << Node[i]->CountBranches << endl;}
+
 			}
 		}
 	for(i = 0; i < nbrNodes; i++)
@@ -373,11 +371,6 @@ bool Angiogenesis::DoTheDilation(Vessel_Graph *N)
 	int i;
 
 
-// 	cerr << endl;
-//      	cerr << "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm\n";
-// 	cerr << "oooooooooooooooooooooooooooooooooooooooooooooooooooooooo\n";
-// 	cerr << "Ok je dilate" << endl;
-
 
      N->radius += INIT_RADIUS/(2.0*PI);
      if( N->radius > MAXRADIUS){N->radius = MAXRADIUS;}
@@ -405,7 +398,7 @@ bool Angiogenesis::DoTheSprout(Vessel_Graph *N, ActionTree *p_list, VoronoiDiagr
 		//Premier vessel rencontré forme la fin du vaisseau.
 
 	int i,j,count;
-	//cout <<endl << "i was here pos 1"<< endl;
+
 	//Keep only the first with no vessels around except the starting point. (prevent loops and bridges size one.)
 	VoronoiCell *first = NULL;
 	double max_vegf = 0.;
@@ -426,7 +419,6 @@ bool Angiogenesis::DoTheSprout(Vessel_Graph *N, ActionTree *p_list, VoronoiDiagr
 	if(first == NULL)
 		return false;
 
-	//cout <<endl<< "i was here pos 2" << endl;
 
 	VoronoiCell*tab[MAXSPROUT+1];
 	tab[0] = GetVoronoiCell( N->p_agent );
@@ -465,25 +457,6 @@ bool Angiogenesis::DoTheSprout(Vessel_Graph *N, ActionTree *p_list, VoronoiDiagr
 	if(vesselend == false)
 		{return false;}
 
-/*
-	if(DoTheSprout_counter == 171)
-		{
-		for(i = 0; i < 5; i++)
-			{
-			cerr << "tab x: " << tab[i]->position[0] << endl;
-			cerr << "tab y: " << tab[i]->position[1] << endl;
-			cerr << "tab z: " << tab[i]->position[2] << endl;
-			cerr << "tab s: " << tab[i]->getState() << endl;
-
-			cerr << endl;
-			}
-		}*/
-
-
-
-	//cout <<endl<< "i was here pos 3" << endl;
-
-	//Update la vasculature
 
 	i = 1;
 	Vessel_Graph *VGtab[MAXSPROUT+1];
@@ -501,14 +474,6 @@ bool Angiogenesis::DoTheSprout(Vessel_Graph *N, ActionTree *p_list, VoronoiDiagr
 		VGtab[m]->radius = INIT_RADIUS;
 		VGtab[m]->InDomain = VGtab[m]->DefineInDomain();
 
-		#if defined ( __myDEBUG__ ) && VERBOSE >= 1
-		cerr << endl << "Do the sprout said: i= "<< i <<endl;
-
-		cerr << "x: " << VGtab[m]->x <<endl;
-		cerr << "y: " << VGtab[m]->y <<endl;	
-		cerr << "z: " << VGtab[m]->z <<endl;
-		cerr << "m: " << m <<endl;	
-		#endif
 
 		m++;
 		i++;
@@ -564,8 +529,7 @@ bool Angiogenesis::DoTheSprout(Vessel_Graph *N, ActionTree *p_list, VoronoiDiagr
 		MakeOneEdge(VGtab[i - 1],VGtab[i]);
 		}
 	
-	//if(m == 1){cerr<<endl<<"Oh pinaise" <<endl;}
-	//if(m == 2){cerr<<endl<<"Oh pinaise" <<endl;}
+
 	 
 	//The end of the sprout
 	VGtab[m-1]->CountBranches = 2;
@@ -587,107 +551,9 @@ bool Angiogenesis::DoTheSprout(Vessel_Graph *N, ActionTree *p_list, VoronoiDiagr
 	#ifdef __myDEBUG__
 	DoTheSprout_counter++;
 
-	/*
-	cerr << endl<< "m = " << m << "; DoTheSprout= " << 	DoTheSprout_counter<<endl;
-	if(DoTheSprout_counter == 172)
-		{
-		cerr << " N->x " << N->x << ", tab" << tab[0]->position[0] << endl;
-		cerr << " N->y " << N->y << ", tab" << tab[0]->position[1] << endl;
-		cerr << " N->z " << N->z << ", tab" << tab[0]->position[2] << endl;
-		cerr << endl;
-		
-		for(i = 0; i < m; i++)
-			{
-			cerr << " VGtab[i]->x " << VGtab[i]->x << ", tab" << tab[i+1]->position[0] << endl;
-			cerr << " VGtab[i]->y " << VGtab[i]->y << ", tab" << tab[i+1]->position[1] << endl;
-			cerr << " VGtab[i]->z " << VGtab[i]->z << ", tab" << tab[i+1]->position[2] << endl;
-			cerr << endl;
-			}
-			
-		cerr << " last->x " << last->x << ", tab" << tab[m+1]->position[0] << endl;
-		cerr << " last->y " << last->y << ", tab" << tab[m+1]->position[1] << endl;
-		cerr << " last->z " << last->z << ", tab" << tab[m+1]->position[2] << endl;
-		cerr << endl;
-		}*/
-
-/*	
-	for(int kk = 0; kk < nbrSlices; kk++)
-		{
-		Slice[kk]->node1;
-		Slice[kk]->node2;
-		Slice[kk]->flow;
-		}
-*/
-// 	int wait = 0;
-// 	cout << "do you like this sprout" << endl;
-// 	cout << "Type 1 and enter to go on" << endl;
-// 	cin >> wait;
-// 	if(wait != 1)
-// 		{
-// 		exit(1);	
-// 		}
-// 	cout << "ok, let's go" << endl;
-
-	//cerr << "Ok je pousse: " << endl;
-
 	#endif
 
 
-	/*
-     if(N->CountBranches < MAXBRANCHES)
-                       {
-                       double A = 0,B = 0,C = 0;
-                          
-if(N->mx < MeshResolution - 2){if(Gf[SwitchGf][N->mx][N->my][N->mz] < Gf[SwitchGf][N->mx + 1][N->my][N->mz]){A += 1;}}
-if(N->mx > 0){if(Gf[SwitchGf][N->mx][N->my][N->mz] < Gf[SwitchGf][N->mx - 1][N->my][N->mz]){A -= 1;}}
-if(N->my < MeshResolution - 2){if(Gf[SwitchGf][N->mx][N->my][N->mz] < Gf[SwitchGf][N->mx][N->my + 1][N->mz]){B += 1;}}
-if(N->my > 0){if(Gf[SwitchGf][N->mx][N->my][N->mz] < Gf[SwitchGf][N->mx][N->my - 1][N->mz]){B -= 1;}}
-if(N->mz < MeshResolution - 2){if(Gf[SwitchGf][N->mx][N->my][N->mz] < Gf[SwitchGf][N->mx][N->my][N->mz + 1]){C += 1;}}
-if(N->mz > 0){if(Gf[SwitchGf][N->mx][N->my][N->mz] < Gf[SwitchGf][N->mx][N->my][N->mz - 1]){C -= 1;}}
-           		
-			//Choose the direction of the growth in fonction of the gradient of the Gf
-			double X1 = N->x + A*vesselstep + 0.5*vesselstep*Gaussian();
-			double Y1 = N->y + B*vesselstep + 0.5*vesselstep*Gaussian();
-			double Z1 = N->z + C*vesselstep + 0.5*vesselstep*Gaussian();
-					
-		       Vessel_Graph *M = NULL;
-			//M = IsTheSpaceFree(X1,Y1,Z1);
-                       if(M == NULL)
-                          {
-                    
-					Vessel_Graph *Newnode = MakeOneNode();
-					
-					//connection with the origin point
-					Newnode->CountBranches = 1;
-					Newnode->branch = (Vessel_Graph**) realloc(Newnode->branch, sizeof(Vessel_Graph*));
-					Newnode->edge = (Vessel_Unit**) realloc(Newnode->edge, sizeof(Vessel_Unit*));
-					Newnode->branch[0]  = N;
-					Newnode->circulation = true;
-					Newnode->x = X1;
-					Newnode->y = Y1;
-					Newnode->z = Z1;
-					N->CountBranches++;
-	                N->branch = (Vessel_Graph**) realloc(N->branch, sizeof(Vessel_Graph*) * N->CountBranches);
-                    	N->edge = (Vessel_Unit**) realloc(N->edge, sizeof(Vessel_Unit*) * N->CountBranches);
-                    	N->branch[N->CountBranches - 1] = Newnode;
-	
-					MakeOneEdge(N,Newnode);
-					//Look for a neighbor in a radius and connect with
-					Newnode->InDomain = Newnode->DefineInDomain();
-	                Newnode->ComputeMeshPosition();
-					
-					return true;
-                         }
-                 else{
-                      if(M->CountBranches < MAXBRANCHES)
-                       {if(ProbaToFusion(dt))
-                       {
-                       //Check if the nodes are already connected
-                       if(!DoWeKnowEachOther(N,M)){
-                       DoTheFusion(N, M);
-                       return true;}}}
-                       }
-          }*/
 
 
      return false;
@@ -771,7 +637,7 @@ bool SurroundingNode(Vessel_Graph * Vg)
 		return false;
 		}
 
-/*	cerr << "Am I surrounded node?" << endl;*/
+
 	return true;
 	}
 
@@ -810,7 +676,6 @@ bool SurroundingSlice(Vessel_Unit * Vu)
 		}
 
 
-// 	cerr << "Am I surrounded slice?" << endl;
 	return true;
 	}
 
@@ -822,9 +687,7 @@ bool Angiogenesis::DoTheVesselCollapse(double dt)
 		{
 		if(Slice[i]->shear < MINSHEAR && ProbaToCollapse(dt) && SurroundingSlice(Slice[i]) )
 			{
-// 			cerr << "oooooooooooooooooooooooooooooooooooooooooooooooooooooooo\n";
-// 			cerr << "oooooooooooooooooooooooooooooooooooooooooooooooooooooooo\n";
-// 			cerr << "Ok je m'effondre" << endl;	
+
 			modification = KillConnection(Slice[i]);	
 			}
 		}
@@ -834,7 +697,7 @@ bool Angiogenesis::DoTheVesselCollapse(double dt)
 
 bool Angiogenesis::Update_Network(double dt, ActionTree *p_list, VoronoiDiagram* voronoiDiagram)
 	{
-	//cerr << endl << "Start Update_Network" << endl;
+
 
 	bool modification = false;
 	
@@ -856,9 +719,7 @@ bool Angiogenesis::Update_Network(double dt, ActionTree *p_list, VoronoiDiagram*
 
 		if(Node[i]->CountBranches == 0)
 			{
-// 			cerr << "()()()()()()()()()()()()()()()(()()())()()()()()\n";
-// 			cerr << "()()()()()()()()()()()()()()()(()()())()()()()()\n";
-// 			cerr << "Ok je suis ko: " <<  Node[i]->p_voronoiCell->index << endl;
+
 			#ifdef __myDEBUG__
 			Ko_counter++;
 			#endif
@@ -885,9 +746,7 @@ bool Angiogenesis::Update_Network(double dt, ActionTree *p_list, VoronoiDiagram*
 					if(ProbaToRegress())
                					{
                					modification = true;
-// 						cerr << "ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùù\n";
-// 						cerr << "ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùù\n";
-// 						cerr << "Ok je regresse: " <<  Node[i]->p_voronoiCell->index << endl;
+
 						#ifdef __myDEBUG__
 						Regression_counter++;
 						#endif
@@ -900,29 +759,7 @@ bool Angiogenesis::Update_Network(double dt, ActionTree *p_list, VoronoiDiagram*
 		}
 
 	modification |= DoTheVesselCollapse(dt);
-	
-	#ifdef __myDEBUG__
 
-	//cerr << "\r\r";
-	cerr << "Nbr of nodes  "<< nbrNodes;
-//	cerr << ", Nbr of slices "<< nbrSlices;
-	cerr << ", KillSlice(): " << KillSlice_counter;
-	cerr << ", KillNode(): " << KillNode_counter;
-	cerr << ", MakeOneEdge(): " << MakeOneEdge_counter;
-//	cerr << ", DoTheDilation(): " << DoTheDilation_counter;
-	cerr << ", KillConnection(): " << KillConnection_counter;
-//	cerr << ", Ko(): " << Ko_counter;
-// 	cerr << ", Regression(): " << Regression_counter;
-//	cerr << ", DoTheSprout(): " << DoTheSprout_counter;
-	//cerr << "\t\t";
-	/*
-	if(DoTheSprout_counter == 2)
-		{
-		cerr << "ohohohohohohoho " <<endl<<endl<<endl;
-		exit(1);
-		}*/
-	
-	#endif	
 	return modification;
 	}
 	
@@ -1039,5 +876,4 @@ void Angiogenesis::Update_Graph(Agent *agentmoved)
 			KillConnection( N->edge[i] );
 			}
 		}
-	cerr << " I was Shifted, did I provoque a segmentation fault? " << endl;
 }

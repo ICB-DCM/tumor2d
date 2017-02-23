@@ -69,7 +69,6 @@ void Vessel_Graph::PressureComputation()
 		pressure = ( OutletPRESSURE - InletPRESSURE ) * ( d - d_min) / ( d_max - d_min ) + InletPRESSURE;
 		}
 
-	//cout << "This is the pressure : in ("<< x << ", " << y << ", " << z << ") = " << pressure << endl;
 	}
 
 int Vessel_Graph::FindBranchNumber(Vessel_Graph *b)
