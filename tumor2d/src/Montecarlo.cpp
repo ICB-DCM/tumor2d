@@ -2941,9 +2941,6 @@ void performFreeMigration(VoronoiDiagram *voronoiDiagram, AgentList *agentArray,
 	if (selected_action->originalCell->state == COMPARTMENT) {
 		int countFreeNeighbors =
 				selected_action->originalCell->countFreeNeighbors();
-		/*for( int i=0; i<centralCell->countNeighborCells; i++)
-		 if(centralCell->neighborCells[i]->isFree())
-		 countFreeNeighbors++;*/
 
 		if (countFreeNeighbors == 0) {
 			fprintf(
