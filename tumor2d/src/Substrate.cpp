@@ -336,7 +336,6 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	
 	OutputParameters();
 
-	BigOutput_number = 0;
 	#endif
 
 	#if VERBOSE >= 1
@@ -410,7 +409,7 @@ void Substrate::Initialization(int mode)
 	outputnumber = 0;
 
 	//To have the big output only for the first simulation, comment the line below
-	//BigOutput_number = 0;
+
 
 
 	#endif
@@ -504,141 +503,6 @@ void Substrate::Initialize_Lactate()
 		voronoiCells[i]->lactate = Initial_Lactate;
 		}
 	}
-
-
-
-int Substrate::Update_All(int mode, double duration, ActionTree *p_list)
-	{
-	
-	#ifdef QUALITY_CONTROL
-	QualityControl(mode);
-	exit(1);
-	#endif
-
-	//TIME DIVISION
-	TotalSimulationTime += duration;
-	TimeSum += duration;
-	int iterations = (int)(TimeSum/(timestep));
-	TimeSum -= timestep*iterations;
-	#if  VERBOSE>= 3
-	printf("William said: number of iterations = %i\n",iterations);
-	#endif
-
-#ifdef __TestSpeed__
-for(int test = 0; test < 1000; test++) ///*Speed test*/
-	{
-	timer.Start();
-#endif
-
-	for(int i = 0; i < iterations; i++)
-		{
-		
-		if( mode > 1)
-			{
-#ifdef __myOMP__
-#pragma omp parallel
-	{
-	 #pragma omp sections nowait
-		{
-		#pragma omp section
-			{
-
-#endif
-
-
-			
-			#ifndef __NoLimitation__
-			Oxygen.GiveMe(&Oxygen);
-			#endif
-
-
-			#ifndef __NoLimitation__
-			Glucose.GiveMe(&Glucose);
-			#endif
-
-#ifdef __myOMP__
-}/* end of this section */
-#pragma omp section
-	{
-
-
-#endif
-			//Growth factors
-			if( mode == 5 )
-				{
-
-				Growthfactors.GiveMe(&Growthfactors);
-
-				}
-
-
-#ifdef __myOMP__
-}  /* end of this section */
-}  /* end of sections */
-}  /* end of parallel section */
-#endif			
-			}
-		
-		/*
-		//VEGF
-		if( mode == 5 )
-			{
-			}
-		*/
-
-
-		#ifdef __With_Outputs__
-		//if(TotalSimulationTime > time_output_frequency*outputnumber){outputnumber = Output(outputnumber);}
-		#endif
-
-		} 
-
-	if(mode == 5 && iterations > 0)
-		{
-		Produce_Growthfactors();
-		if(vasculature.Update_Network(timestep*iterations, p_list, myVoronoiDiagram))	
-			{
-			vasculature.GiveMeTheBlood();
-			Refill_Oxygen(mode);
-			Refill_Glucose(mode);
-			}
-		}
-
-	#ifdef __With_Outputs__
-	if(iterations > 0)
-		{
-		int living_cells = getdata_angiogenesis(5);
-		int vessel_cells = getdata_angiogenesis(4);
-		double radius_of_gyration = getdata(3);
-		myRecord.addvalue(TotalSimulationTime, vessel_cells , living_cells, radius_of_gyration );
-		//SimpleOutput();
-		if( (int)(TotalSimulationTime / 50.) > BigOutput_number)
-			{BigOutput(TotalSimulationTime);BigOutput_number++;}
-		}
-	#endif
-
-#ifdef __TestSpeed__
-	timer.End();
-
-
-}/*end of the speed test*/
-#endif
-	#ifdef __WithGUI__
-	int i = 0;
-	while(pause)
-		{
-
-		i++;
-		gui->glWidget->computation_is_paused = true;
-		}
-	gui->glWidget->computation_is_paused = false;
-	#endif
-	
-
-	
-	return iterations;
-	}
-
 
 
 
@@ -942,69 +806,6 @@ int Substrate::SimpleOutput()
 	return 0;
 	}
 
-int Substrate::BigOutput(double current_time)
-	{
-	//FILE *stream;
-	char filename[100];
-	sprintf(filename,"%s/thebigone%i.txt", outputpath, BigOutput_number);
-
-
-	
-	int total_number_of_lines = 0;
-
-	for(int i = 0; i < myVoronoiDiagram->countVoronoiCells; i++)
-			{
-			if(voronoiCells[i]->getState() != FREE && voronoiCells[i]->getState() != VESSEL)
-				{
-				total_number_of_lines++;
-				}
-			}
-
-	std::ofstream myfile(filename);		
-	if (myfile.is_open())
-		{
-		myfile <<"#time:"<<current_time<<endl;
-		myfile <<"#X:" << xmaxDOMAIN <<" Y:"<< ymaxDOMAIN << " Z:"<< zmaxDOMAIN << endl;
-		myfile <<"#x:" << xminDOMAIN <<" y:"<< yminDOMAIN << " z:"<< zminDOMAIN << endl;
-		myfile <<"#agentnumber:" << total_number_of_lines + vasculature.nbrSlices << endl;
-
-	
-
-		for(int i = 0; i < myVoronoiDiagram->countVoronoiCells; i++)
-			{
-			if(voronoiCells[i]->getState() != FREE && voronoiCells[i]->getState() != VESSEL)
-				{
-				myfile << voronoiCells[i]->position[0] << "\t";
-				myfile << voronoiCells[i]->position[1] << "\t";
-				myfile << voronoiCells[i]->position[2] << "\t";
-				myfile << voronoiCells[i]->getState()  << "\n";
-				}
-			}
-
-		for(int i = 0; i < vasculature.nbrSlices; i++)
-			{
-			myfile << vasculature.Slice[i]->node1->x << "\t";
-			myfile << vasculature.Slice[i]->node1->y << "\t";
-			myfile << vasculature.Slice[i]->node1->z << "\t";
-			myfile << VESSEL << "\t";
-			myfile << vasculature.Slice[i]->node1->pressure + vasculature.Slice[i]->node2->pressure << "\t";
-
-			myfile << vasculature.Slice[i]->node2->x << "\t";
-			myfile << vasculature.Slice[i]->node2->y << "\t";
-			myfile << vasculature.Slice[i]->node2->z << "\t";
-			myfile << vasculature.Slice[i]->theta<< "\t";
-			myfile << vasculature.Slice[i]->phi << "\t";
-			myfile << vasculature.Slice[i]->length << "\t";
-			myfile << vasculature.Slice[i]->node1->radius << "\t";
-			myfile << vasculature.Slice[i]->node2->radius << "\n";
-			}
-
-		myfile.close();
-		}
-	else{exit(1);}
-	
-	return 0;
-	}
 
 int Substrate::Output(int Number)
 	{

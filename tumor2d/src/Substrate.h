@@ -147,7 +147,6 @@ class Substrate
 	~Substrate();
 	void Initialization(int mode);
 	void RebuildMatrix();
-	int Update_All(int mode, double duration, ActionTree *p_list);
 	double getdata(int WhatData);
 
 	int axe_size[3];
@@ -226,9 +225,7 @@ class Substrate
 	int SimpleOutput();
 	
 	int getdata_angiogenesis(int WhatData);
-	
-	int BigOutput_number;
-	int BigOutput(double current_time);
+
 
 #endif
 
