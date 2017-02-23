@@ -224,7 +224,6 @@ class Substrate
 	int Output(int Number);
 	void MakeGnuplotScript(int NumberOfFiles);
 	int SimpleOutput();
-	int OutputParameters();
 	
 	int getdata_angiogenesis(int WhatData);
 	

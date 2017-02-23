@@ -268,9 +268,7 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	if(type == 3){aboutborders = FREEAREBORDER;}
 	if(type == 4 || type == 5){aboutborders = VESSELAREBORDER;}
 
-	#if  VERBOSE>= 1
-	cerr << "*** Oxygen ***" << endl;
-	#endif
+
 	Oxygen.SetMethod(CONSUMPTION_DIFFUSION,aboutborders,bc);
 	Oxygen.SetMemory();
 	for(i = 0; i < axe_size[0]; i++){for(j = 0; j < axe_size[1]; j++){for(k = 0; k < axe_size[2]; k++){
@@ -280,9 +278,7 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 
 	
 
-	#if  VERBOSE>= 1
-	cerr << "*** Glucose ***" << endl;
-	#endif
+
 	Glucose.SetMethod(CONSUMPTION_DIFFUSION,aboutborders,bc);
 	Glucose.SetMemory();
 	for(i = 0; i < axe_size[0]; i++){for(j = 0; j < axe_size[1]; j++){for(k = 0; k < axe_size[2]; k++){
@@ -292,9 +288,6 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 
 
 
-	#if  VERBOSE>= 1
-	cerr << "*** Lactate *** " << endl;
-	#endif
 	Lactate.SetMethod(PURE_DIFFUSION,BORDERAREBORDER,bc);
 	Lactate.SetMemory();
 	for(i = 0; i < axe_size[0]; i++){for(j = 0; j < axe_size[1]; j++){for(k = 0; k < axe_size[2]; k++){
@@ -302,10 +295,6 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	Lactate.SetMatrix(alpha_lactate);
 
 
-
-	#if  VERBOSE>= 1
-	cerr << "*** Growth Factors ***" << endl;
-	#endif
 	Growthfactors.SetMethod(PURE_DIFFUSION,NECROTICAREBORDER,"Dirichlet");
 	Growthfactors.SetMemory();	
 	for(i = 0; i < axe_size[0]; i++){for(j = 0; j < axe_size[1]; j++){for(k = 0; k < axe_size[2]; k++){
@@ -313,12 +302,8 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 	Growthfactors.SetMatrix(alpha_growthfactors);
 
 
-	#if VERBOSE >= 1
-	cerr << "Error < O(dx*dx + dy*dy + dz*dz + dt) = " << spacestep*spacestep*3 + timestep << endl;
-	#endif
-
 	//Done in the initialization function
-	//if(type == 4 || type == 5){vasculature.Initialize(voronoiCells,agentnumber);}
+
 	
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	//Initialization of the openGL visualization in Qt.
@@ -370,34 +355,19 @@ void Substrate::RebuildMatrix()
 	double alpha_growthfactors = GrowthFactors_Diffusion*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
 	double alpha_lactate = Lactate_Diffusion*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
 
-	#if  VERBOSE>= 1
-	cerr << "William said: alpha_oxygen = " << alpha_oxygen << endl;
-	cerr << "William said: alpha_glucose = " << alpha_glucose << endl;
-	cerr << "William said: alpha_growthfactors = " << alpha_growthfactors << endl;
-	cerr << "William said: alpha_lactate = " << alpha_lactate << endl;
-	#endif
+
 	
 	Molecule::ChangeTimeStep(timestep);
-	#if  VERBOSE>= 1
-	cerr << "Substrate said: rebuild oxygen\n";
-	#endif
+
 	Oxygen.SetMatrix(alpha_oxygen);
-	#if  VERBOSE>= 1
-	cerr << "Substrate said: rebuild glucose\n";
-	#endif
+
 	Glucose.SetMatrix(alpha_glucose);
-	#if  VERBOSE>= 1
-	cerr << "Substrate said: rebuild lactate\n";
-	#endif
+
 	Lactate.SetMatrix(alpha_lactate);
-	#if  VERBOSE>= 1
-	cerr << "Substrate said: rebuild growth factors\n";
-	#endif
+
 	Growthfactors.SetMatrix(alpha_growthfactors);
 	
-	#if  VERBOSE>= 1
-	cerr << "William said: matix rebuilt. \n";
-	#endif
+
 	}
 
 Substrate::~Substrate()
@@ -412,11 +382,7 @@ Substrate::~Substrate()
 	if(outputnumber < max_output_number){max_output_number = outputnumber;} 
 	MakeGnuplotScript(max_output_number);
 	#endif
-	#if VERBOSE >= 1
-	cerr << timer.Mean() << " seconds/computation ";
-	cerr << timer.Total() ;
-	cerr << " seconds in "<< timer.calls << " calls." << endl;
-	#endif
+
 
 
 	
@@ -466,9 +432,7 @@ void Substrate::Initialization(int mode)
 	//To have the big output only for the first simulation, comment the line below
 	//BigOutput_number = 0;
 
-		#if VERBOSE >= 1
-		cerr << endl << "Start Simulation number: " << simulation_number << endl;
-		#endif
+
 	#endif
 
 	#ifdef __WithGUI__
@@ -598,22 +562,15 @@ for(int test = 0; test < 1000; test++) ///*Speed test*/
 		{
 		#pragma omp section
 			{
-			#if  VERBOSE>= 1
-			cerr << "openMP thread id = " << omp_get_thread_num() << endl;
-			#endif
+
 #endif
 
-			#if  VERBOSE>= 4
-			cerr << "William said: Update Oxygen " << i << "/" << iterations << " duration=" << duration << endl;
-			#endif
+
 			
 			#ifndef __NoLimitation__
 			Oxygen.GiveMe(&Oxygen);
 			#endif
 
-			#if  VERBOSE>= 4
-			cerr << "William said: Update Glucose " << i << "/" << iterations << " duration=" << duration << endl;
-			#endif
 
 			#ifndef __NoLimitation__
 			Glucose.GiveMe(&Glucose);
@@ -625,25 +582,15 @@ for(int test = 0; test < 1000; test++) ///*Speed test*/
 	{
 
 
-	#if  VERBOSE>= 1
-	cerr << "openMP thread id = " << omp_get_thread_num() << endl;
-	#endif
 #endif
 			//Growth factors
 			if( mode == 5 )
 				{
-				#if  VERBOSE>= 4
-				cerr << "William said: Update Growth factors " << i << "/" << iterations << " duration=" << duration << endl;
-				#endif
+
 				Growthfactors.GiveMe(&Growthfactors);
 
 				}
-			/*
-			//Lactate
-			#if  VERBOSE>= 4
-			cerr << "William said: Update Lactate " << i << "/" << iterations << " duration=" << duration << endl;
-			#endif
-			Produce_Lactate();*/
+
 
 #ifdef __myOMP__
 }  /* end of this section */
@@ -842,10 +789,7 @@ void Substrate::SwitchOnVisualization()
 	//Because of the threads, we have sometimes to wait
 	while(!gui_is_defined)
 		{
-		#if  VERBOSE>= 1
-		cerr << "William said:Waiting for the visualiation ..." << endl;
-		#endif
-		cerr << "William said:Waiting for the visualiation ..." << endl;
+
 		for(int i = 0;i < 1000000;i++){}
 		}
 	gui->glWidget->OpenVisualization(gui);
@@ -1002,28 +946,7 @@ int Substrate::getdata_angiogenesis(int WhatData)
 
 	return data;
 	}
-int Substrate::OutputParameters()
-	{
-	char filename[100];
-	sprintf(filename,"%s/angiogenesis.txt",outputpath);
 
-	std::ofstream myfile(filename);		
-	if (myfile.is_open())
-		{
-		myfile << "#GROWTHFACTOR_THRESHOLD = " << ANGIOGENESIS_GROWTHFACTOR_THRESHOLD << endl;
-		myfile << "#Oxygen_Diffusion" << Oxygen_Diffusion << endl;
-		myfile << "#Glucose_Diffusion" << Glucose_Diffusion << endl;
-		myfile << "#GrowthFactors_Diffusion" << GrowthFactors_Diffusion << endl;
-		myfile << "#MAXSPROUT" << MAXSPROUT << endl;
-		myfile << "#InletPRESSURE" << InletPRESSURE << endl;
-		myfile << "#OutletPRESSURE" << OutletPRESSURE << endl;
-
-		myfile.close();
-		}
-	else{cerr << "Unable to open file in Substrate::Output Parameters"<< endl; exit(1);}
-	
-	return 0;
-	}
 
 int Substrate::SimpleOutput()
 	{
