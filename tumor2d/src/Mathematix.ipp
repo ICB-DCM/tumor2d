@@ -8,15 +8,7 @@
 #include <stdio.h>
 #include <math.h>
 
-/*template <class T> void printVector( T *v, int N, const char* name, const char* format)
-{
-	fprintf( stderr, "%s = [\n", name);
-	for( int i=0; i<N; i++)
-	{
-		fprintf( stderr, format, v[i]);
-	}
-	fprintf( stderr, "\n]\n");
-}*/
+
 
 template <class T> T vectorNorm( T *v, int N, int exponent)
 {

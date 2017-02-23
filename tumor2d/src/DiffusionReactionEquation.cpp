@@ -76,9 +76,10 @@ void DiffusionReactionEquation::update() {
 			// calculate max error / norm L^inf
 			max_err = 0;
 			for(int i=0; i<this->lattice->countVoronoiCells; i++)
-				if( fabs( temp[i] - x[i]) > max_err) max_err = fabs( temp[i] - x[i]);
+				if( fabs( temp[i] - x[i]) > max_err){
+				     max_err = fabs( temp[i] - x[i]);
+				}
 
-			fprintf( stderr, "%i it(s), max_err = %e\n", it, max_err);
 
 		}while( it > 1 && it_total <= maxIterations && max_err > maxStepSize);
 	}

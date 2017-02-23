@@ -86,7 +86,6 @@ void matrixProduct( float **A, float **B, float **C, int n, int m, int p);
 void matrixProduct( double **A, double **B, double **C, int n, int m, int p);
 void matrixScale( double **Ai, double **Ao, double c, int n, int m);
 
-void printVector( double *v, int N);
 
 
 

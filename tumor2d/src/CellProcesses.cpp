@@ -47,11 +47,7 @@ double Action::getActualRate()
 #if USE_VESSEL_GROWTH
 
 			case VESSEL_GROWTH:
-			/*if( GrosseFactors_Concentration[this->originalCell->mx][this->originalCell->my][this->originalCell->mz] > GROWTHFACTOR_THRESHOLD){
-				newRate = VesselGrowthRate;
-			}else{
-				newRate = 0.;
-			}*/
+
 			if( this->originalCell->growthfactors > GROWTHFACTOR_THRESHOLD){
 				newRate = VesselGrowthRate;
 			}else{
@@ -66,11 +62,7 @@ double Action::getActualRate()
 			case DIVISION:		
 			newRate = GetDivisionRate( this->originalCell) * (M_div + M_gro + 2.);
 			
-			//if( this->originalCell->state == COMPARTMENT)
-			//newRate *= this->originalCell->dividingTumorCellCount;
-			//fprintf( stderr, "rate: %lf\n", newRate);
-			//newRate = GetGrowthRate( this->originalCell) * double(M_div + 1) * (SUBCELLULAR_COMPONENTS + 1.);
-			//newRate *= double(M_div + 1);
+
 			break;
 
 #endif //USE_DIVISION
@@ -80,10 +72,7 @@ double Action::getActualRate()
 
 			case GROWTH:		
 			newRate = GetGrowthRate( this->originalCell) * (M_div + M_gro + 2.);
-			
-			//if( this->originalCell->state == COMPARTMENT)
-			//newRate *= this->originalCell->growingTumorCellCount;
-			//newRate *= double(M_div + 1);
+
 			break;
 
 #endif //USE_DIVISION
@@ -120,53 +109,12 @@ double Action::getActualRate()
 			// END NOTOX: GRAVITY
 			if( this->originalCell->state == COMPARTMENT)
 				newRate *= (double)this->originalCell->growingTumorCellCount / pow(this->originalCell->maxCellCount, 2./3.);
-			//else
-			//newRate = 0.;
-			//newRate = CellMigrationRate / GetVoronoiCell(this->originalCell)->countFreeNeighborCells;
 
-/*	#elif TYPE_OF_MIGRATION == BORDERDIFFUSION
-			int count_of_diff = 0;
-			for( int i = 0; i < this->originalCell->countNeighborCells; i++){
-				if( this->originalCell->neighborCells[i]->getState() == FREE && 
-				    this->originalCell->neighborCells[i]->countFreeNeighborCells < this->originalCell->neighborCells[i]->countNeighborCells-1)
-					count_of_diff++;
-			}
-
-			if( this->destinationCell->countFreeNeighborCells < this->destinationCell->countNeighborCells-1){
-				//printf("Diffusion von %d nach %d freie Nachbarn: %d Nachbarn-1: %d\n",start_cell->nr,end_cell->nr,end_cell->free_neighbors,end_cell->nrn);
-				newRate =  CellMigrationRate / count_of_diff;
-			}else{
-				newRate = 0.;
-			}
-	#elif TYPE_OF_MIGRATION == ENERGYMINIMIZING
-	#elif TYPE_OF_MIGRATION == ENERGY*/
 	#else
 			newRate = 0.;
 	#endif
 	
-  // zweite Möglichkeit, Diffusion am Rand 
-/*  if(Type_of_diffusion == BORDERDIFFUSION){
-    if((end_cell->free_neighbors) < (end_cell->nrn-1)){
-      //printf("Diffusion von %d nach %d freie Nachbarn: %d Nachbarn-1: %d\n",start_cell->nr,end_cell->nr,end_cell->free_neighbors,end_cell->nrn);
-      elem->prob_of_action =  Prob_of_diff/count_of_diff;
-    }else{
-      elem->prob_of_action =  0.0;
-    }
-  }
-  // dritte Möglichkeit, Energiemininum
-  if(Type_of_diffusion == ENERGYMINIMIZING){
-    //elem->prob_of_action = Prob_of_diff*exp(-(end_cell->free_neighbors - start_cell->free_neighbors));
-    elem->prob_of_action = exp_lookup_table[end_cell->free_neighbors][start_cell->free_neighbors];
-    //fprintf(stdout, "%lf\n", exp_lookup_table[end_cell->free_neighbors][start_cell->free_neighbors]);
-    //if(exp_lookup_table[end_cell->free_neighbors][start_cell->free_neighbors] != Prob_of_diff*exp(-(end_cell->free_neighbors - start_cell->free_neighbors))) exit(1);
-  }
 
-  // vierte Möglichkeit, auch energie 
-  if(Type_of_diffusion == ENERGY){
-    elem->prob_of_action = nu*exp(-(E_0+(start_cell->nrn-start_cell->free_neighbors)*E_b));
-  }
-
-			newRate = CellMigrationRate;*/
 			break;
 
 #endif //USE_MIGRATION
@@ -216,26 +164,7 @@ double Action::actualizeRate()
 	return this->rate;
 }
 
-/*void    ActionTree::actualizeRate( Action* action)
-{
-	double rateDiff = this->getActualRate();
-	rateDiff -= action->rate;
 
-	action->rate += rateDiff;
-	
-	Action *actualAction = action;
-	Action *lastAction = action;
-	while( action->top != NULL){ // while not root element
-		actualAction = actualAction->top;
-		
-		if( actualAction->prev == lastAction){
-			actualAction->rateSumPrev += rateDiff;
-		}else{
-			actualAction->rateSumNext += rateDiff;
-		}
-	}
-	this->rateSum += rateDiff;
-}*/
 
 Action* ActionTree::selectAction( double *time)
 {
@@ -249,7 +178,7 @@ Action* ActionTree::selectAction( double *time)
 	double temp_rand = myRand();
 	random = temp_rand * this->rateSum;
 
-	//fprintf( stderr, "size = %i, rateSum = %lf, random = %lf\n", this->size, this->rateSum, random);
+
 
 	// sum probabilities until randomly choosen part is reached
 	sum = 0.;
@@ -257,13 +186,13 @@ Action* ActionTree::selectAction( double *time)
 		//fprintf( stderr, "sum = %lf, random = %lf -> p_elem->rateSumPrev = %lf, p_elem->rateSumNext = %lf, p_elem->rate = %lf => %lf\n", sum, random, p_elem->rateSumPrev, p_elem->rateSumNext, p_elem->rate, p_elem->rateSumPrev+p_elem->rateSumNext+p_elem->rate);
 		if( p_elem->sizePrev && random <= p_elem->rateSumPrev + sum){
 			// take left branch
-			//fprintf( stderr, "-> take left branch\n");
+
 			p_elem = p_elem->prev;
 		}else{
 			sum += p_elem->rateSumPrev;
 			if( p_elem->sizeNext && random <= p_elem->rateSumNext + sum){
 				// take right branch
-				//fprintf( stderr, "-> take right branch\n");
+
 				p_elem = p_elem->next;
 			}else{
 				sum += p_elem->rateSumNext;
@@ -273,21 +202,9 @@ Action* ActionTree::selectAction( double *time)
 					// calculate passed time
 					random = myRand();
 					*time += -log(1 - random) / this->rateSum;
-					//*time += 1. / this->rateSum;
+
 				
-					
-					/*int its = 10000;
-					double min = 0.000001;
-					double max = 1.;
-					double dist = max - min;
-					double stepsize = dist / (double)(its-1);
-					double av = 0.;
-					for(int i=0; i<its; i++){
-						av += -log(min+i*stepsize);
-					}
-					av /= (double)its;
-					printf( "%lf %lf %lf %lf\n", log(0.), log(1.), exp(1.), av); exit( 0);
-					*/
+
 					return p_elem;
 					
 				}else{
@@ -301,9 +218,6 @@ Action* ActionTree::selectAction( double *time)
 	}while( p_elem!=NULL);
 	printf("Something is going wrong in selectAction()\n");
 	printf("INFO: actionList->sum_of_prob=%lf, random=%lf (%lf), sum=%lf\n", this->rateSum, random, temp_rand, sum);
-	//printActionList( actionList);
-	//time_temp = difftime(time(NULL),t);
-	//Sim_time += time_temp;
 	exit(0);
 
 }
@@ -314,15 +228,11 @@ void    ActionTree::actualizeAllRates( VoronoiDiagram* voronoiDiagram)
 	if( this->size > 0){
 
 		Action *actionStack[ this->size], *actualAction;
-		//double  rateSumStack[ this->size];
-		//double  rateDifferenceStack[ this->size];
 		int stackSize = 0, lastStackSize = 0;
 		int i;
 		
 		for( i=0; i<this->size; i++){
 			actionStack[ i] = NULL;
-			//rateDifferenceStack[i] = 0.;
-			//rateSumStack[i] = 0.;
 		}
 		
 		actionStack[stackSize++] = action;
@@ -341,45 +251,32 @@ void    ActionTree::actualizeAllRates( VoronoiDiagram* voronoiDiagram)
 			// TEST
 			
 			if( lastStackSize < stackSize){
-				// climbing tree -> prev
 				lastStackSize = stackSize;
 				if( actualAction->sizePrev > 0){
-					//rateDifferenceStack[stackSize] = 0.;
 					actionStack[stackSize++] = actualAction->prev;
-					//fprintf( stderr, "CLIMBING LEFT: stackSize = %i\n", stackSize);
-				}//else
-					//fprintf( stderr, "RESTING: stackSize = %i\n", stackSize);
-				
+				}
+
 			}else{
 				lastStackSize = stackSize;
-				// climb tree -> next
 				if( actualAction->sizeNext > 0 &&  actualAction->next != actionStack[stackSize]){
 					//rateDifferenceStack[stackSize] = 0.;
 					actionStack[stackSize++] = actualAction->next;
-					//fprintf( stderr, "CLIMBING RIGHT: stackSize = %i\n", stackSize);
 				}
 				// decend tree
 				else{
 					// adapt own rate
-					//double oldRate = actualAction->rate;
-					//rateDifferenceStack[stackSize-1] += (actualAction->actualizeRate() - oldRate);
 					actualAction->actualizeRate();
 					
 					stackSize--;
-					//fprintf( stderr, "DECENDING: stackSize = %i, from node %i\n", stackSize, actualAction->type);
-					
+
 					// adapt parent node
 					if( stackSize>0){
 						if( actionStack[stackSize-1]->prev == actualAction)
 							actionStack[stackSize-1]->rateSumPrev = actionStack[stackSize]->rateSumPrev + actionStack[stackSize]->rateSumNext + actionStack[stackSize]->rate;
-							//actionStack[stackSize-1]->rateSumPrev += rateDifferenceStack[stackSize];
 						else
 							actionStack[stackSize-1]->rateSumNext = actionStack[stackSize]->rateSumPrev + actionStack[stackSize]->rateSumNext + actionStack[stackSize]->rate;
-							//actionStack[stackSize-1]->rateSumNext += rateDifferenceStack[stackSize];
-						
-						//rateDifferenceStack[stackSize-1] += rateDifferenceStack[stackSize];
+
 					}else{
-						//this->rateSum += rateDifferenceStack[stackSize];
 						this->rateSum = actionStack[stackSize]->rateSumPrev + actionStack[stackSize]->rateSumNext + actionStack[stackSize]->rate;
 					}
 					
@@ -393,7 +290,6 @@ void ActionTree::destroyActionTree()
 {
 	if( this->size > 0){
 
-		//Action *actionStack[ this->size], *actualAction;
 		Action **actionStack = (Action**) malloc( this->size*sizeof(Action*)), *actualAction;
 		int stackSize = 0, lastStackSize = 0;
 		int i;
@@ -411,15 +307,12 @@ void ActionTree::destroyActionTree()
 				lastStackSize = stackSize;
 				if( actualAction->sizePrev > 0){
 					actionStack[stackSize++] = actualAction->prev;
-					//fprintf( stderr, "CLIMBING LEFT: stackSize = %i\n", stackSize);
-				}//else
-					//fprintf( stderr, "RESTING: stackSize = %i\n", stackSize);
+				}
 			}else{
 				lastStackSize = stackSize;
 				// climb tree -> next
 				if( actualAction->sizeNext > 0 &&  actualAction->next != actionStack[stackSize]){
 					actionStack[stackSize++] = actualAction->next;
-					//fprintf( stderr, "CLIMBING RIGHT: stackSize = %i\n", stackSize);
 				}
 				// decend tree
 				else{
@@ -514,9 +407,7 @@ Action* newAction( int type, double rate){
 	actions->next	= NULL;
 	actions->prev	= NULL;
 
-	// action tree
-	//actions->next	= NULL;
-	//actions->prev	= NULL;
+
 #if USE_ACTION_TREE
 	actions->top	= NULL;    
 	
@@ -533,37 +424,8 @@ Action* newAction( int type, double rate){
 
 
 
-//void ActionTree::destroyActionTree(){
-
-        //int i;
-        //Action *probElement, *nextProbElement;
-
-        //probElement = actionList->head;
-
-        /*for(i=0; i<actionList->length; i++){
-                nextProbElement = probElement->next;
-                free( probElement);
-                probElement = nextProbElement;
-        }*/
-
-        //free( actionList);
-//}
-/*****************************************************************************/
-
-
-
 void destroyActionList( ActionList* actionList){
 
-        //int i;
-        //Action *probElement, *nextProbElement;
-
-        //probElement = actionList->head;
-
-        /*for(i=0; i<actionList->length; i++){
-                nextProbElement = probElement->next;
-                free( probElement);
-                probElement = nextProbElement;
-        }*/
 
         free( actionList);
 }
@@ -574,15 +436,11 @@ void destroyActionList( ActionList* actionList){
 
 void initCellActions( Agent* cell){
 
-	//fprintf( stderr, "initCellActions();\n");
 	int countInitializedActions = 0;
 
 	if( cell->actionsInitialized == FALSE){
-//		cell->actions = (Action **) calloc( sizeof( Action*), cell->countNeighborCells+4);
 		cell->actions = (Action **) calloc( sizeof( Action*), USE_DIVISION + USE_NECROSIS + USE_LYSIS + USE_GROWTH + USE_MIGRATION
-//#if USE_MIGRATION
-		//	+ GetVoronoiCell( cell)->countNeighborCells
-//#endif // USE_MIGRATION
+
 		);
 
 #if USE_DIVISION 		
@@ -598,12 +456,7 @@ void initCellActions( Agent* cell){
 		cell->actions[INDEX_MIGRATION] = newAction( MIGRATION, 0.);
 		cell->actions[INDEX_MIGRATION]->originalCell    = cell;
 		countInitializedActions++;
-		/*for( int i=0; i < GetVoronoiCell( cell)->countNeighborCells; i++){
-			cell->actions[i+INDEX_MIGRATION] = newAction( MIGRATION, 0.);
-			cell->actions[i+INDEX_MIGRATION]->originalCell    = cell;
-			cell->actions[i+INDEX_MIGRATION]->destinationCell = GetAgent( GetVoronoiCell( cell)->neighborCells[i]);
-			countInitializedActions++;
-		}*/
+
 #endif // USE_MIGRATION 		
 
 #if USE_LYSIS 		
@@ -632,9 +485,7 @@ void initCellActions( Agent* cell){
 
 		cell->actionsInitialized = TRUE;
 		
-		//fprintf( stderr, "countInitializedActions = %i\n", countInitializedActions);
-	} 
-	//fprintf( stderr, "finished initCellActions();\n");
+	}
 }
 
 /*****************************************************************************/
@@ -642,35 +493,12 @@ void initCellActions( Agent* cell){
 
 
 #if USE_ACTION_TREE
-/*double Action::addActionToBranch( Action* branch )
-{
-	Action* daughterBranch;
-	
-	if( branch->sizePrev < branch->sizeNext){
-		if( branch->sizePrev == 0){			
-			branch->prev = this;
-			this->top = branch;
-		} 
-		branch->sizePrev++;
-		branch->rateSumPrev += this->rate;
-	}
-	else{
-		if( branch->sizePrev == 0){			
-			branch->prev = this;
-			this->top = branch;
-		} 
-		branch->sizePrev++;
-		branch->rateSumPrev += this->rate;
-	}		
-	//if( daughterBranch == NULL)
-}*/
+
 
 void ActionTree::addAction( Action* action)
 {
-	//fprintf( stderr, "ActionTree::addAction( %s)\n", actionTypeToString( action->type));
-					
+
 	if( action->top != NULL){
-		//fprintf( stderr, "ERROR: Action is already element of action tree!\n");
 		return;
 	}
 		
@@ -678,10 +506,8 @@ void ActionTree::addAction( Action* action)
 
 	// init action
 	action->actualizeRate();
-	//fprintf( stderr, "AddAction(%s): rate=%lf\n", actionTypeToString( action->type), action->rate);
 
-	//action->top = ;     // next action in probability list
-	
+
 	action->next = NULL;     // next action in probability list
 	action->rateSumNext = 0.;
 	action->sizeNext = 0;
@@ -702,12 +528,7 @@ void ActionTree::addAction( Action* action)
 		do{
 			if( actualAction->sizePrev <= actualAction->sizeNext){
 				actualAction->sizePrev++;
-				/* SLOW */ 
-				/*if( actualAction->sizePrev>1)
-					actualAction->rateSumPrev = action->rate + actualAction->prev->rateSumPrev + actualAction->prev->rateSumNext + actualAction->prev->rate;
-				else
-					actualAction->rateSumPrev = action->rate;*/
-				/* SLOW END */ 
+
 				/* FAST */ actualAction->rateSumPrev += action->rate;
 				if( actualAction->sizePrev > 1)				
 					actualAction = actualAction->prev;
@@ -719,12 +540,7 @@ void ActionTree::addAction( Action* action)
 			}else{
 				actualAction->sizeNext++;
 				/* FAST */ actualAction->rateSumNext += action->rate;
-				/* SLOW */ 
-				/*if( actualAction->sizeNext>1)
-					actualAction->rateSumNext = action->rate + actualAction->next->rateSumPrev + actualAction->next->rateSumNext + actualAction->next->rate;
-				else
-					actualAction->rateSumNext = action->rate;*/
-				/* SLOW END*/ 
+
 				if( actualAction->sizeNext > 1)				
 					actualAction = actualAction->next;
 				else{
@@ -734,22 +550,11 @@ void ActionTree::addAction( Action* action)
 			}
 		}while( action->top == NULL);
 		/* FAST */ this->rateSum += action->rate;
-		/* SLOW */ //this->rateSum = this->root->rateSumPrev + this->root->rateSumNext + this->root->rate;
-		this->size++;		
+		this->size++;
 	}
 
 }
-/*int ActionTree::getDepth( Action* action)
-{
-	if( action == NULL)
-		return 0;
-	else{
-		int depthPrev, depthNext;
-		depthPrev = this->getDepth( action->prev);	
-		depthNext = this->getDepth( action->next);
-		return ( depthPrev > depthNext ? depthPrev : depthNext) + 1;
-	}
-}*/
+
 
 int ActionTree::getDepth( Action* action)
 {
@@ -805,64 +610,45 @@ int ActionTree::getDepth( Action* action)
 			// TEST
 			
 			if( lastStackSize < stackSize){
-				// climbing tree -> prev
+
 				lastStackSize = stackSize;
-				//if( actualAction->prev != NULL){
+
 				if( actualAction->sizePrev > 0){
-					//actualAction = actualAction->prev;
+
 					actionStack[stackSize++] = actualAction->prev;
-					//fprintf( stderr, "CLIMBING LEFT: stackSize = %i\n", stackSize);
-				}//else
-					//fprintf( stderr, "RESTING: stackSize = %i\n", stackSize);
+
+				}
 				
-			}else/* if( lastStackSize == stackSize)*/{
+			}else{
 				lastStackSize = stackSize;
-				// climb tree -> next
-				//fprintf( stderr, "actionStack[%i] = %i\n", stackSize, (actionStack[stackSize] != NULL ? actionStack[stackSize]->type : -1));
-				//fprintf( stderr, "actualAction->next = %p\n", (actualAction->next));
-				//fprintf( stderr, "actualAction->next = %i\n", (actualAction->next != NULL ? actualAction->next->type : -1));
-				//if( actualAction->next != NULL &&  actualAction->next != actionStack[stackSize]){
+
 				if( actualAction->sizeNext > 0 &&  actualAction->next != actionStack[stackSize]){
 					actionStack[stackSize++] = actualAction->next;
-					//fprintf( stderr, "CLIMBING RIGHT: stackSize = %i\n", stackSize);
+
 				}
 				// decend tree
 				else{
 					stackSize--;
-					//fprintf( stderr, "DECENDING: stackSize = %i\n", stackSize);
+
 				}
-			}/*else{ // lastStackSize > stackSize
-				lastStackSize = stackSize;
-				// climb tree -> next
-				if(){
-					actualAction = actualAction->next;
-					actionStack[stackSize++] = actualAction;
-				}
-				// decend tree
-				else{
-					actualAction = actionStack[--stackSize-1];
-				}
-			}*/
+			}
 			if( stackSize > maxDepth)
 				maxDepth = stackSize;
 		}while( stackSize>0);
 		
-		/*int depthPrev, depthNext;
-		depthPrev = this->getDepth( action->prev);	
-		depthNext = this->getDepth( action->next);
-		return ( depthPrev > depthNext ? depthPrev : depthNext) + 1;*/
+
 		return maxDepth;
 	}
 }
 
 void ActionTree::actualizeRate( Action* action, double newRate)
 {
-	//fprintf( stderr, "ActionTree::actualizeRate( %s, %e)\n", actionTypeToString( action->type), newRate);
+
 	/* FAST */ double rateDifference = newRate - action->rate;
 	
 	if(action->top == NULL)
 	return;
-	//fprintf(stderr, "actualizeRate(%s: %lf -> %lf)", actionTypeToString(action->type), action->rate, newRate);
+
 
 	// actualize action
 	action->rate = newRate;
@@ -876,11 +662,9 @@ void ActionTree::actualizeRate( Action* action, double newRate)
 		lastAction = actualAction;
 		actualAction = actualAction->top;
 		if( actualAction->prev == lastAction){
-			/* SLOW */ //actualAction->rateSumPrev = lastAction->rate + lastAction->rateSumPrev + lastAction->rateSumNext;
 			/* FAST */ actualAction->rateSumPrev += rateDifference;
 		}else{ 
 			if(actualAction->next == lastAction)
-				/* SLOW */ //actualAction->rateSumNext = lastAction->rate + lastAction->rateSumPrev + lastAction->rateSumNext;
 				/* FAST */ actualAction->rateSumNext += rateDifference;
 			else{
 				fprintf(stderr, "ERROR in ActionTree::actualizeRate()\n");
@@ -888,67 +672,53 @@ void ActionTree::actualizeRate( Action* action, double newRate)
 			}
 		}
 	}
-	
-	/* SLOW */ //this->rateSum = this->root->rate + this->root->rateSumPrev + this->root->rateSumNext;
+
 	/* FAST */ this->rateSum += rateDifference;
-	//fprintf(stderr, "rateDifference = %lf, rateSum = %lf\n", rateDifference, this->rateSum);
+
 
 }
 
 void ActionTree::deleteAction( Action* action)
 {
-	//fprintf( stderr, "ActionTree::deleteAction( %s)\n", actionTypeToString( action->type));
 
 	/********        add action to prob_list    **********/
 	if( action->top != NULL){
 		// tree until root
-		/* SLOW */ //action->rate=0.;
 		Action *actualAction = action;
 		while( actualAction != this->root){
 			if( actualAction == actualAction->top->prev){
 				// actualize prev attributes
 				actualAction->top->sizePrev--;
 				/* FAST */ actualAction->top->rateSumPrev -= action->rate;
-				/* SLOW */ //actualAction->top->rateSumPrev = actualAction->rateSumPrev + actualAction->rateSumNext + actualAction->rate;
 			}
 			else{
 				// actualize next attributes
 				actualAction->top->sizeNext--;
 				/* FAST */ actualAction->top->rateSumNext -= action->rate;
-				/* SLOW */ //actualAction->top->rateSumNext = actualAction->rateSumPrev + actualAction->rateSumNext + actualAction->rate;
 			}
 			actualAction = actualAction->top;
 		}
 		
 		// rearange subtrees
 		Action* shortSubtree, *longSubtree;
-		//double longRateSum;
-		//int    longSize;
+
 		if( action->sizePrev <= action->sizeNext){
 			shortSubtree = action->prev;
 			longSubtree  = action->next;
-			//longRateSum	= action->rateSumNext;
-			//longSize	= action->sizeNext;
+
 		}else{
 			shortSubtree = action->next;
 			longSubtree  = action->prev;
-			//longRateSum	= action->rateSumPrev;
-			//longSize	= action->sizePrev;
+
 		}
-		//fprintf( stderr, "longSubtree:%i, shortSubtree:%i\n", 
-		  //       (longSubtree!=NULL ? longSubtree->type : -1),
-		    //     (shortSubtree!=NULL ? shortSubtree->type : -1)         );
-		
-		// actualize tree
+
 		/* FAST */ this->rateSum -= action->rate;
-		//fprintf( stderr, "size = %i\n", this->size);
 		if( --(this->size) == 0){
 			// tree is empty
 			this->root = NULL;
-			/* SLOW */ //this->rateSum = 0.;
-			//longSubtree->top = longSubtree;			
+
 		}else{
-			/* SLOW */ //this->rateSum = this->root->rateSumPrev + this->root->rateSumNext + this->root->rate;
+
 		
 			if( shortSubtree == NULL){
 				// only one subtree has to be added
@@ -1001,15 +771,9 @@ void ActionTree::deleteAction( Action* action)
 							lastAction->next = longSubtree;
 					}					
 				}
-				/*if( lastAction->sizePrev == 0){ 
-					lastAction->prev = longSubtree;
-				}else{ 
-					lastAction->next = longSubtree;
-				}*/
+
 				longSubtree->top = lastAction;
 
-				//if( this->root == action)
-				//	this->root = shortSubtree;
 			}
 				
 		}
@@ -1022,10 +786,6 @@ void ActionTree::deleteAction( Action* action)
 		action->sizeNext = 0;
 		action->rateSumPrev = 0.;
 		action->rateSumNext = 0.;
-	}
-	else{
-		//fprintf( stderr, "ERROR: Can't delete action from action tree. Action isn't element of action tree!\n");
-		//exit( 0);
 	}
 
 }
@@ -1168,7 +928,6 @@ void deleteAction( ActionList *probList, Action* cellAction){
 	//cellAction->actions_active = FALSE;
 
 	if(cellAction == probList->head){
-		//fprintf( stderr, "WARNING: deleted action was head of action list!!\n");
 		probList->head = tempNext;
 	}
 }

@@ -943,16 +943,6 @@ void matrixInversion( double **Ai, double **Ao, int n)
 
 
 
-void printVector( double *v, int N)
-{
-	fprintf( stderr, "Vector = [\n");
-	for( int i=0; i<N; i++)
-	{
-		fprintf( stderr, "%10.3lf ", v[i]);
-	}
-	fprintf( stderr, "\n]\n");
-}
-
 
 
 /****************************************************************************

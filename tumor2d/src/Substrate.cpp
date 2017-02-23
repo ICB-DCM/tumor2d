@@ -134,10 +134,10 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 			}
 		}
 	 
-			//fprintf( stderr, "agentnumber %i\n", agentnumber);
+
 	for(i = 0; i < voronoiDiagram->countVoronoiCells; i++)
 		{
-		//fprintf( stderr, "\ragent %i (%lf,%lf,%lf)            \b", i,voronoiCells[i]->position[0],voronoiCells[i]->position[1],voronoiCells[i]->position[2]);
+
 	
 		x = voronoiCells[i]->position[0];
 		y = voronoiCells[i]->position[1];
@@ -256,7 +256,6 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 		}else if( strcmp( boundaryCondition, "Dirichlet") == 0 || strcmp( boundaryCondition, "dirichlet") == 0){
 			bc = "Dirichlet";
 		}else{
-			fprintf( stderr, "ERROR: Unknown border condition \"%s\"\n", boundaryCondition);
 			exit( 0);
 		}
 		//strcpy(bc, boundaryCondition, 512);
@@ -338,17 +337,13 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 
 	#endif
 
-	#if VERBOSE >= 1
-	cerr << "william said: end of the Subtrate Initialisation\n";
-	#endif
+
 	}
 
 void Substrate::RebuildMatrix()
 	{
 
-	#if  VERBOSE>= 1
-	cerr << "William said: Rebuilding the matix. \n";
-	#endif
+
 	double alpha_oxygen = Oxygen_Diffusion*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
 	double alpha_glucose = Glucose_Diffusion*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
 	double alpha_growthfactors = GrowthFactors_Diffusion*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
@@ -639,28 +634,7 @@ void Substrate::SwitchOffVisualization()
 	
 	}
 
-void Substrate::PlotGraphics()
-	{
-	/*
-	int a = 0, b = 0, c = 0;
-	
-	for(int i = 0; i < agentnumber; i++)
-		{
-		if(voronoiCells[i]->getState() == ACTIVE){a++;}
-		if(voronoiCells[i]->getState() == NONACTIVE){a++;}
-		if(voronoiCells[i]->getState() == NECROTIC){a++;}
-		}
-	
-	//Average concentration of oxygen in the medium
-	b = (int)getdata(2);
-	c = (int)getdata(3);
-	
-	gui->graphiques->AddValues(a,b,c);
- 	#if  VERBOSE >= 7
-	cerr << "William said: J'ajoute les valeurs" << a << "," << b << "," << c;	
-	#endif
-	*/
-	}
+
 #endif
 
 #ifdef __With_Outputs__
@@ -856,11 +830,7 @@ int Substrate::Output(int Number)
 					B2[i][j] *=  simulation_number;
 					B2[i][j] +=  TheCubes[i][j][z_viewfixpoint]->glucose;
 					B2[i][j] /=  simulation_number + 1;
-					
-					//cerr << zix << "\t";
-					//cerr << ziy << "\t";
-					//cerr << A2[i][j] << "\t";
-					//cerr << B2[i][j] << "\n"; 
+
 					j+=space_output_frequency;
 					if(j >= axe_size[1])
 						{
@@ -889,8 +859,6 @@ int Substrate::Output(int Number)
 					B1[i] +=  TheCubes[i][y_viewfixpoint][z_viewfixpoint]->glucose;
 					B1[i] /=  simulation_number + 1;
 
-					//cerr << i*spacestep << "\t";
-					//cerr << A1[i] << "\t";
 					i+=space_output_frequency;
 					}
 				}
@@ -1190,10 +1158,6 @@ void Substrate::Instationnaire_q(int mode)
 	for(int n = 0; n < iteration_indice; n++)
 			{
 			Update_Glucose(mode);
-			#if VERBOSE >= 1
-			if(n % 47 == 0)
-				cerr << "\r" << 100 * (double)n / (double)(iteration_indice) <<"% 1745";
-			#endif
 			}
 	
 
@@ -1398,10 +1362,7 @@ void Substrate::Instationnaire_qu(int mode)
 	for(int n = 0; n < iteration_indice; n++)
 			{
 			Update_Glucose(mode);
-			#if VERBOSE >= 1
-			if(n % 47 == 0)
-				cerr << "\r" << 100 * (double)n / (double)(iteration_indice) <<"% 1964";
-			#endif
+
 			}
 	
 
@@ -1554,10 +1515,7 @@ void Substrate::Parabole(int mode)
 	for(int n = 0; n < themax; n++)
 			{
 			Update_Glucose(mode);
-			#if VERBOSE >= 1
-			if(n % 47 == 0)
-				cerr << "\r" << 100 * (double)n / (double)(themax) <<"% 2122";
-			#endif
+
 			}
 	
 
@@ -1631,10 +1589,7 @@ void Substrate::DirichletZero(int mode)
 	for(int n = 0; n < themax; n++)
 			{
 			Update_Glucose(mode);
-			#if VERBOSE >= 1
-			if(n % 47 == 0)
-				cerr << "\r" << 100 * (double)n / (double)(themax) <<"% 2201";
-			#endif
+
 			}
 	
 
@@ -1695,9 +1650,7 @@ void Substrate::TimeStepControl(int mode)
 			//Update_Oxygen(mode);
 			Update_Glucose(mode);
 			centralCellValue[n] = TheCubes[cx][cy][cz]->glucose;
-			#if VERBOSE >= 1
-			cerr << "\r" << 100 * (double)n / (double)(QualityNumberOfIterations) <<"% 2272";
-			#endif
+
 			}
 
 		sprintf(filename,"%s/%i-qualitycontrol-%.1e.txt",outputpath,factor,timestep);

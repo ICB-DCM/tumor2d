@@ -2302,126 +2302,6 @@ float GetLactateProductionRate( VoronoiCell *cell, float glucose, float oxygen)
 }
 
 
-/*void setupJacobianMatrixImplicitSteadyStateOLD( VoronoiDiagram *voronoiDiagram, SparseMatrix *J, SparseMatrix *A, float *b, float *x, char molecule)
-{
-	int di   = 1;
-	int dii  = voronoiDiagram->xN[0];
-	int diii = voronoiDiagram->xN[0]*voronoiDiagram->xN[1];
-	
-	float r;
-	 
-	switch( molecule){
-		case 'G': r = Glucose_Diffusion /(DX*DX); break;
-		case 'O': r = Oxygen_Diffusion /(DX*DX);  break;
-	}
-	
-	for( int iii=0; iii<voronoiDiagram->xN[2]; iii++)
-	for( int ii=0; ii<voronoiDiagram->xN[1]; ii++)
-	for( int i=0; i<voronoiDiagram->xN[0]; i++)
-	{
-		// actual element
-		int m = i*di + ii*dii + iii*diii;
-		//fprintf( stderr, "%i ", m);
-
-		// element inside domain
-		if( TRUE
-		#ifdef BORDER_IS_BOUNDARY
-		    && i>0 && i<voronoiDiagram->xN[0]-1 && ii>0 && ii<voronoiDiagram->xN[1]-1 && iii>0 && iii<voronoiDiagram->xN[2]-1 
-		#endif
-		#ifdef FREE_IS_BOUNDARY
-		    && voronoiDiagram->voronoiCells[m]->getState() != FREE
-		#endif
-		)
-		{
-			//consumption
-			float diagValue = 0.;
-			switch( molecule){
-				case 'G': diagValue = - GetGlucoseConsumptionRateDerivative( voronoiDiagram->voronoiCells[i], voronoiDiagram->voronoiCells[i]->oxygen, x[i]); break;
-				case 'O': diagValue = - GetOxygenConsumptionRateDerivative( voronoiDiagram->voronoiCells[i], x[i], voronoiDiagram->voronoiCells[i]->glucose); break;
-			}
-
-			//matrixˀ
-		#ifdef BORDER_IS_BOUNDARY
-			diagValue += -6*r;
-			sA->set(m, m-diii, r); 
-			sA->set(m, m-dii, r); 
-			sA->set(m, m-di, r); 
-			sA->set(m, m, diagValue);					
-			sA->set(m, m+di, r); 
-			sA->set(m, m+dii, r); 
-			sA->set(m, m+diii, r); 
-		#else	
-			if(iii>0){ sA->set(m, m-diii, r); diagValue -= r;}
-			if(ii>0){ sA->set(m, m-dii, r); diagValue -= r;}
-			if( i>0){ sA->set(m, m-di, r); diagValue -= r;}
-			if(i<voronoiDiagram->xN[0]-1){ sA->set(m, m+di, r); diagValue -= r;}
-			if(ii<voronoiDiagram->xN[1]-1){ sA->set(m, m+dii, r); diagValue -= r;}
-			if(iii<voronoiDiagram->xN[2]-1){ sA->set(m, m+diii, r); diagValue -= r;}
-			sA->set(m, m, diagValue);	
-		#endif
-		}
-		
-		// border condition
-		else{
-			//matrix
-			J->set(m, m, 1);
-		}		
-	}
-}*/
-
-
-/*double UpdateSystemLactate( VoronoiDiagram *voronoiDiagram, double time, double end_time, double timeStep, double spaceStep)
-{
-	int N = voronoiDiagram->xN[0]*voronoiDiagram->xN[1]*voronoiDiagram->xN[2];
-	int di   = 1;
-	int dii  = voronoiDiagram->xN[0];
-	int diii = voronoiDiagram->xN[0]*voronoiDiagram->xN[1];
-
-	sA->dimI = N;
-	sA->dimJ = N;
-
-	for( ; time+timeStep <= end_time; time += timeStep)
-	{
-		// MATRIX ASSEMBLING
-		for( int iii=0; iii<voronoiDiagram->xN[2]; iii++)
-		for( int ii=0; ii<voronoiDiagram->xN[1]; ii++)
-		for( int i=0; i<voronoiDiagram->xN[0]; i++)
-		{
-
-			// actual element of the matrix
-			int m = i*di + ii*dii + iii*diii;
-
-			// reset row
-			sA->resetRow( m);
-
-			// inside domain
-			if( i>0 && i<voronoiDiagram->xN[0]-1 && ii>0 && ii<voronoiDiagram->xN[1]-1 && iii>0 && iii<voronoiDiagram->xN[2]-1)
-			{
-				double r = Glucose_Lactate * timeStep / (spaceStep*spaceStep);
-				//matrix
-				sA->set(m, m-diii, r);
-				sA->set(m, m-dii, r);
-				sA->set(m, m-di, r);
-				float production = GetLactateProductionRate( voronoiDiagram->voronoiCells[m], x[m], x[m]);
-				sA->set(m, m, - 6*r - 1 + production * timeStep);
-				sA->set(m, m+di, r);
-				sA->set(m, m+dii, r);
-				sA->set(m, m+diii, r);
-			}
-			// border
-			else{
-				sA->set( m,m, 1.);
-				b[m] = 0.;
-			}
-
-
-
-		// SOLVE
-	}
-
-	return end_time - time;
-}*/
-
 
 double UpdateSystemNonLinearCGSparse( VoronoiDiagram *voronoiDiagram, double time, double end_time, double timeStep)
 {
@@ -2435,14 +2315,11 @@ double UpdateSystemNonLinearCGSparse( VoronoiDiagram *voronoiDiagram, double tim
 *voronoiDiagram->xN[2]
 #endif
 	        ;
-	//float err;
+
 	float max_err, mean_err;
-	//float old_max_err = 1e-5;
-	//float change = 0., old_change;
-	//float abs_b;
+
 	int i;
-	
-	//float *temp = v0;
+
 	float *temp = v8;
 
 #ifndef COUPLING

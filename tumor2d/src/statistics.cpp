@@ -24,11 +24,10 @@ KSTestResult KolmogorovSmirnoffTest( int n1, double *x1, int n2, double *x2){
 		// which is next?
 		if( i1 < n1 && (i2==n2 || x1[i1] < x2[i2])){
 			y1 += 1./n1;
-			//fprintf( stderr, "x1[%i] = %e\n", i1, x1[i1]);
 			i1++;
 		}else{
 			y2 += 1./n2;
-			//fprintf( stderr, "x2[%i] = %e\n", i2, x2[i2]);
+
 			i2++;
 		}
 
@@ -204,9 +203,7 @@ double *std2( double **x, double *m, int n, int d, char orientation){
 			s2[j] = 0;
 			for( int i=0; i<n; i++){
 				s2[j] += pow( x[i][j] - m[j], 2);
-				/*if( isinf(s2[j])){
-					fprintf( stderr, "%i, %i: x=%e, m=%e\n", i,j, x[i][j], m[j]);
-				}*/
+
 			}
 			s2[j] /= (double) n;
 		}
@@ -215,9 +212,7 @@ double *std2( double **x, double *m, int n, int d, char orientation){
 			s2[i] = 0;
 			for( int j=0; j<d; j++){
 				s2[i] += pow( x[i][j] - m[i], 2);
-				/*if( isinf(s2[j])){
-					fprintf( stderr, "%i, %i: x=%e, m=%e\n", i,j, x[i][j], m[j]);
-				}*/
+
 			}
 			s2[i] /= (double) d;
 		}
@@ -336,7 +331,7 @@ void mvnrnd( double *x, double *mean, double **s2, int n, unsigned int *p_seed)
 	double z[n];
 	normrnd( z, n, p_seed);
 
-	//fprintf( stderr, "Sample: ");
+
 	for( int i=0; i<n; i++){
 		x[i] = mean[i];
 		double tmp = 0;
@@ -344,9 +339,9 @@ void mvnrnd( double *x, double *mean, double **s2, int n, unsigned int *p_seed)
 			x[i] += s2[i][j] * z[j];
 			tmp += s2[i][j] * z[j];
 		}
-		//fprintf( stderr, "%e (%e) ", tmp, x[i]);
+
 	}
-	//fprintf( stderr, "\n");
+
 
 
 }

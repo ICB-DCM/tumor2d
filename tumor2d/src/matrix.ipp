@@ -333,22 +333,9 @@ void invertGaussJordan( T* &a, T* &ainv, int n) {
 	}*/
 }
 
-template <class T>
-void printVector( T *x, int m, const char *fmt = "%5.2e "){
 
-	for( int j=0; j<m; j++)
-		fprintf( stderr, fmt, x[j]);
-	fprintf( stderr, "\n");
-}
 
-template <class T>
-void printVector( T *x, int m, const char *name, const char *fmt){
 
-	fprintf( stderr, "%s = \n", name);
-	for( int j=0; j<m; j++)
-		fprintf( stderr, fmt, x[j]);
-	fprintf( stderr, "\n");
-}
 
 template <class T>
 void solveLinearSystemB( T **A, T *b, T *x, int dim, T **B)

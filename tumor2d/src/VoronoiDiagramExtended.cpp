@@ -117,7 +117,6 @@ GridPoint *newGridPoint()
 
 void VoronoiDiagram::setVoronoiGrid()
 {
-	fprintf( stderr, "VoronoiDiagram::setVoronoiGrid()\n");
 
 	// init points
 	this->voronoiGridPoints = (GridPoint *) malloc( this->countTetrahedra * sizeof(GridPoint));
@@ -157,65 +156,12 @@ void VoronoiDiagram::setVoronoiGrid()
 		}
 	}
 
-	// test output of links
-	/*for( int i=0; i<this->countVoronoiCells; i++){
-		fprintf(stderr, "%i: ", i);
-		for( int l=0; l<this->voronoiCellCountVoronoiGridPoints[i]; l++)
-			fprintf(stderr, "%i ", this->voronoiCellToVoronoiGridPoints[i][l]->index);
-		fprintf(stderr, "\n");
-	}*/
+
 
 	
 }
 
-void VoronoiCell::validate()
-{
-/*	int i;
-	
-	int countFreeNeighbors = 0;
-	for( i=0; i<this->countNeighborCells; i++){
-		if( this->neighborCells[i]->isFree())
-			countFreeNeighbors++;
-	}
-	if( countFreeNeighbors!=this->countFreeNeighborCells){
-		fprintf( stderr, "ERROR: VoronoiCell %i has wrong number of free neighbors: %i (correct: %i)\n", this->index, this->countFreeNeighborCells, countFreeNeighbors);
-		exit( 0);
-	}
 
-	countFreeNeighbors = 0;
-	for( i=0; i<this->countExtendedNeighborCells; i++){
-		if( this->extendedNeighborhood[i]->isFree())
-			countFreeNeighbors++;
-	}
-	if( countFreeNeighbors!=this->countFreeExtendedNeighborCells){
-		if( !this->isFree())
-			fprintf( stderr, "ERROR: VoronoiCell %i (agent %i) has wrong number of free extended neighbors: %i/%i (correct: %i)\n",
-			         this->index, GetAgent( this)->index, this->countFreeExtendedNeighborCells, this->countExtendedNeighborCells, countFreeNeighbors);
-		else{
-			fprintf( stderr, "ERROR: VoronoiCell %i has wrong number of free extended neighbors: %i/%i (correct: %i)\n", 
-			         this->index, this->countFreeExtendedNeighborCells, this->countExtendedNeighborCells, countFreeNeighbors);			
-		}
-
-			for( i=0; i<this->countExtendedNeighborCells; i++){
-				int found = FALSE;
-				int ii;
-				for( ii=0; ii<this->extendedNeighborhood[i]->countExtendedNeighborCells; ii++){
-					if( this->extendedNeighborhood[i]->extendedNeighborhood[ii] == this){
-						found = TRUE;
-					//fprintf( stderr, "ERROR: VoronoiCell %i -> extended neighbor %i -> extended neighbor %i :-)\n", 
-					//         this->index, this->extendedNeighborhood[i]->index, this->extendedNeighborhood[i]->extendedNeighborhood[ii]->index);
-					}
-				}			
-				if( !found){
-					fprintf( stderr, "ERROR: VoronoiCell %i has a extended neighbor %i which doesn't contain %i as extended neighbor!\n", this->index, this->extendedNeighborhood[i]->index, this->index);
-				}
-			}
-
-		exit( 0);
-	}
-
-*/
-}
 /*****************************************************************************/
 
 #define FREE	0
@@ -1707,14 +1653,6 @@ double getDistanceOfPointToCircumsphere( VoronoiCell* point, Tetrahedron* tet)
 		R += myPow(point->position[l] + tet->circumsphere[l]/2., 2);
 
 	if( isnan( R - tet->radius )){
-		fprintf( stderr, "dist = %e\n", (R - tet->radius));
-		fprintf( stderr, "R = %e\n", R);
-		fprintf( stderr, "tet->radius = %e\n", tet->radius);
-		for( l=0; l<DIMENSIONS; l++){
-			//R += myPow(point->position[l] + tet->circumsphere[l]/2., 2);
-			fprintf( stderr, "point->position[%i] = %e\n", l, point->position[l]);
-			fprintf( stderr, "tet->circumsphere[%i] = %e\n", l, tet->circumsphere[l]);
-		}
 
 		exit( 0);
 	}
@@ -1729,25 +1667,15 @@ double getDistanceOfPointToCircumsphere( VoronoiCell* point, Tetrahedron* tet)
 		long double ldR  = 0.;
 		for( l=0; l<DIMENSIONS; l++)
 			ldR += ((long double)point->position[l] + circumsphere[l]/2.)*((long double)point->position[l] + circumsphere[l]/2.);
-		//fprintf( stderr, "WARNING: dist = %.10e ", (R - tet->radius));
-		//fprintf( stderr, "----> ld dist = %.10e ", (double)(ldR - radius));
-		//fprintf( stderr, "------> error = %.10e\n", fabs((double)(ldR - radius)-(R - tet->radius)));
-		//if( signof(ldR - radius) != signof(R - tet->radius))
+
 		if( (ldR - radius)*(R - tet->radius) < 0.)
 		{
-			fprintf( stderr, "ERROR: wrong sign!\n");
-			fprintf( stderr, "WARNING: dist = %.10e\n", (R - tet->radius));
-			fprintf( stderr, "----> ld dist = %.10e ", (double)(ldR - radius));
-			fprintf( stderr, "------> error = %.10e\n", fabs((double)(ldR - radius)-(R - tet->radius)));
+
 			return (double)(ldR - radius);
 			//exit(0);
 		}
 
-		/*long double Rl = 0.;
-		for( l=0; l<DIMENSIONS; l++)
-			//R += pow((float)point->position[l] + (float)tet->circumsphere[l]/2., 2);
-			R += ((long double)point->position[l] + (long double)tet->circumsphere[l]/2.) * ((long double)point->position[l] + (long double)tet->circumsphere[l]/2.);
-		fprintf( stderr, "-------> dist = %.10e\n", (Rl - (long double)tet->radius));*/
+
 	}
 	return (R - tet->radius)/* - tet->numericError*/;
 }
@@ -1759,7 +1687,6 @@ Tetrahedron *getTetrahedronContainingPointInCircumSphere( VoronoiDiagram *vorono
 	int i;
 
 	// look for first tet containing new point
-	//fprintf( stderr, "look for first tet containing new point\n");
 	Tetrahedron *actualTet = NULL,
 	            *candidateTet = voronoiDiagram->tetrahedra[(int)(myRandE(1.)*(double)voronoiDiagram->countTetrahedra)];
 	double distanceToCircumsphere;
@@ -1778,10 +1705,7 @@ Tetrahedron *getTetrahedronContainingPointInCircumSphere( VoronoiDiagram *vorono
 
 	// follow shortest way to first tetrahedron containing new point
 	do{
-	//	fprintf( stderr, "INFO: actualTet!=candidateTet ti=%i\n", ti);
 		actualTet=candidateTet;
-		//fprintf( stderr, "INFO: actualTet(%i)! ti=%i\n", actualTet->index, ti);
-		//fprintf( stderr, "INFO: actualTet(%i)==candidateTet(%i)! ti=%i\n", actualTet->index, candidateTet->index, ti);
 		for( i=0; i<actualTet->countNeighborTetrahedra; i++){
 			// circumsphere contains point i
 			distanceToCircumsphere = getDistanceOfPointToCircumsphere( point, actualTet->neighborTetrahedra[i]);
@@ -3970,19 +3894,6 @@ void VoronoiDiagram::setPointsOnSphericalSurface( double radius, int N, double v
 	//alpha = 0.5*2*acos(1-1/(2*PI*radius*radius*density)); // wenn Flächeninhalt der Kaloppe gleich 1/densitiy
 	alpha = acos(1.-2./(double)N)*variance;
 
-	/*for( countNewCells=1; countNewCells<=maxNewCells; countNewCells++){
-		srand ( countNewCells+randomGeneratorSeed);
-		//sprintf( filename, "test%i.pov", countNewCells);
-		//testCell = newVoronoiCell( myRand()*8.+1., myRand()*8.+1., myRand()*8.+1.);
-		//testCell = newVoronoiCell( myRand()*60., myRand()*60., myRand()*60.);
-		testCell = newVoronoiCell( myRand()*2., myRand()*2., myRand()*2.);
-		//printf("Insert %i. Voronoi Cell ( %lf, %lf, %lf)\n", countNewCells, testCell->position[0], testCell->position[1], testCell->position[2]);
-		testCell->index = testGrid->countVoronoiCells;
-		insertVoronoiCell( testGrid, testCell);
-		//newCells[countNewCells-1] = testCell;
-		//printToPovray( filename, testGrid, newCells, countNewCells);
-
-	}*/
 	srand(0);
 
 	for(k=1; k<=N; k++){
@@ -4304,82 +4215,17 @@ void VoronoiDiagram::setFramePoints()
 		}
 	}
 
-	//addNeighbor(
 
-	// TEST
-	//for( i=0; i<tempCountCells; i++)
-
-	// PRINT ALL
-
-	/*fprintf( stderr, "countVoronoiCells:%i, maxVoronoiCells:%i\n", countVoronoiCells, maxVoronoiCells);
-	for( i=0; i<this->countVoronoiCells; i++)
-		fprintf( stderr, "%i: index=%i, (%lf %lf %lf)\n",
-		         i, this->voronoiCells[i]->index,
-		         this->voronoiCells[i]->position[0], this->voronoiCells[i]->position[1], this->voronoiCells[i]->position[2]);
-
-	fprintf( stderr, "countFramePoints:%i, maxFramePoints:%i\n", countFramePoints, countFramePoints);
-	for( i=0; i<this->countFramePoints; i++)
-		fprintf( stderr, "%i: index=%i, (%lf %lf %lf)\n",
-		         i, this->framePoints[i]->index,
-		         this->framePoints[i]->position[0], this->framePoints[i]->position[1], this->framePoints[i]->position[2]);
-
-	fprintf( stderr, "countTetrahedra:%i, maxTetrahedra:%i\n", countTetrahedra, maxTetrahedra);
-	for( i=0; i<this->countTetrahedra; i++){
-		fprintf( stderr, "%i: index=%i, ", i, this->tetrahedra[i]->index);
-		fprintf( stderr, "(%i %i %i %i)",
-		         this->tetrahedra[i]->vertices[0]->index, this->tetrahedra[i]->vertices[1]->index, this->tetrahedra[i]->vertices[2]->index, this->tetrahedra[i]->vertices[3]->index);
-		fprintf( stderr, " => %i neighbors: (", this->tetrahedra[i]->countNeighborTetrahedra);
-		for( int ii=0; ii<this->tetrahedra[i]->countNeighborTetrahedra; ii++)
-			fprintf( stderr, " %i", this->tetrahedra[i]->neighborTetrahedra[ii]->index);
-		fprintf( stderr, " )\n");
-	}*/
-	// TRIANGULATION
-	//VoronoiCell ** tempList = this->voronoiCells;
-	//int tempCountCells = this->countVoronoiCells;
-	/*printToPovray( "test0.pov", this, NULL, 0);
-	checkDelaunayCondition( this, NULL, 0);
-
-	VoronoiDiagram *testDiagram = VoronoiDiagram::newVoronoiDiagramFromFile( "data");
-	fprintf( stderr, "countVoronoiCells:%i, maxVoronoiCells:%i\n", countVoronoiCells, maxVoronoiCells);
-	for( i=0; i<testDiagram->countVoronoiCells; i++)
-		fprintf( stderr, "%i: index=%i, (%lf %lf %lf)\n",
-		         i, testDiagram->voronoiCells[i]->index,
-		         testDiagram->voronoiCells[i]->position[0], testDiagram->voronoiCells[i]->position[1], testDiagram->voronoiCells[i]->position[2]);
-
-	fprintf( stderr, "countTetrahedra:%i, maxTetrahedra:%i\n", countTetrahedra, maxTetrahedra);
-	for( i=0; i<testDiagram->countTetrahedra; i++){
-		fprintf( stderr, "%i: index=%i, ", i, testDiagram->tetrahedra[i]->index);
-		fprintf( stderr, "(%i %i %i %i)",
-		         testDiagram->tetrahedra[i]->vertices[0]->index, testDiagram->tetrahedra[i]->vertices[1]->index, testDiagram->tetrahedra[i]->vertices[2]->index, testDiagram->tetrahedra[i]->vertices[3]->index);
-		fprintf( stderr, " => %i neighbors: (", testDiagram->tetrahedra[i]->countNeighborTetrahedra);
-		for( int ii=0; ii<testDiagram->tetrahedra[i]->countNeighborTetrahedra; ii++)
-			fprintf( stderr, " %i", testDiagram->tetrahedra[i]->neighborTetrahedra[ii]->index);
-		fprintf( stderr, " )\n");
-	}
-
-	char filename[100];
-	for( i=0; i<tempCountCells; i++){
-		fprintf( stderr, "Add point:%i  => (%lf %lf %lf)\n", tempList[i]->index = testDiagram->countVoronoiCells, tempList[i]->position[0], tempList[i]->position[1], tempList[i]->position[2]);
-		insertVoronoiCell( testDiagram, tempList[i]);
-		sprintf( filename, "anim_%i.pov", i+1);
-		printToPovray( filename, testDiagram, tempList, i+1);
-		//checkDelaunayCondition( testDiagram, NULL, 0);
-	}	*/
 
 #elif	DIMENSIONS == 2
 	this->setDomain();
 
 	// BACKUP CELL LIST
-	//VoronoiCell ** tempList = this->voronoiCells;
-	//int tempCountCells = this->countVoronoiCells;
+
 
 	// NEW EMPTY & EXTENDED CELL LIST
 	this->framePoints = (VoronoiCell**) malloc( sizeof(VoronoiCell*) * ((int)pow( 2, DIMENSIONS)));
 	assert(this->framePoints);
-	this->countFramePoints = 0;
-	//this->maxFramePoints   = tempCountCells + (int)pow( 2, DIMENSIONS);
-
-	//fprintf( stderr, " min frame:(%f, %f) - (%f, %f)\n", xMin[0], xMin[1], xMax[0], xMax[1]);
 
 	// SET INITIAL FRAME POINTS
 	for( int i=0; i<(int)pow( 2, DIMENSIONS); i++){
@@ -5451,11 +5297,7 @@ VoronoiDiagram::VoronoiDiagram( char* filename, VoronoiDiagram * DummyDiagram){
 		this->voronoiCells[i]->extendedNeighborCellsInitialized = FALSE;
 	}
 
-	/* Ein- und Ausgabedatei schließen */
-//	if( fclose( fp_tet ) )
-//		printf( "can't close %s\n", f_tet );
-//	if( fclose( fp_node ) )
-//		printf( "can't close %s\n", f_node );
+
 
 	for( i=0; i<this->countVoronoiCells; i++)
 		free( point[i]);

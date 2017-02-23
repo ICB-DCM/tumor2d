@@ -85,7 +85,6 @@ public:
 	void checkFreeNeighbors();
 	int isFree();
 	int getState();
-	void validate();
 	double getDistanceTo( double[DIMENSIONS]);
 	double getDistanceTo( VoronoiCell* cell);
 	double getDistanceSquareTo( VoronoiCell* cell);
@@ -315,7 +314,7 @@ Tetrahedron* newTetrahedron();
 // testing
 void checkDelaunayCondition( VoronoiDiagram *voronoiDiagram, VoronoiCell **newCell, int countNewCells);
 
-void printToPovray( const char *filename, VoronoiDiagram *voronoiDiagram, VoronoiCell **newCell, int countNewCells, int printPoints, int printNeighborship, int printTetrahedra, int printConvexHull);
+
 
 
 #endif

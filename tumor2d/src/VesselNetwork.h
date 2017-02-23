@@ -16,7 +16,7 @@ void SetRegularInitialVesselNetwork( VoronoiDiagram *voronoiDiagram, AgentList* 
 void SetVessel( VoronoiDiagram *voronoiDiagram3D, AgentList* agentArray, ActionTree *probTree, VoronoiCell *startCell, VoronoiCell *endCell, double branchingProbability, int branchingLength);
 void MakeRandomBranch( VoronoiDiagram *voronoiDiagram3D, AgentList* agentArray, ActionTree *probTree, VoronoiCell *startCell, int branchingLength);
 VoronoiCell * GetClosestGridPoint( VoronoiDiagram *voronoiDiagram3D, double x, double y, double z);
-void printToPovray( const char *filename, VoronoiDiagram *voronoiDiagram, double angle, double setoffX, double setoffY, double setoffZ);
+
 
 #endif
 

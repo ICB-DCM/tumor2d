@@ -54,8 +54,7 @@ VoronoiDiagram* newHexagonalLattice2D( int countPointsX, int countPointsY, int p
 		for( i = 0; i<countPointsX; i++ ){
 			
 			index = j*countPointsX + i;
-			
-			//fprintf( stderr, "i:%i, j:%i, index:%i\n", i, j, index);
+
 			
 			// set number of voronoi cell
 			newVoronoiDiagram->voronoiCells[index]->index = index;
@@ -80,7 +79,7 @@ VoronoiDiagram* newHexagonalLattice2D( int countPointsX, int countPointsY, int p
 			if( i>0 || periodicX){
 				ii = (ii+countPointsX)%countPointsX;
 				newVoronoiDiagram->voronoiCells[index]->neighborCells[countNeighborCells++] = newVoronoiDiagram->voronoiCells[ii + jj*countPointsX];
-				//fprintf( stderr, "i:%i, j:%i, index:%i => left neighbor\n", i-1, j, i-1 + j*countPointsY);
+
 			}else
 				newVoronoiDiagram->voronoiCells[index]->countNeighborCells--;
 
@@ -91,7 +90,7 @@ VoronoiDiagram* newHexagonalLattice2D( int countPointsX, int countPointsY, int p
 			if( ii<countPointsX || periodicX ){
 				ii = ii%countPointsX;
 				newVoronoiDiagram->voronoiCells[index]->neighborCells[countNeighborCells++] = newVoronoiDiagram->voronoiCells[ii + jj*countPointsX];
-				//fprintf( stderr, "i:%i, j:%i, index:%i => right neighbor\n", i+1, j, i+1 + j*countPointsY);
+
 			}else
 				newVoronoiDiagram->voronoiCells[index]->countNeighborCells--;
 
@@ -103,7 +102,7 @@ VoronoiDiagram* newHexagonalLattice2D( int countPointsX, int countPointsY, int p
 				ii = (ii+countPointsX)%countPointsX;
 				jj = (jj+countPointsY)%countPointsY;
 				newVoronoiDiagram->voronoiCells[index]->neighborCells[countNeighborCells++] = newVoronoiDiagram->voronoiCells[ii + jj*countPointsX];
-				//fprintf( stderr, "i:%i, j:%i, index:%i => lower-left neighbor\n", (i - (j+1)%2), (j-1), (i - (j+1)%2) + (j-1)*countPointsY);
+
 			}else
 				newVoronoiDiagram->voronoiCells[index]->countNeighborCells--;
 
@@ -115,7 +114,7 @@ VoronoiDiagram* newHexagonalLattice2D( int countPointsX, int countPointsY, int p
 				ii = ii%countPointsX;
 				jj = (jj+countPointsY)%countPointsY;
 				newVoronoiDiagram->voronoiCells[index]->neighborCells[countNeighborCells++] = newVoronoiDiagram->voronoiCells[ii + jj*countPointsX];
-				//fprintf( stderr, "i:%i, j:%i, index:%i => lower-right neighbor\n", (i + j%2), (j-1), (i + j%2) + (j-1)*countPointsY);
+
 			}else
 				newVoronoiDiagram->voronoiCells[index]->countNeighborCells--;
 
@@ -127,7 +126,7 @@ VoronoiDiagram* newHexagonalLattice2D( int countPointsX, int countPointsY, int p
 				ii = (ii+countPointsX)%countPointsX;
 				jj = jj%countPointsY;
 				newVoronoiDiagram->voronoiCells[index]->neighborCells[countNeighborCells++] = newVoronoiDiagram->voronoiCells[ii + jj*countPointsX];
-				//fprintf( stderr, "i:%i, j:%i, index:%i => upper-left neighbor\n", (i - (j+1)%2), (j+1), (i - (j+1)%2) + (j+1)*countPointsY);
+
 			}else
 				newVoronoiDiagram->voronoiCells[index]->countNeighborCells--;
 
@@ -138,19 +137,14 @@ VoronoiDiagram* newHexagonalLattice2D( int countPointsX, int countPointsY, int p
 				ii = ii%countPointsX;
 				jj = jj%countPointsY;
 				newVoronoiDiagram->voronoiCells[index]->neighborCells[countNeighborCells++] = newVoronoiDiagram->voronoiCells[ii + jj*countPointsX];
-				//fprintf( stderr, "i:%i, j:%i, index:%i => lower-right neighbor\n", (i + j%2), (j+1), (i + j%2) + (j+1)*countPointsY);
+
 			}else
 				newVoronoiDiagram->voronoiCells[index]->countNeighborCells--;
 
 		}
 	}
 	
-	/*for( i = 0; i<lastpoint; i++ ){
-		printf( "point %i: ", newVoronoiDiagram->voronoiCells[i].index);
-		for( j = 0; j < newVoronoiDiagram->voronoiCells[i].countNeighborCells; j++)
-			printf( " %i", newVoronoiDiagram->voronoiCells[i].neighborCells[j]->index);
-		printf( "\n");
-	}*/
+
 	
 
 	return newVoronoiDiagram;

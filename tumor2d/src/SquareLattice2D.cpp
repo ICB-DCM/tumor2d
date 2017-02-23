@@ -30,10 +30,8 @@ VoronoiDiagram* newSquareLattice( int countPoints[DIMENSIONS], int periodic[DIME
 	for( i=0; i<DIMENSIONS; i++)
 		newVoronoiDiagram->countVoronoiCells *= countPoints[i];
 	newVoronoiDiagram->maxVoronoiCells = newVoronoiDiagram->countVoronoiCells;
-	//newVoronoiDiagram->countVoronoiCells = countPointsX * countPointsY;            // Anzahl der Punkte speichern
-	//newVoronoiDiagram->maxVoronoiCells   = countPointsX * countPointsY;            // Anzahl der Punkte speichern
 
-	//fprintf( stderr, "DIMENSIONS = %i; newVoronoiDiagram->countVoronoiCells = %i\n", DIMENSIONS, newVoronoiDiagram->countVoronoiCells);
+
 
 	newVoronoiDiagram->voronoiCells = ( VoronoiCell**) malloc ( newVoronoiDiagram->countVoronoiCells * sizeof( VoronoiCell*));
 	for( i=0; i<newVoronoiDiagram->countVoronoiCells; i++)
@@ -58,11 +56,7 @@ VoronoiDiagram* newSquareLattice( int countPoints[DIMENSIONS], int periodic[DIME
 	for( i=0; i<DIMENSIONS; i++)
 		index_i[i] = 0;
 
-	/*fprintf( stderr, "periodic: ");
-	for( i=0; i<DIMENSIONS; i++){
-		fprintf( stderr, "%i ", periodic[i]);
-	}
-	fprintf( stderr, "\n");*/
+
 	
 	for( index = 0; index < newVoronoiDiagram->countVoronoiCells; index++ ){
 
@@ -72,12 +66,12 @@ VoronoiDiagram* newSquareLattice( int countPoints[DIMENSIONS], int periodic[DIME
 		newVoronoiDiagram->voronoiCells[index]->agent = NULL;
 
 		// set coordinates
-		//fprintf( stderr, "%i:  ", index);
+
 		for( i=0; i<DIMENSIONS; i++){
 			newVoronoiDiagram->voronoiCells[index]->position[i] = (double) index_i[i];
-			//fprintf( stderr, "%i ", index_i[i]);
+
 		}
-		//fprintf( stderr, "\n");
+
 			
 		// set neighbors of voronoi cell
 		newVoronoiDiagram->voronoiCells[index]->neighborCells = ( VoronoiCell**) calloc ( 2 * DIMENSIONS, sizeof( VoronoiCell*)); // allocate memory for list of neighbors
@@ -91,7 +85,7 @@ VoronoiDiagram* newSquareLattice( int countPoints[DIMENSIONS], int periodic[DIME
 		    nindex[2],
 		    factor;
 		for( i=0; i<DIMENSIONS; i++){
-			//fprintf( stderr, "%i neighbors set\n", countNeighborCells);
+
 			// determine indexes of 2 neighbors in actual dimension
 			nindex[0] = nindex[1] = 0;
 			factor = 1;
@@ -107,19 +101,18 @@ VoronoiDiagram* newSquareLattice( int countPoints[DIMENSIONS], int periodic[DIME
 			}
 
 			// set neighbors for actual dimension
-			//fprintf( stderr, "%i. dim: include ->", i);
 			if( index_i[i]>0 || periodic[i]){
-				//fprintf( stderr, " %i", nindex[0]);
+
 				newVoronoiDiagram->voronoiCells[ index]->neighborCells[ countNeighborCells++] = newVoronoiDiagram->voronoiCells[ nindex[0]];
 			}else
 				newVoronoiDiagram->voronoiCells[ index]->countNeighborCells--;
 
 			if( index_i[i]<countPoints[i]-1 || periodic[i]){
-				//fprintf( stderr, " %i", nindex[1]);
+
 				newVoronoiDiagram->voronoiCells[ index]->neighborCells[ countNeighborCells++] = newVoronoiDiagram->voronoiCells[ nindex[1]];
 			}else
 				newVoronoiDiagram->voronoiCells[ index]->countNeighborCells--;
-			//fprintf( stderr, "\n");
+
 		}
 		newVoronoiDiagram->voronoiCells[ index]->countFreeNeighborCells = newVoronoiDiagram->voronoiCells[ index]->countNeighborCells;
 

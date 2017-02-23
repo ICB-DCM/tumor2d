@@ -138,7 +138,6 @@ class Substrate
 	Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, AgentList *agentList, double Init_Oxy, double Init_Glu, double Work_Parameter, const char *thedirname, char *boundaryCondition, double customTimestep, Window *thegui);
 	void SwitchOnVisualization();
 	void SwitchOffVisualization();
-	void PlotGraphics();
 	bool pause;
 	#endif
 
