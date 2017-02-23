@@ -33,26 +33,7 @@ int main( int argc, char **argv)
 							ECMThresholdQuiescence, ECMProductionRate, ECMDegradationRate,
 							EndTime, OutputRate, profileTime, profileDepth, rand_seed,
 							gc_out, ecm_out, prolif_out);
-	//fprintf(stdout, "%e\n", epsilon);
-	FILE *fp_raw = fopen( ecm_tmpout, "w");
-	for( int j=0; j<profileDepth; j++){
-		fprintf( fp_raw, "%i %e \n", j, ecm_out[j]);
-	}
-	fclose(fp_raw);
-	
-	// Dennis proliferation
-	fp_raw = fopen(prolif_tmpout, "w");
-	for( int j=0; j<profileDepth; j++){
-		fprintf( fp_raw, "%i %e\n", j, prolif_out[j]);
-	}
-	fclose(fp_raw);
-	
-	
-	fp_raw = fopen( gc_tmpout, "a+");
-	for (int i = 0; i < (int)(EndTime / OutputRate)  ;i++) {
-		fprintf(fp_raw, "%e %e\n", (i+1)*OutputRate,  gc_out[i]);
-	}
-	fclose(fp_raw);
+
 	return 0;
 }
 

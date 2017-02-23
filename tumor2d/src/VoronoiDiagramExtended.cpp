@@ -510,55 +510,6 @@ int VoronoiDiagram::readExtendedNeighborhoodToFile( char* filename, int radius){
 
 
 
-int VoronoiDiagram::writeExtendedNeighborhoodToFile( char* filename, int radius){
-	FILE *fp;
-	char completeFilename[ FILENAMESIZE ];
-	int i, ii;
-	//int hash = 0;
-	char buffer[ 10];
-	int byte = 0;
-	
-	sprintf( completeFilename,"%s.k%i", filename, radius);
-	
-	fp = fopen( completeFilename, "w");
-	if(fp==NULL){
-		fprintf(stderr, "Error opening file %s for writing!\n",completeFilename);
-		return FALSE;
-	}//else
-		//fprintf(stderr, "Write file %s\n",completeFilename);
-
-	for( i=0; i<this->countVoronoiCells; i++){
-		byte += 2 + strlen( long2str( buffer, this->voronoiCells[i]->countExtendedNeighborCells));
-		fprintf( fp, "%s%c", buffer, 0);
-		for( ii=0; ii<this->voronoiCells[i]->countExtendedNeighborCells; ii++){
-			byte += 1 + strlen( long2str( buffer, this->voronoiCells[i]->extendedNeighborhood[ii]->index));
-			fprintf( fp, "%s%c", buffer, 2);
-			//hash += this->voronoiCells[i]->extendedNeighborhood[ii]->index;
-		}
-		fprintf( fp, "%c", 1);
-#if _COMMENTS_ > 2
-		fprintf( stderr, "\rWrite Extended Neighborhood to File %.3lf%% (%.1lf MBytes)\t\t\b", 100.*(i+1.)/this->countVoronoiCells, (double)this->countVoronoiCells*(double)byte/1024./1024./(i+1.));
-#endif
-
-	}
-	//fprintf( stderr, "\n");
-	
-/*	for( i=0; i<this->countVoronoiCells; i++){
-		fprintf( fp, "%i\t", this->voronoiCells[i]->countExtendedNeighborCells);
-		for( ii=0; ii<this->voronoiCells[i]->countExtendedNeighborCells; ii++){
-			fprintf( fp, "%i ", this->voronoiCells[i]->extendedNeighborhood[ii]->index);
-			hash += this->voronoiCells[i]->extendedNeighborhood[ii]->index;
-		}
-		fprintf( fp, "\n");
-	}
-*/
-	fclose( fp);
-	
-	//fprintf( stderr, "hash: %i\n", hash);
-
-	return TRUE;
-
-}
 /*****************************************************************************/
 
 
@@ -1913,7 +1864,7 @@ void printTetrahedronNeighbors( Tetrahedron* tetrahedron)
 	for( j=0; j<tetrahedron->countNeighborTetrahedra; j++){
 		fprintf( stderr, "%p ", tetrahedron->neighborTetrahedra[j]);
 	}
-	fprintf( stderr, "\n");		
+	//fprintf( stderr, "\n");
 }
 /*****************************************************************************/
 
@@ -2249,7 +2200,7 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 					fprintf( stderr, "Algorithm imprisoned in endless loop while trying to remove point %i (in output file: %i)!\n", removedVoronoiCell->index, index);
 					for( int p=0; p<DIMENSIONS; p++)
 						fprintf( stderr, "%lf ", voronoiDiagram->voronoiCells[v]->position[p]);
-					fprintf( stderr, "\n");
+					//fprintf( stderr, "\n");
 				}
 				fwrite( voronoiDiagram->voronoiCells[v]->position , sizeof(voronoiDiagram->voronoiCells[v]->position), 1, pFile );
 				index++;

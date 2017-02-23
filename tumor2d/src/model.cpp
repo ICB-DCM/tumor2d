@@ -117,7 +117,7 @@ bool doThatStat( Cell* lattice[], double molecule[], int size, double contributi
 		for( int i=0; i<length; i++){
 			// write
 #ifndef NO_FILE_OUTPUT
-			fprintf( fp, "%e\n", stat[i]);
+			//fprintf( fp, "%e\n", stat[i]);
 #endif
 			if(stat_out)
 				stat_out[i] = stat[i];
@@ -660,7 +660,7 @@ double* model( int parc, double *parv, double *epsilon_limit, double *data_m, do
 	   if( STAT_OVER_TIME && ceil(t-dt) != ceil(t)){
 		   for( int i=last+1; i<(int)ceil(t); i++ ){
 #ifndef	NO_FILE_OUTPUT
-			   fprintf( fp_growthcurve, "%i\n ", last_cellCount);
+			   //fprintf( fp_growthcurve, "%i\n ", last_cellCount);
 #endif
 			   (mout+growth_curve)[i] = last_cellCount;
 			   if( epsilon_limit)
@@ -669,7 +669,7 @@ double* model( int parc, double *parv, double *epsilon_limit, double *data_m, do
 		   last=ceil(t);
 		   last_cellCount=countCells( lattice, N);
 #ifndef	NO_FILE_OUTPUT
-		   fprintf( fp_growthcurve, "%i\n ", last_cellCount);
+		   //fprintf( fp_growthcurve, "%i\n ", last_cellCount);
 #endif
 		   (mout+growth_curve)[last] = last_cellCount;
 		   if( epsilon_limit)
@@ -680,21 +680,21 @@ double* model( int parc, double *parv, double *epsilon_limit, double *data_m, do
 	   {
 		   last_cellCount = countCells( lattice, N);
 #ifndef	NO_FILE_OUTPUT
-		   fprintf( fp_growthcurve, "%e\n ", t);
+		  // fprintf( fp_growthcurve, "%e\n ", t);
 #endif
 	   }
 
 #ifndef	NO_FILE_OUTPUT
 	   {
 		   FILE *fp = fopen( "arrangement.dat", "w+");
-		   for( int i=0; i<N; i++)
-			   fprintf( fp, "%i %i %e %e %e %e\n", i, (lattice[i]==0 ? 0 : lattice[i]->_type), glc[i], oxy[i], atpPro(glc[i], oxy[i]), ecm[i]);
+		  // for( int i=0; i<N; i++)
+			//   fprintf( fp, "%i %i %e %e %e %e\n", i, (lattice[i]==0 ? 0 : lattice[i]->_type), glc[i], oxy[i], atpPro(glc[i], oxy[i]), ecm[i]);
 		   fclose( fp);
 	   }
 #endif
 	}
 #ifndef	NO_FILE_OUTPUT
-	fprintf( fp_growthcurve, "\n");
+	//fprintf( fp_growthcurve, "\n");
 	fclose( fp_growthcurve);
 #endif
 

@@ -230,7 +230,6 @@ public:
 	void setFramePoints();
 
 	int readExtendedNeighborhoodToFile( char* filename, int radius);
-	int writeExtendedNeighborhoodToFile( char* filename, int radius);
 
 	void refine(  VoronoiCell *vc, int scale, ActionTree *actionTree);
 	VoronoiCell* coarsen( VoronoiCell *vc, int scale, ActionTree *actionTree, AgentList *agentList);

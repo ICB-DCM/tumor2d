@@ -2976,7 +2976,7 @@ void SolveJacobiMethod( SparseMatrix *A, double *b, double *x0, int maxit, doubl
 #endif
 		}
 
-		fprintf( fp, "%i %e %e %e \n", m, (float)(clock() - passedTime) / (float)CLOCKS_PER_SEC, myError, myError2);
+		//fprintf( fp, "%i %e %e %e \n", m, (float)(clock() - passedTime) / (float)CLOCKS_PER_SEC, myError, myError2);
 	}
 	fclose(fp);
 }
@@ -3054,7 +3054,7 @@ void SolveGaussSeidelMethod( SparseMatrix *A, double *b, double *x0, int maxit, 
 #endif
 		}
 
-		fprintf( fp, "%i %e %e %e \n", m, (float)(clock() - passedTime) / (float)CLOCKS_PER_SEC, myError, myError2);
+		//fprintf( fp, "%i %e %e %e \n", m, (float)(clock() - passedTime) / (float)CLOCKS_PER_SEC, myError, myError2);
 	}
 
 	fclose(fp);

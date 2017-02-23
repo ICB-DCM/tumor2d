@@ -895,138 +895,7 @@ Action *selectActionVariablTimeStep(AgentList *agentArray, double &Time) {
 	return NULL;
 }
 
-void writeVoronoiCellInformation(VoronoiCell *vc, FILE *fp) {
-	double cATP = GiveMeTheATP(vc);
-	double alpha =
-			MIN( vc->glucose * GiveMeTheGlucoseRate(vc), vc->oxygen * GiveMeTheOxygenRate(vc) / 6.)
-					/ vc->glucose / GiveMeTheGlucoseRate(vc);
-	if (GiveMeTheGlucoseRate(vc) == 0.)
-		alpha = 0.;
 
-	fprintf(
-			fp,
-			"%lf %lf %lf %lf %lf %lf %lf %lf %lf %i %i %i %i %e %lf %lf %lf %lf %lf %e %e %e\n",
-
-			// 2D-coordinates
-			vc->position[0], vc->position[1], vc->position[DIMENSIONS - 1],
-
-			// nutrients & metabolites
-			vc->glucose,
-			vc->oxygen,
-			vc->ecm,
-
-			vc->lactate,
-			vc->morphogen,
-			// change of nutrients & metabolites
-
-			// cell state
-			(float) (vc->getState() == COMPARTMENT ? (float) GetAgent(vc)->cellCount
-					/ (float) GetAgent(vc)->maxCellCount
-					: vc->getState() == ACTIVE),
-
-			10 * (vc->getState() == NONACTIVE),
-
-			11 * (vc->getState() == NECROTIC), //||
-
-			12 * ((vc->getState() == FREE && GetAgent(vc) != NULL) ? 1 : 0),
-
-			13 * (vc->getState() == VESSEL ? 1 : 0),
-
-			// ATP
-			//cATP
-			cATP,
-			alpha,
-
-			vc->CPT11in, vc->CPT11out,
-
-			vc->CPT11in * 8000., vc->CPT11out * 1000.,
-
-			vc->waste,
-
-			(GetAgent(vc) == NULL ? 0 : GetAgent(vc)->waste),
-
-			( GetAgent(vc) ? GiveMeTheATP( GetAgent(vc)) : 0)
-
-			);
-
-}
-
-void writeSliceInformation(VoronoiDiagram* voronoiDiagram, AgentList *agentList,
-		char *dirname) {
-
-	//int dimSize = (int) (pow(voronoiDiagram->countVoronoiCells, 1. / DIMENSIONS) + 0.5);
-	int dimSize = voronoiDiagram->xN[0];
-
-	//int dimSize = voronoiDiagram->countVoronoiCells;
-	//printf( "dimSize:%i\n", dimSize);
-	int i, ii, iii; // = dimSize/2;
-	//printf( "indexBase:%i\n", indexBase);
-
-	// open file to write
-	FILE *fp;
-	char outfilename[512];
-	sprintf(outfilename, "%s/slice.dat", dirname);
-	if ((fp = fopen(outfilename, "w")) == NULL) {
-		fprintf(stderr, "Error opening file %s for writing!\n", outfilename);
-	}
-	//fprintf( stderr, "DIMENSIONS:%i\n", DIMENSIONS);
-	// write slice data
-#if DIMENSIONS == 1
-
-	ii = 0;
-	iii = 0;
-
-	for (i = 0; i < voronoiDiagram->countVoronoiCells; i++) {
-		//if( GetAgent( voronoiDiagram->voronoiCells[i]) != NULL)
-		//fprintf( stderr, "%s \n", cellTypeToString( GetAgent( voronoiDiagram->voronoiCells[i])->state));
-
-		writeVoronoiCellInformation( voronoiDiagram->voronoiCells[i], fp);
-	}
-
-#elif DIMENSIONS == 2
-
-	/*for (ii = 0; ii < voronoiDiagram->xN[0]; ii++)
-	 for (i = 0; i < voronoiDiagram->xN[1]; i++) {
-
-	 int index = ii * dimSize + i;
-
-	 writeVoronoiCellInformation( voronoiDiagram->voronoiCells[index], fp);
-	 }*/
-
-	for (i = 0; i < voronoiDiagram->countVoronoiCells; i++) {
-		//if( GetAgent( voronoiDiagram->voronoiCells[i]) != NULL)
-		//fprintf( stderr, "%s \n", cellTypeToString( GetAgent( voronoiDiagram->voronoiCells[i])->state));
-		if (i % voronoiDiagram->xN[0] == 0)
-			fprintf(fp, "\n");
-		writeVoronoiCellInformation(voronoiDiagram->voronoiCells[i], fp);
-	}
-
-#elif DIMENSIONS == 3
-
-	iii = dimSize / 2;
-	//int centerOfMassX = 0;
-	//int count = 0;
-	/*for( i=0; i<agentList->countActiveAgents; i++)
-	 for( ii=0; ii<agentList->agents[i]->countLocations; ii++){
-	 centerOfMassX += agentList->agents[i]->location[ii]->position[0];
-	 count++;
-	 }
-	 iii = centerOfMassX/count;*/
-	for (ii = 0; ii < dimSize; ii++) {
-		for (i = 0; i < dimSize; i++) {
-
-			int index = iii * dimSize * dimSize + ii * dimSize + i;
-
-			writeVoronoiCellInformation( voronoiDiagram->voronoiCells[index], fp);
-		}
-		fprintf(fp, "\n");
-	}
-
-#endif
-
-	// close file
-	fclose(fp);
-}
 
 void statisticsOfSpheroid(VoronoiDiagram* voronoiDiagram,
 		double** global_oxygen_concentration,
@@ -1474,8 +1343,7 @@ double montecarlo(double InitialRadius_in, double InitialQuiescentFraction_in, d
 					innerDomainRadius, CellDivisionDepth,
 					getCentralCell(voronoiDiagram));
 			voronoiDiagram->NEWsetExtendedNeighborhood((int) CellDivisionDepth);
-			voronoiDiagram->writeExtendedNeighborhoodToFile(filename_fineGrid,
-					(int) CellDivisionDepth);
+
 		}
 
 
