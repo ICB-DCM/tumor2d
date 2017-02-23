@@ -251,8 +251,6 @@ class Substrate
 	double *centralCellValue;
 	static const double ControlDuration = 1.;
 
-	void RunUnsteadyTest();
-	void RunSteadyTest(int test_number, int time_iterations,string bc,double dirichlet_value,double mydiffusion, double myrate);
 #endif
 
 	}; 

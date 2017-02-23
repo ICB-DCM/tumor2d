@@ -443,13 +443,12 @@ void Molecule::PureDiffusion1D(Molecule *Mo)
 		}
 
 
-	if(Mo->SolveTridiagonaleMatrix(0) != 0)
-		cout << "Matrix Error" << endl;
+
 		
 	for(i = a; i < size[0] - a; i++)
 		{
 		*(Mo->values[i][0][0]) = Mo->solution[0][i];
-		if( Mo->solution[0][i] < 0){cout << "Concentration negative" << endl; exit(1);}
+		if( Mo->solution[0][i] < 0){exit(1);}
 		}
 	
 	}
@@ -481,10 +480,7 @@ void Molecule::PureDiffusion2D(Molecule *Mo)
 				Mo->second_member[i_axe][i] =  *(Mo->values[*x][*y][0]) ;
 				}
 			Mo->BuildMatrix(i_axe,i,j,0,Mo,a); 
-			
-			
-			if(Mo->SolveTridiagonaleMatrix(i_axe) != 0)
-				cout << "Matrix Error" << endl;
+
 		
 			for(i = a; i < i_size-a; i++)
 				{
@@ -945,19 +941,15 @@ void Molecule::ConsumptionWhithinDiffusion3D(Molecule *Mo)
 
 		int l;
 		for( l=0; l<Domain[i][j][k]->countNeighborCells && Domain[i][j][k]->neighborCells[l]->agent != NULL; l++);
-		//cerr << endl << "l = " << l << " neighbors = " << Domain[i][j][k]->countNeighborCells<< endl;
 		if( l != Domain[i][j][k]->countNeighborCells){
 			if( GetAgent( Domain[i][j][k])->countLocations == 1){
-				//cerr << endl << "deactivate" << "(" << size[0] <<", " <<size[1] <<"," << size[2] <<")"<< endl;
 				agentArray->deactivateAgent( GetAgent( Domain[i][j][k]));
 			}
 			GetAgent( Domain[i][j][k])->detach( Domain[i][j][k]);
-			//myStatistics->count_inner_empty_volume[0]--;
 			Domain[i][j][k]->oxygen  = Domain[i][j][k]->neighborCells[l]->oxygen;
 			Domain[i][j][k]->glucose = Domain[i][j][k]->neighborCells[l]->glucose;
 		}
 	}
-	//cerr << endl << "Am I there?" << endl;
 	
 	double rate;
 	int a = 0;
@@ -1130,14 +1122,14 @@ void Molecule::BuildMatrixRateWihtoutFree(int axe, int posx, int posy, int posz,
 	
 	for(n = bc; n < size[axe] - bc; n++)
 		{
-		//if(Domain[*i][*j][*k]->getState() != FREE )
+
 		if(Domain[*i][*j][*k]->agent != NULL )
 			{
 			rate = dt*Mo->Rate(Domain[*i][*j][*k]);
 			Mo->diagonal[axe][n] = 1 + 2*Mo->alpha  /  (1 + rate);
 			Mo->lowerdiagonal[axe][n] = -Mo->alpha  /  (1 + rate);
 			Mo->upperdiagonal[axe][n] = -Mo->alpha  /  (1 + rate);
-			//cout << "i=" << *i << "\tj=" << *j << "\tk="<< *k <<endl;
+
 			}
 		else
 			{
@@ -1149,7 +1141,7 @@ void Molecule::BuildMatrixRateWihtoutFree(int axe, int posx, int posy, int posz,
 	
 	if(bc == 0)
 		{
-		//if(Domain[*i][*j][*k]->getState() != FREE )
+
 		if(Domain[*i][*j][*k]->agent != NULL )
 			{
 			n = 0;

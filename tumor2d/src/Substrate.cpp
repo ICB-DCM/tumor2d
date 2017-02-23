@@ -396,27 +396,7 @@ Substrate::~Substrate()
 		}
 	delete[] TheCubes;
 
-	//cerr << "I've been killed... signed the substrate" << endl;
 
-	/*Oxygen.~Molecule();
-	Glucose.~Molecule();
-	Growthfactors.~Molecule();
-	Lactate.~Molecule();*/
-
-
-	#ifdef __MultiMade__
-	//Here is the code you want execute only is multi made version.
-	
-	/* Get the current time. I stole this from Nick. GnakGnakGnak*/
-	/*time_t temp_t = time(NULL);
-	tm* loctime = localtime(&temp_t);
-	char local_time[256];
-	strftime (local_time, 256, "%A, %B %d. %k:%M:%S ", loctime);
-	FILE *stream;
-	stream = fopen("../../output/SimulationOver.txt", "at");
-	fprintf(stream, "G:%f O:%f is over at %s.\n",Initial_Glucose,Initial_Oxygen,local_time);
-	fclose(stream);*/
-	#endif
 	
 	}
 
@@ -639,12 +619,7 @@ for(int test = 0; test < 1000; test++) ///*Speed test*/
 
 #ifdef __TestSpeed__
 	timer.End();
-	
-	#if VERBOSE >= 1
-	cerr << timer.Mean() << " seconds/computation " << timer.Total() << " seconds in "<< timer.calls << " calls." << endl;
-	if( timer.calls > 20 )
-			exit(1);
-	#endif
+
 
 }/*end of the speed test*/
 #endif
@@ -652,9 +627,7 @@ for(int test = 0; test < 1000; test++) ///*Speed test*/
 	int i = 0;
 	while(pause)
 		{
-		#if  VERBOSE>= 1
-		cerr << "William is on a strike he said: I'dont want to compute anymore:" << i << endl;
-		#endif
+
 		i++;
 		gui->glWidget->computation_is_paused = true;
 		}
@@ -784,7 +757,7 @@ void Substrate::Produce_Growthfactors()
 void Substrate::SwitchOnVisualization()
 	{
 	#if  VERBOSE>= 1
-	//cerr << "William said:I've been switched on... signed the visualization" << endl;
+
 	#endif
 	//Because of the threads, we have sometimes to wait
 	while(!gui_is_defined)
@@ -797,9 +770,7 @@ void Substrate::SwitchOnVisualization()
 	
 void Substrate::SwitchOffVisualization()
 	{
-	#if  VERBOSE>= 1
-	//cerr << "I've been killed... signed the visualization" << endl;
-	#endif
+
 	gui->glWidget->KillVisualization(gui);
 	
 	}
@@ -966,7 +937,7 @@ int Substrate::SimpleOutput()
 			}
 		myfile.close();
 		}
-	else{cerr << "Unable to open file in Substrate::Simple Output "<< endl; exit(1);}
+	else{exit(1);}
 	
 	return 0;
 	}
@@ -977,9 +948,7 @@ int Substrate::BigOutput(double current_time)
 	char filename[100];
 	sprintf(filename,"%s/thebigone%i.txt", outputpath, BigOutput_number);
 
-	#if VERBOSE >= 1
-	cerr << endl << "Make the big output... at time: " << current_time << endl;
-	#endif
+
 	
 	int total_number_of_lines = 0;
 
@@ -1032,16 +1001,16 @@ int Substrate::BigOutput(double current_time)
 
 		myfile.close();
 		}
-	else{cerr << "Unable to open file in Substrate::Simple Output "<< endl; exit(1);}
+	else{exit(1);}
 	
 	return 0;
 	}
 
 int Substrate::Output(int Number)
 	{
-	//FILE *stream;
+
 	char filename[100];
-	//cerr << Number << endl;
+
 	if(Number == -1)
 		{
 		sprintf(filename,"%s/steadystate.txt",outputpath);
@@ -1126,7 +1095,7 @@ int Substrate::Output(int Number)
 				}
 			myfiletoread.close();
 			}
-			else{cerr <<endl<< "Unable to open file in Substrate::Output number = " << Number << ", simulation number = "<< simulation_number << endl; exit(1);}
+			else{exit(1);}
 		
 		std::ofstream myfile(filename);		
 		if (myfile.is_open())
@@ -1164,7 +1133,7 @@ int Substrate::Output(int Number)
 				}
 			myfile.close();
 			}
-			else{cerr << "Unable to open file in Substrate::Output number " << Number << "simulation number "<< simulation_number << endl; exit(1);}
+			else{exit(1);}
 		}
 	//Create a file when it does not exist
 	else
@@ -1196,7 +1165,7 @@ int Substrate::Output(int Number)
 				}
 			myfile.close();
 			}
-			else{cerr << "Unable to open file in Substrate::Output number " << Number << "simulation number "<< simulation_number << endl; exit(1);}
+			else{exit(1);}
 		}
 	return ++Number;
 	}
@@ -1210,9 +1179,7 @@ void Substrate::MakeGnuplotScript(int NumberOfFiles)
 
 	if (myfile.is_open())
   		{
-		#if  VERBOSE >= 1
-		cerr << "make the gnuplot script for "<< NumberOfFiles << " text flies"<< endl;	
-		#endif
+
 		myfile << "set autoscale\n"; 
 		myfile << "set xtic auto\n";
 		myfile << "set ytic auto\n";
@@ -1245,9 +1212,7 @@ void Substrate::MakeGnuplotScript(int NumberOfFiles)
 	std::ofstream radialfile(filename);
 	if (radialfile.is_open())
   		{
-		#if  VERBOSE >= 3
-		cerr << "make the gnuplot script "<< endl;
-		#endif
+
 		radialfile << "set autoscale\n"; 
 		radialfile << "set xtic auto\n";
 		radialfile << "set ytic auto\n";
@@ -1287,10 +1252,6 @@ void Substrate::QualityControl(int mode)
 	fixrate = 0.1;
 	mymolecule_dirichletvalue = 16.5; // No zero
 
-	#if VERBOSE >= 1
-	cerr << "Quality Control Starts in dimension = " << DIMENSIONS;
-	cerr << " with time step = " << timestep << endl;
-	#endif
 
 
 	//Fisrt Initialization
@@ -1309,188 +1270,14 @@ void Substrate::QualityControl(int mode)
 	mymolecule.SetMatrix(alpha_mymolecule);
 	mymolecule.Rate = &FixRate;
 
-	//TEST PURE DIFFUSION
-		//TEST NEUMANN
-			//DIFFUSION  = 0
-				//STEADY
-				//UNSTEADY
-			//DIFFUSION != 0
-				//STEADY
-				//UNSTEADY
-		//TEST DIRICHLET
-	//TEST ut = uxx - qu
-		//Same
-	//TEST ut = uxx - q
-		//Same
-	/*
-	string bc[2];
-		bc[0] = "Neumann";
-		bc[1] = "Dirichlet";
-		
-	double mydirichletvalues[2];
-		mydirichletvalues[0] = 0.;
-		mydirichletvalues[1] = mymolecule_dirichletvalue;
-	double mydiff[2];
-		mydiff[0] = 0.;
-		mydiff[1] = mymolecule_diffusion;
-	double myrate[2];
-		myrate[0] = 0.;
-		myrate[1] = fixrate;
-	
-	int n = 1;
-	for(i = 0; i < 3; i++) //DIFFERENT EQUATIONS
-		{
-		
-		for(j = 0; j < 2; j++) //DIFFERENT BORDER CONDITIONS
-			{
-			for(int t = 0; t < 2 ; t++)
-			{
-			mymolecule_dirichletvalue = mydirichletvalues[t];
-			if(bc[j] == "Neumann"){t = 123;}
-			for(k = 0; k < 2; k++)	//DIFFUSION NULL OR NOT
-				{
-				
-				for(int m = 0; m < 2; m++) //CONSUMPTION NULL OR NOT
-					{
-					
-					if(i == 0){ m = 127;}
 
-					alpha_mymolecule = mydiff[k]*timestep/(SPATIAL_UNIT*SPATIAL_UNIT*spacestep*spacestep);
-					mymolecule.SetMethod(i,BORDERAREBORDER,bc[j]);
-					mymolecule.SetMatrix(alpha_mymolecule);
-					fixrate = myrate[m];
-
-					cerr << "START TEST ("<<n<<"/60): " << i << ", " << bc[j] << ", ";
-					if(bc[j] == "Dirichlet")
-						cerr << " value = "<< mydirichletvalues[t] << ",";
-
-					cerr << "Diff: " << mydiff[k];
-					cerr << ", Consumption: " << myrate[m];
-
-					cerr << ", Steady " << endl;
-					RunSteadyTest(n,iteration_todo, bc[j], mydirichletvalues[t],mydiff[k],myrate[m]);
-					n++;
-
-					cerr << "START TEST ("<<n<<"/60): " << i << ", " << bc[j] << ", ";
-					if(bc[j] == "Dirichlet")
-						cerr << " value = "<< mydirichletvalues[t] << ",";
-
-					cerr << "Diff: " << mydiff[k];
-					cerr << ", Consumption: " << myrate[m];
-					cerr << ", Unsteady " << endl;
-					RunUnsteadyTest();
-					n++;
-					}	
-				}
-			}
-			}
-		}
-	*/
-	
-//	TimeStepControl(mode);
-// 	DirichletZero(mode);
-//	Parabole(mode);
 	Instationnaire_qu(mode);
-// 	Instationnaire_q(mode);
 
 
-	#if VERBOSE >= 1
-	cerr << "End of the quality control" << endl;
-	#endif	
+
+
 	}
 
-void Substrate::RunSteadyTest(int test_number,int time_iterations,string bc,double dirichlet_value,double mydiffusion, double myrate)
-	{
-
-
-	//INITIAL CONDITION	
-	double u[ axe_size[0] ];
-	double pi = 3.141592653589793238;
-	double dx = SPATIAL_UNIT;
-	double lgx = (axe_size[0] - 1) * SPATIAL_UNIT;
-	double dt = timestep;
-
-	if(bc == "Dirichlet")
-		{
-		for(int i = 0; i < axe_size[0]; i++)
-			{
-			(TheCubes[i][0][0])->glucose    = sin(0*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose += 8*sin(1*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose   += sin(2*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose   += sin(3*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose   += sin(4*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose   += sin(5*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose  += sin(17*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose  += sin(19*pi*dx*i/lgx);
-
-			(TheCubes[i][0][0])->glucose  += dirichlet_value;
-		
-			u[ i ] = (TheCubes[i][0][0])->glucose;
-			}
-		}
-	else
-		{
-		for(int i = 0; i < axe_size[0]; i++)
-			{
-			(TheCubes[i][0][0])->glucose  = 7*cos(0*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose += cos(1*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose += cos(2*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose += cos(3*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose += cos(4*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose += cos(5*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose += cos(17*pi*dx*i/lgx);
-			(TheCubes[i][0][0])->glucose += cos(19*pi*dx*i/lgx);
-		
-			u[ i ] = (TheCubes[i][0][0])->glucose;
-			}
-		}
-			
-
-
-	for(int n = 0; n < time_iterations; n++)
-			{
-			mymolecule.GiveMe(&mymolecule);
-			#if VERBOSE >= 1
-			if(n % 47 == 0)
-				cerr << "\r" << 100 * (double)n / (double)(time_iterations) <<"% 1602";
-			#endif
-			}
-	
-	#if VERBOSE >= 1
-	cerr << "\n nb iterations: " << time_iterations << endl;
-	#endif
-
-	char filename[100];
-	sprintf(filename,"%s/%i-quality_test.txt",outputpath,test_number);
-
-	std::ofstream myfile(filename);
-	int cy = axe_size[1]/2;
-	int cz = axe_size[2]/2;
-
-
-	if (myfile.is_open())
-		{
-
-		myfile << "#border condition: " << bc << endl;
-		myfile << "#dirichlet value:  " << dirichlet_value << endl;
-		myfile << "#diffusion: " << mydiffusion << endl;
-		myfile << "#Consumption: " << myrate << endl;
-		myfile << "#Steady" << endl;		
-		
-		for(int i=0; i < axe_size[0]; i += quality_output_frequency)
-			{
-			myfile << i*dx << "\t";
-			myfile << TheCubes[i][cy][cz]->glucose << "\t";
-			myfile << u[i] << "\n";
-			}
-		myfile.close();
-		}
-	else{cerr << "Unable to open file qualitycontrol-"<< timestep << endl; exit(1);}
-	
-	}
-
-void Substrate::RunUnsteadyTest()
-	{}
 
 void Substrate::Instationnaire_q(int mode)
 	{
@@ -1579,7 +1366,7 @@ void Substrate::Instationnaire_q(int mode)
 		
 			u[ i ] = (TheCubes[i][0][0])->glucose;
 			}
-		cerr << "last: " << u[ axe_size[ 0] - 1] <<endl;
+
 		}
 	else
 		{
@@ -1608,9 +1395,7 @@ void Substrate::Instationnaire_q(int mode)
 			#endif
 			}
 	
-	#if VERBOSE >= 1
-	cerr << "\n nb iterations: " << iteration_indice << endl;
-	#endif
+
 	char filename[100];
 	sprintf(filename,"%s/moche.txt",outputpath);
 
@@ -1694,7 +1479,7 @@ void Substrate::Instationnaire_q(int mode)
 			}
 		myfile.close();
 		}
-	else{cerr << "Unable to open file qualitycontrol-"<< timestep << endl; exit(1);}	
+	else{exit(1);}
 	}
 
 void Substrate::Instationnaire_qu(int mode)
@@ -1789,7 +1574,7 @@ void Substrate::Instationnaire_qu(int mode)
 		
 			u[ i ] = (TheCubes[i][0][0])->glucose;
 			}
-		cerr << "last: " << u[ axe_size[ 0] - 1] <<endl;
+
 		}
 	else
 		{
@@ -1818,9 +1603,7 @@ void Substrate::Instationnaire_qu(int mode)
 			#endif
 			}
 	
-	#if VERBOSE >= 1
-	cerr << "\n nb iterations: " << iteration_indice << endl;
-	#endif
+
 	char filename[100];
 	sprintf(filename,"%s/sturm.txt",outputpath);
 
@@ -1868,35 +1651,35 @@ void Substrate::Instationnaire_qu(int mode)
 
 			lambda = 0*0*mydiffusion*pi*pi/(lgx*lgx) + fixrate;
 			u[i]   = 7*cos(0*pi*dx*i/lgx)*exp(-lambda*dt*iteration_indice);
-			cerr << "u[i] = " << u[i] << endl;	
+
 			
 			lambda = 1*1*mydiffusion*pi*pi/(lgx*lgx) + fixrate;
 			u[i]  += cos(1*pi*dx*i/lgx)*exp(-lambda*dt*iteration_indice);
-			cerr << "u[i] = " << u[i] << endl;	
+
 	
 			lambda = 2*2*mydiffusion*pi*pi/(lgx*lgx) + fixrate;
 			u[i]  += cos(2*pi*dx*i/lgx)*exp(-lambda*dt*iteration_indice);
-			cerr << "u[i] = " << u[i] << endl;	
+
 			
 			lambda = 3*3*mydiffusion*pi*pi/(lgx*lgx) + fixrate;
 			u[i]  += cos(3*pi*dx*i/lgx)*exp(-lambda*dt*iteration_indice);
-			cerr << "u[i] = " << u[i] << endl;	
+
 			
 			lambda = 4*4*mydiffusion*pi*pi/(lgx*lgx) + fixrate;
 			u[i]  += cos(4*pi*dx*i/lgx)*exp(-lambda*dt*iteration_indice);
-			cerr << "u[i] = " << u[i] << endl;	
+
 			
 			lambda = 5*5*mydiffusion*pi*pi/(lgx*lgx) + fixrate;
 			u[i]  += cos(5*pi*dx*i/lgx)*exp(-lambda*dt*iteration_indice);
-			cerr << "u[i] = " << u[i] << endl;	
+
 			
 			lambda = 17*17*mydiffusion*pi*pi/(lgx*lgx) + fixrate;
 			u[i]  += cos(17*pi*dx*i/lgx)*exp(-lambda*dt*iteration_indice);
-			cerr << "u[i] = " << u[i] << endl;	
+
 			
 			lambda = 19*19*mydiffusion*pi*pi/(lgx*lgx) + fixrate;
 			u[i]  += cos(19*pi*dx*i/lgx)*exp(-lambda*dt*iteration_indice);
-			cerr << "u[i] = " << u[i] << endl;	
+
 			
 			}
 		}
@@ -1912,7 +1695,7 @@ void Substrate::Instationnaire_qu(int mode)
 			}
 		myfile.close();
 		}
-	else{cerr << "Unable to open file qualitycontrol-"<< timestep << endl; exit(1);}	
+	else{exit(1);}
 	}
 
 void Substrate::Parabole(int mode)
@@ -1976,9 +1759,7 @@ void Substrate::Parabole(int mode)
 			#endif
 			}
 	
-	#if VERBOSE >= 1
-	cerr << "\n nb iterations: " << themax << endl;
-	#endif
+
 	char filename[100];
 	sprintf(filename,"%s/parabole.txt",outputpath);
 
@@ -1998,7 +1779,7 @@ void Substrate::Parabole(int mode)
 			}
 		myfile.close();
 		}
-	else{cerr << "Unable to open file qualitycontrol-"<< timestep << endl; exit(1);}
+	else{exit(1);}
 		
 	}
 void Substrate::DirichletZero(int mode)
@@ -2055,9 +1836,7 @@ void Substrate::DirichletZero(int mode)
 			#endif
 			}
 	
-	#if VERBOSE >= 1
-	cerr << "\n nb iterations: " << themax << endl;
-	#endif
+
 	char filename[100];
 	sprintf(filename,"%s/dirichlet.txt",outputpath);
 
@@ -2074,7 +1853,7 @@ void Substrate::DirichletZero(int mode)
 			}
 		myfile.close();
 		}
-	else{cerr << "Unable to open file qualitycontrol-"<< timestep << endl; exit(1);}
+	else{exit(1);}
 		
 	}
 
@@ -2089,14 +1868,10 @@ void Substrate::TimeStepControl(int mode)
 
 	if((TheCubes[cx][cy][cz])->getState() == ACTIVE)
 		{
-		#if VERBOSE >= 5
-		cerr << "William: Youpi we have a cell in the center to make the test" << endl;
-		#endif
+
 		}
 	else	{
-		#if VERBOSE >= 1
-		cerr << "No cell in the center in x:"<< cx << " y:"<< cy << " z:"<< cy << endl;
-		#endif
+
 		exit(1);
 		}
 	
@@ -2107,9 +1882,7 @@ void Substrate::TimeStepControl(int mode)
 		timestep = timestep_memory / factor ;
 		int QualityNumberOfIterations = (int)(ControlDuration/(timestep));
 		centralCellValue = new double[QualityNumberOfIterations*factor];
-		#if VERBOSE >= 1
-		cerr << "Time Step divided by factor "<< factor << endl;
-		#endif
+
 		RebuildMatrix();
 		//Initialize_Oxygen();
 		Initialize_Glucose();
@@ -2129,9 +1902,7 @@ void Substrate::TimeStepControl(int mode)
 		sprintf(filename,"%s/%i-qualitycontrol-%.1e.txt",outputpath,factor,timestep);
 		Output_QualityControl(centralCellValue, factor,filename);
 		
-		#if VERBOSE >= 1
-		cerr << endl;
-		#endif
+
 		delete[] centralCellValue;
 		}
 	timestep = timestep_memory;
