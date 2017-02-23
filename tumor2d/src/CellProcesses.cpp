@@ -1115,7 +1115,6 @@ void update_expanded_cell(ActionList *actionList, VoronoiCell* added_cell, Voron
 
 
 
-	//fprintf( stderr, "CELL: free n.: %i, free r-n.: %i)\n", added_cell->countDirectFreeNeighbors, added_cell->countReachableFreeNeighbors);
 	if( added_cell->countFreeNeighborCells == 0 && added_cell->countFreeExtendedNeighborCells == 0)
 	{
 		// set status
@@ -1369,7 +1368,6 @@ void update_surrounding_removed_cell( ActionTree *actionList, Agent* deleted_cel
 	for(ii=0; ii<deleted_cell->countLocations; ii++)
 	for (i = 0; i < deleted_cell->location[ii]->countNeighborCells; i++){
 
-		//fprintf( stderr, "location: %i, neighbor: %i\n", ii, i);
 		VoronoiCell *currentNeighbor = deleted_cell->location[ii]->neighborCells[i];
 		
 		// increase number of free neighborCells
@@ -1378,7 +1376,6 @@ void update_surrounding_removed_cell( ActionTree *actionList, Agent* deleted_cel
 		switch( currentNeighbor->getState()){
 
 			case NONACTIVE:
-			//fprintf( stderr, "INFO: NONACTIVE\n");
 			GetAgent( currentNeighbor)->actualize( actionList);
 			break;
     
@@ -1420,11 +1417,9 @@ void update_surrounding_reduced_compartment( ActionTree *actionList, Agent* dele
 
 	/******    update neighborCells    ******/
 
-	//for(ii=0; ii<deleted_cell->countLocations; ii++)
 	if( deleted_cell->cellCount + 1 == deleted_cell->maxCellCount){
 	for (i = 0; i < deleted_cell->location[ii]->countNeighborCells; i++){
 
-		//fprintf( stderr, "location: %i, neighbor: %i\n", ii, i);
 		VoronoiCell *currentNeighbor = deleted_cell->location[ii]->neighborCells[i];
 		
 		// increase number of free neighborCells
@@ -1765,15 +1760,10 @@ Action* selectAction( ActionList *actionList, double* time){
 	// randomly choose part of rate sum
 	double temp_rand = myRand();
 	random = temp_rand * actionList->sum_of_prob;
-	//random = myRand() * actionList->sum_of_prob;
-	//if( actionList->length==2)
-	//printf("actionList->sum_of_prob=%lf, temp_rand=%lf\n", actionList->sum_of_prob, temp_rand);
 
 	// sum probabilities until randomly choosen part is reached
 	sum = 0.;
 	for(i = 0; i < actionList->length; i++){
-		//if( actionList->length==2)
-		//printf("p_elem->rate=%lf\n", p_elem->rate);
 		sum += p_elem->rate;
 		if (random <= sum) {
 			// calculate passed time
@@ -1787,8 +1777,6 @@ Action* selectAction( ActionList *actionList, double* time){
 	printf("Something is going wrong in selectAction()\n");
 	printf("INFO: actionList->sum_of_prob=%lf, random=%lf (%lf), sum=%lf\n", actionList->sum_of_prob, random, temp_rand, sum);
 	printActionList( actionList);
-	//time_temp = difftime(time(NULL),t);
-	//Sim_time += time_temp;
 	exit(0);
 }
 /*****************************************************************************/
@@ -1823,28 +1811,21 @@ VoronoiCell* growCell( VoronoiDiagram *voronoiDiagram, Agent* cell, int &shift, 
 	int i;
 
 	// SAME CMPARTMENT
-	//fprintf( stderr, "SAME COMPARTMENT?\n");
 	if( cell->state == COMPARTMENT && cell->cellCount<cell->maxCellCount)
 		return GetVoronoiCell( cell);
 
 	// DIRECT NEIGHBOR
-	//fprintf( stderr, "DIRECT NEIGHBOR?\n");
 	int countFreeNeighbors = 0;
 	for( i=0; i<cell->countLocations; i++)
 		countFreeNeighbors += cell->location[i]->countFreeNeighborCells;
 
-//	if( cell->location[i]->countFreeNeighborCells>0){
 	int which_free_neigbor = (int) (myRand() * (double) countFreeNeighbors) + 1;
 	for( i=0; i<cell->countLocations; i++){
 		if( cell->location[i]->countFreeNeighborCells>0){
-			//printf("free neighbors = %d, which_free_neigbor = %d\n", cell->location[i]->countFreeNeighborCells, which_free_neigbor);
 			for (int ii = 0; ii < cell->location[i]->countNeighborCells; ii++){
 				if( cell->location[i]->neighborCells[ii]->isFree()){
 					if(--which_free_neigbor == 0){
-						//return GetAgent( GetVoronoiCell( parent_cell)->neighborCells[i]);
-						//AddLocation( cell, GetVoronoiCell( cell)->neighborCells[i]);
-						//cell->attach( GetNeighborCell( cell, i));
-						//fprintf( stderr, "JAWOLL: %i!!!\n", cell->countLocations);
+
 						return cell->location[i]->neighborCells[ii];
 					}
 				}
@@ -1853,19 +1834,15 @@ VoronoiCell* growCell( VoronoiDiagram *voronoiDiagram, Agent* cell, int &shift, 
 	}
 	
 	// EXTENDED NEIGHBORHOOD
-	//fprintf( stderr, "EXTENDED NEIGHBOR?\n");
-	///fprintf( stderr, "SHIFTING\n");
+
 	if( cell->state != NONACTIVE){
 		int ii;
 		double distance,
-		       minDistance = 0;/* = pow( cell->location[0]->extendedNeighborhood[0]->position[0], 2.) 
-		                   + pow( cell->location[0]->extendedNeighborhood[0]->position[1], 2.)
-		                   + pow( cell->location[0]->extendedNeighborhood[0]->position[2], 2.)*/;
-		VoronoiCell* closestExtendedNeighborCell = NULL; //cell->location[0]->extendedNeighborhood[0];
-		VoronoiCell* closestLocation = NULL; //cell->location[0]->extendedNeighborhood[0];
+		       minDistance = 0;
+		VoronoiCell* closestExtendedNeighborCell = NULL;
+		VoronoiCell* closestLocation = NULL;
 
 		for(i=0; i<cell->countLocations; i++){
-			//fprintf( stderr, "%ith EXTENDED NEIGHBOR COUNT (%i)?\n", i+1, cell->location[i]->countExtendedNeighborCells);
 			for(ii=0; ii<cell->location[i]->countExtendedNeighborCells; ii++)
 				if( cell->location[i]->extendedNeighborhood[ii]->isFree()){
 				distance = pow( cell->location[i]->extendedNeighborhood[ii]->position[0] - cell->location[i]->position[0], 2.) 
@@ -1892,9 +1869,7 @@ VoronoiCell* growCell( VoronoiDiagram *voronoiDiagram, Agent* cell, int &shift, 
 		if( closestLocation==NULL)
 			fprintf( stderr, "closestLocation==NULL\n");
 		if( closestExtendedNeighborCell==NULL){
-			fprintf( stderr, "closestExtendedNeighborCell==NULL\n");
-			fprintf( stderr, "Agent->index: %i, VoronoiCell->index: %i (free neighbors: %i/%i, free Xtended: %i/%i)\n", cell->index, cell->location[0]->index, cell->location[0]->countFreeNeighborCells, cell->location[0]->countNeighborCells, cell->location[0]->countFreeExtendedNeighborCells, cell->location[0]->countExtendedNeighborCells);
-			
+
 			for(i=0; i<cell->countLocations; i++){
 				fprintf( stderr, "%ith EXTENDED NEIGHBOR COUNT (free: %i/%i)?\n", i+1, cell->location[i]->countFreeExtendedNeighborCells, cell->location[i]->countExtendedNeighborCells);
 				for(ii=0; ii<cell->location[i]->countExtendedNeighborCells; ii++){
@@ -1969,37 +1944,7 @@ Agent* divideCell( ActionList *actionList, Action* action, VoronoiDiagram* voron
 #else
 	if( parent_cell->state == ACTIVE && child_cell->state == FREE){
 #endif
-	    //fprintf( stderr, "UPDATE\n");
-		//update_surrounding_added_cell( actionList, child_cell, voronoiDiagram);
-		//fprintf( stderr, "...DONE!\n");
-		//fprintf(stderr,"DIVISION RESULTS -> (cell nr %i state %i cells %i)\n", child_cell->nr, child_cell->state, child_cell->cellCount);
-		//update_surrounding_divided_cell(actionList,parent_cell,child_cell,voronoiDiagram);
 
-		// include mutation of local division time
-  
-		// > globale Mutation mit festem Wert
-		//mutation_variance = Prob_of_div/Mutation_Ratio;
- 
-		// > local mutation depending on parent cell cycle time
-		/*if(Mutation_Ratio != 0)
-			mutation_variance = parent_cell->actions[0]->rate/Mutation_Ratio;
-		else
-			mutation_variance = 0;
-
-		random_div_rate = parent_cell->actions[0]->rate + (myRand()*mutation_variance - mutation_variance/2);
-		if(random_div_rate <= 0 ){
-			printf("\nHallo, hier ist Rate = %lf\n",random_div_rate);
-			random_div_rate = Prob_of_div;
-		}
-		child_cell->actions[0]->rate = random_div_rate;*/
-  
-		// end of mutation
-
-		/*if(shift_flag){
-			//printf("shift_path()\n");
-			shiftPath( path_for_shift, path_length);
-			free( path_for_shift);
-		}*/
 
 	}
 	else{
@@ -2833,7 +2778,6 @@ double GiveMeTheATP(Agent *thecell)
 {
 	double consumptionO = GiveMeTheOxygenRate ( thecell );
 	double consumptionG = GiveMeTheGlucoseRate( thecell );
-	//double cATP = 2. * consumptionG + 34. * min( consumptionG, consumptionO/6.);
 	double cATP = 2. * consumptionG + 34. * ( thecell->getGlucose() > 1e-2 ? consumptionO/6. : 0. );
 	
 	return cATP;
@@ -2844,7 +2788,6 @@ double GiveMeTheATP(VoronoiCell *thecell)
 
 	double consumptionO = thecell->oxygen  * GiveMeTheOxygenRate ( thecell );
 	double consumptionG = thecell->glucose * GiveMeTheGlucoseRate( thecell );
-	//double cATP = 2. * consumptionG + 34. * min( consumptionG, consumptionO/6.);
 	double cATP = 2. * consumptionG + 34. * ( thecell->glucose > 1e-2 ? consumptionO/6. : 0. );
 	
 	return cATP;

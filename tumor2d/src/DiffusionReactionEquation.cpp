@@ -206,20 +206,10 @@ void DiffusionReactionEquation::assembleSystem() {
 				A->set(i, i, diagonal);
 
 				b[i] = vector;
-				//vector /= diagonal;
-				//fprintf(stderr, "[vector=%lf, diagonal=%lf]\n", vector, diagonal);
 				break;
 			}
 			case DiffusionReactionEquation::EXPLICIT:{
-				/*A->setLast(i, i, 1.);
-				vector += this->diffusion[i - diii];
-				vector += this->diffusion[i - dii];
-				vector += this->diffusion[i - di];
-				vector += -this->diffusion[i] * DIMENSIONS * 2.;
-				vector += this->diffusion[i + di];
-				vector += this->diffusion[i + dii];
-				vector += this->diffusion[i + diii];
-				vector /= diagonal;*/
+
 				int a=0;
 #if DIMENSIONS >= 3
 				if((int) lattice->voronoiCells[i]->position[DIMENSIONS-3] > 0){

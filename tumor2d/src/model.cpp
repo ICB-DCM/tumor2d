@@ -549,7 +549,6 @@ double* model( int parc, double *parv, double *epsilon_limit, double *data_m, do
 	   }
 
 	   // update rates
-		//fprintf( stderr, "update rates\n ");
 	   k_sum = updateRates( lattice, N, cells, minp, // input
 			   	   oxy, glc,
 			   	   processes, processcount);
@@ -591,7 +590,6 @@ double* model( int parc, double *parv, double *epsilon_limit, double *data_m, do
 	   }
 
 	   // update molecule conc.
-	   //fprintf( stderr, "update molecule conc.\n ");
 	   if(t >= last_update + update_interval){
 
 		   if( minp.USE_ECM)
@@ -659,7 +657,6 @@ double* model( int parc, double *parv, double *epsilon_limit, double *data_m, do
 	   }
 
 	   // statistics
-	   //fprintf( stderr, "statistics\n ");
 	   if( STAT_OVER_TIME && ceil(t-dt) != ceil(t)){
 		   for( int i=last+1; i<(int)ceil(t); i++ ){
 #ifndef	NO_FILE_OUTPUT
@@ -700,14 +697,12 @@ double* model( int parc, double *parv, double *epsilon_limit, double *data_m, do
 	fprintf( fp_growthcurve, "\n");
 	fclose( fp_growthcurve);
 #endif
-	//fprintf( stderr, "finished\n ");
 
 	// FREE MEMORY
 	while( !cells.empty()){
 		delete( cells.at( cells.size()-1));
 		cells.pop_back();
 	}
-	//fprintf( stderr, "epsilon=%e\n", epsilon);
 	return mout;
 }
 

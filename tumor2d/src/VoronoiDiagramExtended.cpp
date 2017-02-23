@@ -1199,17 +1199,13 @@ void VoronoiDiagram::NEWsetExtendedNeighborhood( int radius){
 	int countNeighborsGen[30];
 	//int TEST_countExtendedNeighbors = 0;
 
-	//printf("radius=%lf\n", radius);
 
 	VoronoiCell** tempExtendedNeighborhoodList = ( VoronoiCell**) calloc ( voronoiDiagram->countVoronoiCells, sizeof( VoronoiCell*));
 	assert(tempExtendedNeighborhoodList);
 
 	for( i = 0; i < voronoiDiagram->countVoronoiCells; i++){
 
-		fprintf( stderr, "\rCalculate Extended Neighborhood %.3lf%%\t\t\b", 100.*(i+1.)/voronoiDiagram->countVoronoiCells);
-		//fprintf( stderr, "ACTUALIZE EXTENDED NEIGHBORHOOD OF POINT %i, actual count=%i\n", i, this->voronoiCells[i]->countExtendedNeighborCells);
-		//if( this->voronoiCells[i]->countExtendedNeighborCells == 0){
-			/* Memoryallocation for list of neighbors*/
+
 		tempNeighborhoodList = voronoiDiagram->voronoiCells[i]->extendedNeighborhood;
 		voronoiDiagram->voronoiCells[i]->extendedNeighborhood = tempExtendedNeighborhoodList; 
 
@@ -1217,74 +1213,23 @@ void VoronoiDiagram::NEWsetExtendedNeighborhood( int radius){
 		// 0st generation (Set point itself)
 		voronoiDiagram->voronoiCells[i]->extendedNeighborhood[0]  = voronoiDiagram->voronoiCells[i];        // neighbors in 0th generation
 		countNeighborsGen[0] = 1;                   // number of neighbors in 0th generation
-		//fprintf( stderr, "0st generation:{ %i}\n", voronoiDiagram->voronoiCells[i]->extendedNeighborhood[0]->index);
 
 
 		// 1st generation (Set direct neighbors)
 		count = 0;
-		//fprintf( stderr, "1st generation:{");
 		for(j = 1; j <= voronoiDiagram->voronoiCells[i]->countNeighborCells; j++){
-			//printf("neighbor:%i, ", voronoiDiagram->voronoiCells[i].neighbors[j-1]->nr);
-			if(1 <= radius){  
+			if(1 <= radius){
 				voronoiDiagram->voronoiCells[i]->extendedNeighborhood[j] = voronoiDiagram->voronoiCells[i]->neighborCells[j-1]; // neighbors in 1st generation
-				//fprintf( stderr, " %i,", voronoiDiagram->voronoiCells[i]->extendedNeighborhood[j]->index);
 				count++;
 			}
 		}
-		/*if( this->voronoiCells[i]->countExtendedNeighborCells != 0){
-			// set already added extended neighbors
-			int k=j;
-			for(j=0; j < this->voronoiCells[i]->countExtendedNeighborCells; j++){
-				//printf("neighbor:%i, ", voronoiDiagram->voronoiCells[i].neighbors[j-1]->nr);
-				//if(1 <= radius){  
-					voronoiDiagram->voronoiCells[i]->extendedNeighborhood[k+j] = tempNeighborhoodList[j]; // neighbors in 1st generation
-					//fprintf( stderr, "1st generation=%i [ADDITION]\n", voronoiDiagram->voronoiCells[i]->extendedNeighborhood[k+j]->index);
-					//fprintf( stderr, " %i*,", voronoiDiagram->voronoiCells[i]->extendedNeighborhood[k+j]->index);
-					count++;
-				//}
-			}
-			free( tempNeighborhoodList);
-		}*/
-		//fprintf( stderr, "\b}\n");
+
 		countNeighborsGen[1] = count;       // number of neighbors in 1st generation
-		//printf("\ncountNeighborsGen[0]:%i, countNeighborsGen[1]:%i\n", countNeighborsGen[0], countNeighborsGen[1]);
 
 		/* Initialize depending parameters*/
 		generations                 = 2;  // number of set generations
 		voronoiDiagram->voronoiCells[i]->countExtendedNeighborCells   = 1+count;  // point itself and direct
-		//GetAgent( voronoiDiagram->voronoiCells[i])->countReachableFreeNeighbors = 0;  // point itself and direct neighbors aren't important
-		//}
-		/*else{
-			// backup old list
-			tempNeighborhoodList = voronoiDiagram->voronoiCells[i]->extendedNeighborhood;
-			voronoiDiagram->voronoiCells[i]->extendedNeighborhood = tempExtendedNeighborhoodList;
-			
-			// 1st generation (Set direct neighbors)
-			count = 0;
-			for(j = 1; j <= voronoiDiagram->voronoiCells[i]->countNeighborCells; j++){
-				//printf("neighbor:%i, ", voronoiDiagram->voronoiCells[i].neighbors[j-1]->nr);
-				if(1 <= radius){  
-					voronoiDiagram->voronoiCells[i]->extendedNeighborhood[j] = voronoiDiagram->voronoiCells[i]->neighborCells[j-1]; // neighbors in 1st generation
-					count++;
-				}
-			}
-			// set already added extended neighbors
-			int k=j;
-			for(j=0; j < this->voronoiCells[i]->countExtendedNeighborCells; j++){
-				//printf("neighbor:%i, ", voronoiDiagram->voronoiCells[i].neighbors[j-1]->nr);
-				//if(1 <= radius){  
-					voronoiDiagram->voronoiCells[i]->extendedNeighborhood[k+j] = tempNeighborhoodList[j]; // neighbors in 1st generation
-					count++;
-				//}
-			}
-			countNeighborsGen[1] = count;       // number of neighbors in 1st generation
 
-			generations = 2;
-			voronoiDiagram->voronoiCells[i]->countExtendedNeighborCells   = 1+count;  // point itself and direct
-			
-			free( tempNeighborhoodList);
-
-		}*/
 
 		/* get all point below a certain radius */
 		voronoiDiagram->voronoiCells[i]->actualizeExtendedNeighborhood( this, 1, generations, countNeighborsGen, radius); // beginning with the 2nd generation of neighbors

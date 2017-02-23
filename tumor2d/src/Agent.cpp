@@ -731,7 +731,6 @@ void AgentList::print()
 	int i;
 	
 	for( i=0; i<this->countAgents; i++){
-		fprintf( stderr, "%i: ", i);
 		this->agents[i]->print();
 	}
 }
@@ -742,7 +741,6 @@ void AgentList::printActiveAgents()
 	int i;
 	
 	for( i=0; i<this->countActiveAgents; i++){
-		fprintf( stderr, "%i: ", i);
 		this->agents[i]->print();
 	}
 }

@@ -189,13 +189,10 @@ void SparseMatrix::set( int i, int j, float value)
 	// look for position
 	if( this->sizeA[i]>0){
 		ji = 0;
-		//int ji = 0;
-		//jj = this->sizeA[i]-1;
 		int x = j;
 
 		do{
 			k = (ji + jj) / 2;
-			//fprintf( stderr, "i=%i, j=%i, k=%i\n", ji, jj, k);
 			if( x > this->JA[i][k])
 				ji = k + 1;
 			else 
@@ -203,13 +200,10 @@ void SparseMatrix::set( int i, int j, float value)
 		}while( (this->JA[i][k] != x) && (ji <= jj));
 		// jj > ji => 
 	}
-	//fprintf( stderr, "(i, j) = (%i, %i), ji=%i, jj=%i, k=%i, this->sizeA[%i]=%i\n", i, j, ji, jj, k, i, this->sizeA[i]);
-	
-//	if( this->sizeA[i]==0 || this->JA[i][ji] != j /*jj==-1*/){
+
 	if( this->sizeA[i]==0 || (this->JA[i][k] != j && jj<ji)){
 		if( jj<ji)
 			k = ji;
-		//fprintf( stderr, "new element at the beginning (%i, %i)\n", i, k);
 		// realloc memory
 		if( this->sizeA[i] == this->maxSizeA[i]){
 			this->maxSizeA[i] += ROW_EXTENSION_SIZE;
@@ -228,12 +222,7 @@ void SparseMatrix::set( int i, int j, float value)
 		this->sizeA[i] ++;		
 
 	}else{
-		//if( ji>jj){
-			//fprintf( stderr, "replace (%i, %i)\n", i, k);
 			A[i][k] = value;
-		//}else{
-		//	fprintf( stderr, "don't know\n");
-		//}
 	}
 	return;
 }
@@ -249,23 +238,18 @@ void SparseMatrix::add( int i, int j, float value)
 	// look for position
 	if( this->sizeA[i]>0){
 		ji = 0;
-		//int ji = 0;
-		//jj = this->sizeA[i]-1;
 		int x = j;
 
 		do{
 			k = (ji + jj) / 2;
-			//fprintf( stderr, "i=%i, j=%i, k=%i\n", ji, jj, k);
 			if( x > this->JA[i][k])
 				ji = k + 1;
 			else
 				jj = k - 1;
 		}while( (this->JA[i][k] != x) && (ji <= jj));
-		// jj > ji =>
 	}
 
 
-//	if( this->sizeA[i]==0 || this->JA[i][ji] != j /*jj==-1*/){
 	if( this->sizeA[i]==0 || (this->JA[i][k] != j && jj<ji)){
 		if( jj<ji)
 			k = ji;
@@ -316,7 +300,6 @@ void setupMatrixImplicitSparse( VoronoiDiagram *voronoiDiagram, double timeStep,
 	{
 		// actual element
 		int m = i*di + ii*dii + iii*diii;
-		//fprintf( stderr, "%i ", m);
 
 		// element inside domain
 		if( TRUE
@@ -468,7 +451,6 @@ void setupMatrixImplicitCrankNicholsonSparse( VoronoiDiagram *voronoiDiagram, do
 	{
 		// actual element
 		int m = i*di + ii*dii + iii*diii;
-		//fprintf( stderr, "%i ", m);
 
 		// element inside domain
 		if( i>0 && i<voronoiDiagram->xN[0]-1 && ii>0 && ii<voronoiDiagram->xN[1]-1 && iii>0 && iii<voronoiDiagram->xN[2]-1 
@@ -550,15 +532,10 @@ void setupMatrixImplicitSteadyState( VoronoiDiagram *voronoiDiagram, char molecu
 	int dii  = voronoiDiagram->xN[0];
 	int diii = voronoiDiagram->xN[0]*voronoiDiagram->xN[1];
 	int d    = voronoiDiagram->xN[0]*voronoiDiagram->xN[1]*voronoiDiagram->xN[2];
-	//float a = 0.5;
-	//float b = 1. - a;
-	//float c = 1.
-	
-	//fprintf( stderr, "Build Steady State Matrix: setupMatrixImplicitSteadyState()\n ");
-	
+
+
 	float r;
-	//float r2;
-	 
+
 	switch( molecule){
 		case 'G':
 			r = Glucose_Diffusion /(DX*DX);
@@ -587,7 +564,6 @@ void setupMatrixImplicitSteadyState( VoronoiDiagram *voronoiDiagram, char molecu
 
 		// actual element of the voronoi diagram
 		int v = i*di + ii*dii + iii*diii;
-		//fprintf( stderr, "m:%i, v:%i\n ", m, v);
 
 		// reset row: set all entries to zero
 		sA->resetRow( m);
@@ -687,11 +663,9 @@ void setupMatrixImplicitSteadyState( VoronoiDiagram *voronoiDiagram, char molecu
 			// vector
 			switch( molecule){
 				case 'G':
-					//b[m] = voronoiDiagram->voronoiCells[v]->glucose * GiveMeTheGlucoseRate(  voronoiDiagram->voronoiCells[v]);
 					b[m] = 0.;
 					break;
 				case 'O':
-					//b[m] = voronoiDiagram->voronoiCells[v]->oxygen * GiveMeTheOxygenRate(  voronoiDiagram->voronoiCells[v]);
 					b[m] = 0.;
 					break;
 			}
@@ -714,15 +688,8 @@ void setupMatrixImplicitSteadyState( VoronoiDiagram *voronoiDiagram, char molecu
 			}			
 		}
 		
-		/*fprintf( stderr, "A[%i]: ", m);
-		for( int jj=0; jj<sA->sizeA[m]; jj++){
-			int j = sA->JA[m][jj];
-			fprintf( stderr, "%e ", sA->A[m][jj]);
-		}
-		fprintf( stderr, " | %e \n", b[m]);
-	*/
+
 	}
-	//	fprintf( stderr, "...finished\n ");
 }
 
 void setupGrowthFactorMatrixImplicit( VoronoiDiagram *voronoiDiagram, SparseMatrix *A, float *b, char actualize_vector, char actualize_matrix, float timeStep, float spaceStep)
@@ -841,12 +808,7 @@ void setupTestMatrixSteadyStateNewton( VoronoiDiagram *voronoiDiagram, SparseMat
 	for( int i=0; i<voronoiDiagram->xN[0]; i++)
 	{
 		
-		// actual element of the matrix
-		//int m = i*di + ii*dii + iii*diii  + mi*d;
 
-		// actual element of the voronoi diagram
-		//int v = i*di + ii*dii + iii*diii;
-		//fprintf( stderr, "m:%i, v:%i\n ", m, v);
 
 		// reset row: set all entries to zero
 		if( actualize_matrix)
@@ -1162,8 +1124,6 @@ void setupTestMatrixSteadyState( VoronoiDiagram *voronoiDiagram, SparseMatrix *s
 
 			float diag = -2*DIMENSIONS - consumption/(r*x[m]);
 			if( isnan( - 2*DIMENSIONS - consumption/(r*x[m]))){
-				//fprintf( stderr, "ERROR: m:%i, x[m]:%lf\n ", m, x[m]);
-				//exit( 0);
 				diag = -2.*DIMENSIONS;
 			}
 			sA->setLast(m, m, diag);
