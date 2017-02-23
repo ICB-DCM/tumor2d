@@ -60,23 +60,6 @@ double TempTime = 0;
 #define	WHITE		7
 
 
-void fprinttextcolor(int fg) {
-	/* Command is the control command to the terminal */
-	//sprintf(command, "%c[%d;%d;%dm", 0x1B, attr, fg + 30, bg + 40);
-	fprintf(stderr, "%c[;%d;m", 0x1B, fg + 30);
-}
-
-void fprinttextattribute(int attr) {
-	/* Command is the control command to the terminal */
-	//sprintf(command, "%c[%d;%d;%dm", 0x1B, attr, fg + 30, bg + 40);
-	fprintf(stderr, "%c[%d;;m", 0x1B, attr);
-}
-
-void fprintbackgroundcolor(int bg) {
-
-	/* Command is the control command to the terminal */
-	fprintf(stderr, "%c[;;%dm", 0x1B, bg + 40);
-}
 
 int Case = 1;
 

@@ -4,10 +4,6 @@
 	
 void Vessel_Unit::Compute_radius()
 	{
-// 	cerr << "node1 "<< node1 << endl;
-// 	cerr << "node2 "<< node2 << endl;
-// 	cerr << "node1->radius "<< node1->radius << endl;
-//	cerr << "node2->radius" << node2->radius << endl;
 
 	radius = 0.5*(node1->radius + node2->radius);
 	}

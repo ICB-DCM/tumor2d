@@ -142,28 +142,7 @@ float SparseMatrix::get( int i, int j)
 	return 0.;
 }
 
-void SparseMatrix::print()
-{
-	for( int i=0; i<this->dimI; i++){
-		for( int jj=0; jj<this->sizeA[i]; jj++){
-			int j = JA[i][jj];
-			fprintf( stderr, " (%i) %5.3lf", j, A[i][jj]);
-		}
-		fprintf( stderr, "\n");
-	}
-}
 
-void SparseMatrix::printSystem( float *b)
-{
-	for( int i=0; i<this->dimI; i++){
-		fprintf( stderr, "%5.3lf =", b[i]);
-		for( int jj=0; jj<this->sizeA[i]; jj++){
-			int j = JA[i][jj];
-			fprintf( stderr, " + x_%i * %5.3lf", j, A[i][jj]);
-		}
-		fprintf( stderr, "\n");
-	}
-}
 
 void SparseMatrix::resetRow( int i)
 {
@@ -284,13 +263,12 @@ void SparseMatrix::add( int i, int j, float value)
 		}while( (this->JA[i][k] != x) && (ji <= jj));
 		// jj > ji =>
 	}
-	//fprintf( stderr, "(i, j) = (%i, %i), ji=%i, jj=%i, k=%i, this->sizeA[%i]=%i\n", i, j, ji, jj, k, i, this->sizeA[i]);
+
 
 //	if( this->sizeA[i]==0 || this->JA[i][ji] != j /*jj==-1*/){
 	if( this->sizeA[i]==0 || (this->JA[i][k] != j && jj<ji)){
 		if( jj<ji)
 			k = ji;
-		//fprintf( stderr, "new element at the beginning (%i, %i)\n", i, k);
 		// realloc memory
 		if( this->sizeA[i] == this->maxSizeA[i]){
 			this->maxSizeA[i] += ROW_EXTENSION_SIZE;
@@ -309,147 +287,13 @@ void SparseMatrix::add( int i, int j, float value)
 		this->sizeA[i] ++;
 
 	}else{
-		//if( ji>jj){
-			//fprintf( stderr, "replace (%i, %i)\n", i, k);
 			A[i][k] += value; // add to old value
-		//}else{
-		//	fprintf( stderr, "don't know\n");
-		//}
 	}
 	return;
 }
 
 
-/*void setupMatrixImplicitSparse( VoronoiDiagram *voronoiDiagram, double timeStep, char molecule)
-{
-	int di   = 1;
-	int dii  = voronoiDiagram->xN[0];
-	int diii = voronoiDiagram->xN[0]*voronoiDiagram->xN[1];
-	
-	//float a = 0.5;
-	//float b = 1. - a;
-	//float c = 1.
-	
-	float r;
-	float r2;
-	 
-	switch( molecule){
-		case 'G':
-			r = Glucose_Diffusion * timeStep/(DX*DX);
-			break;
-		case 'O':
-			r = Oxygen_Diffusion * timeStep/(DX*DX);
-			break;
-	}
-	r2 = r * 10.;
-	
-	//int N = voronoiDiagram->xN[0]*voronoiDiagram->xN[1]*voronoiDiagram->xN[2];
-	
-	for( int iii=0; iii<voronoiDiagram->xN[2]; iii++)
-	for( int ii=0; ii<voronoiDiagram->xN[1]; ii++)
-	for( int i=0; i<voronoiDiagram->xN[0]; i++)
-	{
-		// actual element
-		int m = i*di + ii*dii + iii*diii;
-		//fprintf( stderr, "%i ", m);
 
-		// element inside domain
-		if( i>0 && i<voronoiDiagram->xN[0]-1 && ii>0 && ii<voronoiDiagram->xN[1]-1 && iii>0 && iii<voronoiDiagram->xN[2]-1
-		#ifdef FREE_IS_BOUNDARY
-		    &&
-		#else
-		)
-		{
-			//matrix
-			if( 
-		#endif
-			    voronoiDiagram->voronoiCells[m]->getState() != FREE){
-				sA->set(m, m-diii, -r); 
-				sA->set(m, m-dii, -r); 
-				sA->set(m, m-di, -r); 
-				sA->set(m, m, 1 + 6*r);			
-				sA->set(m, m+di, -r); 
-				sA->set(m, m+dii, -r); 
-				sA->set(m, m+diii, -r); 
-		#ifndef FREE_IS_BOUNDARY
-			}else{
-				int a = 0;
-				int b = 0;
-				if( voronoiDiagram->voronoiCells[m-diii]->getState() == FREE){
-					b++;
-					sA->set(m, m-diii, -r2);
-				}else{
-					sA->set(m, m-diii, -r);
-					a++;
-				}
-				if( voronoiDiagram->voronoiCells[m-dii]->getState() == FREE){
-					b++;
-					sA->set(m, m-dii, -r2);
-				}else{
-					sA->set(m, m-dii, -r);
-					a++;
-				}
-				if( voronoiDiagram->voronoiCells[m-di]->getState() == FREE){
-					b++;
-					sA->set(m, m-di, -r2);
-				}else{
-					sA->set(m, m-di, -r);
-					a++;
-				}
-				if( voronoiDiagram->voronoiCells[m+di]->getState() == FREE){
-					b++;
-					sA->set(m, m+di, -r2);
-				}else{
-					sA->set(m, m+di, -r);
-					a++;
-				}
-				if( voronoiDiagram->voronoiCells[m+dii]->getState() == FREE){
-					b++;
-					sA->set(m, m+dii, -r2);
-				}else{
-					sA->set(m, m+dii, -r);
-					a++;
-				}
-				if( voronoiDiagram->voronoiCells[m+diii]->getState() == FREE){
-					b++;
-					sA->set(m, m+diii, -r2);
-				}else{
-					sA->set(m, m+diii, -r);
-					a++;
-				}
-				sA->set(m, m, 1 + a*r + b*r2);			
-			}
-		#endif			
-			// vector
-			switch( molecule){
-				case 'G':
-					b[m] = voronoiDiagram->voronoiCells[m]->glucose * ( 1. - timeStep * GiveMeTheGlucoseRate(  voronoiDiagram->voronoiCells[m]));
-					break;
-				case 'O':
-					b[m] = voronoiDiagram->voronoiCells[m]->oxygen * ( 1. - timeStep * GiveMeTheOxygenRate(  voronoiDiagram->voronoiCells[m]));
-					break;
-			}
-		}
-		
-		// border condition
-		else{
-			//matrix
-			sA->set(m, m, 1);
-
-			// vector
-			switch( molecule){
-				case 'G':
-					b[m] = voronoiDiagram->voronoiCells[m]->glucose;
-					break;
-				case 'O':
-					b[m] = voronoiDiagram->voronoiCells[m]->oxygen;
-					break;
-			}			
-		}
-		
-		
-	}
-}*/
 void setupMatrixImplicitSparse( VoronoiDiagram *voronoiDiagram, double timeStep, char molecule)
 {
 	int di   = 1;
@@ -1234,13 +1078,6 @@ void setupTestMatrixSteadyState( VoronoiDiagram *voronoiDiagram, SparseMatrix *s
 	for( int i=0; i<voronoiDiagram->xN[0]; i++)
 	{
 
-		// actual element of the matrix
-		//int m = i*di + ii*dii + iii*diii  + mi*d;
-
-		// actual element of the voronoi diagram
-		//int v = i*di + ii*dii + iii*diii;
-		//fprintf( stderr, "m:%i, v:%i\n ", m, v);
-
 		// reset row: set all entries to zero
 		if( actualize_matrix)
 		sA->resetRow( m);
@@ -1258,29 +1095,12 @@ void setupTestMatrixSteadyState( VoronoiDiagram *voronoiDiagram, SparseMatrix *s
 #endif
 		)
 		{
-			//fprintf( stderr, "OUAIS!!!\n");
-			//float consumption =  (mi==0 ? GiveMeTheGlucoseRate(  voronoiDiagram->voronoiCells[v])
-			//                            : GiveMeTheOxygenRate(  voronoiDiagram->voronoiCells[v]));
-			//int radius = 3;
-			//float consumption;
-			/*float oxy = voronoiDiagram->voronoiCells[v]->oxygen; // 0.07
-			float glu = voronoiDiagram->voronoiCells[v]->glucose;
-			float min = 0.001,
-			      max = 0.09,
-			      kgg = 0.01,
-			      kgo = 0.01;
-			float consumption = ( mi==0 ? glu/(kgg+glu)*(max - (max-min) * oxy/(kgo+oxy))
-			                            : oxy/(kgg+oxy)*(max - (max-min) * glu/(kgo+glu)));*/
+
 			float consumption = ( mi==0 ? GiveMeTheGlucoseRate(voronoiDiagram->voronoiCells[v], x[m], x[m+d])
 				                        : GiveMeTheOxygenRate( voronoiDiagram->voronoiCells[v], x[m-d], x[m]));
 			if( voronoiDiagram->voronoiCells[v]->getState() != COMPARTMENT){
 				if( voronoiDiagram->voronoiCells[v]->getState() != ACTIVE && voronoiDiagram->voronoiCells[v]->getState() != NONACTIVE)
 					consumption = 0.;
-			//if(voronoiDiagram->voronoiCells[v]->agent!=NULL)
-			//fprintf( stderr, "DIFFUSE: %i\n", GetAgent( voronoiDiagram->voronoiCells[v])->state);
-			}else{
-				//fprintf( stderr, "CONSUME: %lf\n", consumption);
-				//fprintf( stderr, "CONSUME: %lf\n", consumption, GetAgent( voronoiDiagram->voronoiCells[v])->count);
 			}
 
 			r = (mi==0 ? rg : ro);
@@ -1288,20 +1108,6 @@ void setupTestMatrixSteadyState( VoronoiDiagram *voronoiDiagram, SparseMatrix *s
 			//matrix
 #ifdef FREE_DIFFUSION_SPEEDUP
 			float a = 0.;
-			/*if(voronoiDiagram->voronoiCells[v]->getState()==FREE && voronoiDiagram->voronoiCells[v-diii]->getState()==FREE)
-			{sA->setLast(m, m-diii, FREE_DIFFUSION_SPEEDUP); a++;} else sA->set(m, m-diii, 1);
-			if(voronoiDiagram->voronoiCells[v]->getState()==FREE && voronoiDiagram->voronoiCells[v-dii]->getState()==FREE)
-			{sA->setLast(m, m-dii, FREE_DIFFUSION_SPEEDUP); a++;} else sA->set(m, m-dii, 1);
-			if(voronoiDiagram->voronoiCells[v]->getState()==FREE && voronoiDiagram->voronoiCells[v-di]->getState()==FREE)
-			{sA->setLast(m, m-di, FREE_DIFFUSION_SPEEDUP); a++;} else sA->set(m, m-di, 1);
-			if(voronoiDiagram->voronoiCells[v]->getState()==FREE && voronoiDiagram->voronoiCells[v+di]->getState()==FREE)
-			{sA->setLast(m, m+di, FREE_DIFFUSION_SPEEDUP); a++;} else sA->set(m, m+di, 1);
-			if(voronoiDiagram->voronoiCells[v]->getState()==FREE && voronoiDiagram->voronoiCells[v+dii]->getState()==FREE)
-			{sA->setLast(m, m+dii, FREE_DIFFUSION_SPEEDUP); a++;} else sA->set(m, m+dii, 1);
-			if(voronoiDiagram->voronoiCells[v]->getState()==FREE && voronoiDiagram->voronoiCells[v+diii]->getState()==FREE)
-			{sA->setLast(m, m+diii, FREE_DIFFUSION_SPEEDUP); a++;} else sA->set(m, m+diii, 1);
-
-			sA->set(m, m, - (a*FREE_DIFFUSION_SPEEDUP + 6-a) - consumption/r);*/
 
 #if DIMENSIONS == 3
 			if(voronoiDiagram->voronoiCells[v]->getState()==FREE && voronoiDiagram->voronoiCells[v-diii]->getState()==FREE)
@@ -1805,10 +1611,9 @@ void setupJacobiMatrixCrankNicholson( VoronoiDiagram *voronoiDiagram, SparseMatr
 		
 		// border condition
 		else{
-			//matrix
 			
-			//if( !init_only_vector)// { printf("set border point...\n");
-			J->setLast(m, m, 1);  //   printf("...finished!\n");}
+
+			J->setLast(m, m, 1);
 			
 		}
 		m++;
@@ -2973,16 +2778,14 @@ double UpdateSystemNewtonSparse( VoronoiDiagram *voronoiDiagram, double timeStep
 			err = sqrt( dotProduct( h, h, 2*N));
 			it++;
 
-		//	fprintf( stderr, "\r\t\t\t\t\t  Newton: error = %e \b", err);
 
-			//fprintf( stderr, "Newton Iteration %i -> error: %e\n", it, err);
 		//}while( err > 1e-5 && it < 100);
-		fprintf( stderr, "...finished after %i Newton Iterations -> error: %e\n", i, err);
+		//fprintf( stderr, "...finished after %i Newton Iterations -> error: %e\n", i, err);
 		for(int m=0; m<N; m++){
 			voronoiDiagram->voronoiCells[m]->glucose = (x[m]  >=0.?x[m]:0.);
 			voronoiDiagram->voronoiCells[m]->oxygen  = (x[m+N]>=0.?x[m+N]:0.);
 		}
-		//fprintf( stderr, "\rTotal: error = %e \b", err);
+
 
 
 
@@ -4699,125 +4502,12 @@ void vectorSparseMatrixProduct( double *b, SparseMatrix *sA, double *x)
 
 void LUdecomposition( SparseMatrix *sA, SparseMatrix *L, SparseMatrix *U, float *b)
 {
-/*	// for each row k
-	for( int k=0; i<sA->dimI; k++){
-		
-		// look for next non-zero row i
-		if(sA->sizeA[k]>1)
-		for( int i=k+1; i<sA->dimI; i++){
-			
-			// is zero?
-			int jj = -1;
-			for( jj=k; jj<sA->sizeA[i] && i<sA->AJ[i][jj]; jj++)
-			if( sA->sizeA[i]>0 && i==sA->AJ[i][j] && sA->A[i][j]!=0.){
-				// process two lines i & k
-				// reduce following rows
-				for( j=k+1; j<dim; j++)
-					//update each element of first row 
-					B[i][j]=B[i][j]-B[i][k]*B[k][j];
-				b[i]=b[i]-B[i][k]*b[k];
-				
-				B[i][k]=0; // <- playes no role later -> so not necessary!!!
 
-			}
-		}
-		
-	}
-	
-For k = 1,...,n − 1, do
-   For i = k + 1,...,n and if (i,k) \in P, do
-      mik: = mik / mkk
-      For j = k + 1,...,n and if (i,j) \in P, do
-         mij: = mij − mik*mkj
-*/
-/*	int i_j, k_j;
-
-	// for each row k
-	for( int k=0; i<sA->dimI-1; k++){
-		// look for next non-zero row i
-		if(sA->sizeA[k]>1)
-		for( int i=k+1; i<sA->dimI; i++){
-			// (i,k) element of A?
-			for( i_j=0; i_j<sA->sizeA[i] && k<sA->AJ[i][i_j]; i_j++);
-			if( sA->sizeA[i]>0 && k==sA->AJ[i][i_j] && sA->A[i][i_j]!=0.){
-				//mik: = mik / mkk
-				for( i_j=0; i_j<sA->sizeA[i] && k<sA->AJ[i][i_j]; i_j++);
-				sA->A[i][i_j] /= sA->A[k][i_j]
-			}
-		}			
-	}*/
 }
 
-void printMatrix( SparseMatrix *M, int n, int m, const char* name, const char* format)
-{
-	fprintf( stderr, "\"%s\" = [\n", name);
-	for( int i=0; i<n; i++)
-	{
-		for( int j=0; j<m; j++)
-		{
-			fprintf( stderr, format, M->get(i,j));
-		}
-		fprintf( stderr, "\n");
-	}
-	fprintf( stderr, "]\n");
-}
 
-/*void SolveDirectly( SparseMatrix *Ai, double *bi, double *x, VoronoiDiagram *vd)
-{
-	int N = Ai->dimI;
-	SparseMatrix *A = SparseMatrix::newSparseMatrix( N, N);
-	double *b = v0d;
 
-	// copy matrix A & vector b
-	for( int i=0; i<Ai->dimI; i++){
-		for( int jj=0; jj<Ai->sizeA[i]; jj++){
-			int j = Ai->JA[i][jj];
-			A->setLast( i, j, Ai->A[i][jj]);
-		}
-		b[i] = bi[i];
-	}
 
-	printMatrix( A, N, N, "before", "%10.5lf ");
-
-	// forward
-	for( int d=0; d<A->dimI; d++)
-	{
-		// normalize row d
-		double A_dd;
-		for( int jj=0; jj<A->sizeA[d]; jj++){
-			int j = A->JA[d][jj];
-			if( j==d){
-				A_dd = A->A[d][jj];
-				A->A[d][jj] = 1.;
-			}
-			if( j>d)
-				A->A[d][jj] = A->A[d][jj] / A_dd;
-		}
-		b[d] = b[d]/A_dd;
-
-		// adapt following lines: connected in triangulation
-		for( int ni=0; vd->voronoiCells[d]->countNeighborCells; ni){
-			int i = vd->voronoiCells[d]->neighborCells[ni]->index;
-			if( i>d && !isElementOf( vd->framePoints, vd->countFramePoints, vd->voronoiCells[d]->neighborCells[ni])){
-				double A_id;
-				for( int jj=0; jj<A->sizeA[i]; jj++){
-					int j = A->JA[i][jj];
-					if( j<d)
-						A->A[i][jj] = 0.;
-					if( j==d){
-						A_id = A->A[i][jj];
-						A->A[i][jj] = 0.;
-					}
-					if( j>d)
-						A->A[i][jj] = A->A[i][jj] - A->get(d,j) * A_id;
-				}
-				b[i] = b[i] - b[d] * A_id;
-			}
-		}
-	}
-	printMatrix( A, N, N, "after forward", "%10.5lf ");
-
-}*/
 
 void PreconditionJacobi( SparseMatrix *A, double *b)
 {

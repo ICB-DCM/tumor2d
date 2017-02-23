@@ -106,8 +106,7 @@ class DataRecord
 			living_cells[mm] = ((living_cells[mm] * (calls[mm] - 1)) + b ) / calls[mm];
 			radius_of_gyration[mm] = ((radius_of_gyration[mm] * (calls[mm] - 1)) + c ) / calls[mm];
 			}
-		
-		//cerr << endl << "mm = " << mm << ", " << calls[mm] << ", "  << time[mm] << ", "  << vessels[mm] << ", "  << living_cells[mm]<< endl;
+
 
 		}	
 	};

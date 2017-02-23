@@ -195,11 +195,7 @@ Substrate::Substrate(int* sizeofaxes, int type, VoronoiDiagram *voronoiDiagram, 
 		if(DIMENSIONS < 3){mz = 0;}
 		
 		TheCubes[mx][my][mz] = voronoiCells[i];
-		#if  VERBOSE>= 1
-		//cerr << "Position of cube is mx = " << mx << "my = " << my << "mz = " << mz <<endl<<endl;
-		//cerr << "Coordinates of agent "<< i << "are x = " << x << "y = " << y << "z = " << z <<endl;
-		//cerr << "Position of cube is mx = " << mx << "my = " << my << "mz = " << mz <<endl<<endl;
-		#endif
+
 		}
 	
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

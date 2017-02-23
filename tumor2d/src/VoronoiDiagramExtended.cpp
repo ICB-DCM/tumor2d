@@ -595,7 +595,7 @@ int VoronoiDiagram::writeExtendedNeighborhoodToFile( char* filename, int radius)
 #endif
 
 	}
-	fprintf( stderr, "\n");
+	//fprintf( stderr, "\n");
 	
 /*	for( i=0; i<this->countVoronoiCells; i++){
 		fprintf( fp, "%i\t", this->voronoiCells[i]->countExtendedNeighborCells);

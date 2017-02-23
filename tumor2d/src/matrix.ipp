@@ -30,28 +30,6 @@ void freeMatrix( T** &A, int n)
 	free(A);
 }
 
-template <class T>
-void printMatrix( T** &A, int n, int m)
-{
-	for( int i=0; i<n; i++){
-		for( int j=0; j<m; j++){
-			fprintf( stderr, "%10.2lf ", A[i][j]);
-		}
-		fprintf( stderr, "\n");
-	}
-}
-template <class T>
-void printMatrix( T** &A, int n, int m, const char *name, const char *fmt)
-{
-	fprintf( stderr, "%s\n", name);
-	for( int i=0; i<n; i++){
-		for( int j=0; j<m; j++){
-			fprintf( stderr, fmt, A[i][j]);
-		}
-		fprintf( stderr, "\n");
-	}
-}
-
 
 template <class T>
 void vectorMatrixProduct( T* &v, T** &A, T* &u, int m, int n)

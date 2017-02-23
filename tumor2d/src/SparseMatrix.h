@@ -59,8 +59,6 @@ struct _SparseMatrix {
 
 	void resetRow( int i);
 
-	void print();
-	void printSystem( float *);
 };
 
 struct _SparseVector {

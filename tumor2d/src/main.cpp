@@ -33,7 +33,7 @@ int main( int argc, char **argv)
 							ECMThresholdQuiescence, ECMProductionRate, ECMDegradationRate,
 							EndTime, OutputRate, profileTime, profileDepth, rand_seed,
 							gc_out, ecm_out, prolif_out);
-	fprintf(stdout, "%e\n", epsilon);
+	//fprintf(stdout, "%e\n", epsilon);
 	FILE *fp_raw = fopen( ecm_tmpout, "w");
 	for( int j=0; j<profileDepth; j++){
 		fprintf( fp_raw, "%i %e \n", j, ecm_out[j]);

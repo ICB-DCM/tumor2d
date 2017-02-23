@@ -898,7 +898,6 @@ void matrixInversion( double **Ai, double **Ao, int n)
 				Ao[i][j] = 0;
 			A[i][j] = Ai[i][j];
 		}
-	//printMatrix( Ao, n, n, "Init Ao", "%10.5lf ");
 
 	// Gauss-Jordan-Algorithm
 	//forward
@@ -924,8 +923,7 @@ void matrixInversion( double **Ai, double **Ao, int n)
 				A[i][d] = 0.; // NOT NECESSARY!
 			}
 	}
-	//printMatrix( Ao, n, n, "forward Ao", "%10.5lf ");
-	//printMatrix( A, n, n, "forward A", "%10.5lf ");
+
 
 	// backward
 	for( int d=n-1; d>0; d--){
@@ -939,35 +937,11 @@ void matrixInversion( double **Ai, double **Ao, int n)
 			//else
 				//fprintf( stderr , "test2 \n");
 	}
-	//printMatrix( Ao, n, n, "backward Ao", "%10.5lf ");
-	//printMatrix( A, n, n, "backward A", "%10.5lf ");
+
 }
 /*****************************************************************************/
 
 
-void printMatrix( double **M, int n, int m, const char* name, const char* format)
-{
-	fprintf( stderr, "\"%s\" = [\n", name);
-	for( int i=0; i<n; i++)
-	{
-		for( int j=0; j<m; j++)
-		{
-			fprintf( stderr, format, M[i][j]);
-		}
-		fprintf( stderr, "\n");
-	}
-	fprintf( stderr, "]\n");
-}
-
-void printMatrix( double **M, int n, int m, const char* name)
-{
-	printMatrix( M, n, m, "Matrix", "%10.3lf ");
-}
-
-void printMatrix( double **M, int n, int m)
-{
-	printMatrix( M, n, m, "Matrix");
-}
 
 void printVector( double *v, int N)
 {

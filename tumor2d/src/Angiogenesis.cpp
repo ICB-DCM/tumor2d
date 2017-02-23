@@ -903,7 +903,7 @@ bool Angiogenesis::Update_Network(double dt, ActionTree *p_list, VoronoiDiagram*
 	
 	#ifdef __myDEBUG__
 
-	cerr << "\r\r";
+	//cerr << "\r\r";
 	cerr << "Nbr of nodes  "<< nbrNodes;
 //	cerr << ", Nbr of slices "<< nbrSlices;
 	cerr << ", KillSlice(): " << KillSlice_counter;
@@ -914,7 +914,7 @@ bool Angiogenesis::Update_Network(double dt, ActionTree *p_list, VoronoiDiagram*
 //	cerr << ", Ko(): " << Ko_counter;
 // 	cerr << ", Regression(): " << Regression_counter;
 //	cerr << ", DoTheSprout(): " << DoTheSprout_counter;
-	cerr << "\t\t";
+	//cerr << "\t\t";
 	/*
 	if(DoTheSprout_counter == 2)
 		{

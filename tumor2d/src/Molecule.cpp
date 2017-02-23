@@ -12,7 +12,6 @@ list<Molecule*> Molecule::allmolecules;
 
 void Molecule::SetAgents( AgentList *theAgentArray)
 	{
-	//cerr << endl << " >>>>>>>>>>>>>>>>> Set AgentArray <<<<<<<<<<<<<<<<<<<<<"<< endl;
 	agentArray = theAgentArray;
 	}
 
@@ -813,8 +812,6 @@ void Molecule::ConsumptionWhithinDiffusion1D(Molecule *Mo)
 		Mo->second_member[0][i] = ( *(Mo->values[i][0][0]) )/ (1 + rate);
 		}
 
-	//cout << *(Mo->values[0][0][0]) << "\t" << *(Mo->values[size[0] - 1][0][0]) <<endl;
-	//cout << Mo->second_member[0][0] << "\t" << Mo->second_member[size[0] - 1][i] <<endl;	
 	
 	if(Mo->SolveTridiagonaleMatrix(0) != 0)
 		cout << "Matrix Error" << endl;
@@ -938,13 +935,13 @@ void Molecule::ConsumptionWhithinDiffusion3D(Molecule *Mo)
 
 
 
-	//cerr << endl << "Am I here?" << "(" << size[0] <<", " <<size[1] <<"," << size[2] <<")"<< endl;
+
 	for( i=0; i<size[0]; i++)
 	for( j=0; j<size[1]; j++)
 	for( k=0; k<size[2]; k++)
 	if( Domain[i][j][k]->agent != NULL && Domain[i][j][k]->getState() == FREE){
 		
-		//cerr << endl << "(" << i <<", " << j <<"," << k <<")" << endl;
+
 
 		int l;
 		for( l=0; l<Domain[i][j][k]->countNeighborCells && Domain[i][j][k]->neighborCells[l]->agent != NULL; l++);
