@@ -27,7 +27,6 @@
 #include "finiteDifferences.h"
 #include "SparseMatrix.h"
 #include "Interpolation.h"
-#include "EpsIO.h"
 
 #include "DiffusionReactionEquation.hpp"
 
@@ -399,129 +398,8 @@ void refineNeighborhood(VoronoiDiagram *voronoiDiagram, VoronoiCell *cell,
 	}
 }
 
-void printTriangulation(VoronoiDiagram* voronoiDiagram, const char * filename,
-		bool plotIndex) {
-	std::fstream fs;
-	fs.open(filename, std::fstream::out);
-	EpsIO::PSwriteHeader(&fs, voronoiDiagram->xMin[0] * 10,
-			voronoiDiagram->xMax[0] * 10, voronoiDiagram->xMin[1] * 10,
-			voronoiDiagram->xMax[1] * 10);
-	for (int c = 0; c < voronoiDiagram->countVoronoiCells; c++) {
-		for (int n = 0; n < voronoiDiagram->voronoiCells[c]->countNeighborCells;
-				n++) {
-			EpsIO::PSwriteLine(
-					&fs,
-					voronoiDiagram->voronoiCells[c]->position[0] * 10,
-					voronoiDiagram->voronoiCells[c]->position[1] * 10,
-					//voronoiDiagram->voronoiCells[c]->neighborCells[n]->position[0]*10,
-					//voronoiDiagram->voronoiCells[c]->neighborCells[n]->position[1]*10,
-					(voronoiDiagram->voronoiCells[c]->position[0]
-							+ voronoiDiagram->voronoiCells[c]->neighborCells[n]->position[0])
-							/ 2. * 10,
-					(voronoiDiagram->voronoiCells[c]->position[1]
-							+ voronoiDiagram->voronoiCells[c]->neighborCells[n]->position[1])
-							/ 2. * 10, 0.1, (char*) " 0 0 0 setrgbcolor");
-			/*if( voronoiDiagram->voronoiCells[c]==centralCell)
-			 EpsIO::PSwriteCircle( &fs,
-			 voronoiDiagram->voronoiCells[c]->position[0]*10,
-			 voronoiDiagram->voronoiCells[c]->position[1]*10,
-			 1,
-			 1,
-			 " 0 0 1 setrgbcolor");
-			 if( c==voronoiDiagram->countVoronoiCells-1)
-			 EpsIO::PSwriteCircle( &fs,
-			 voronoiDiagram->voronoiCells[c]->position[0]*10,
-			 voronoiDiagram->voronoiCells[c]->position[1]*10,
-			 1,
-			 1,
-			 " 1 0 0 setrgbcolor");*/
-		}
-		// /Times-Roman 270 selectfont
-		if (plotIndex && voronoiDiagram->voronoiCells[c]->countNeighborCells > 0) {
-			fs << "/Times-Roman 4 selectfont" << endl;
-			fs << "0.5 setgray "
-					<< voronoiDiagram->voronoiCells[c]->position[0] * 10 << " "
-					<< voronoiDiagram->voronoiCells[c]->position[1] * 10
-					<< " moveto (" << voronoiDiagram->voronoiCells[c]->index
-					<< ") show" << endl;
-		}
-	}
-	fs.close();
 
-}
 
-void printVoronoiDiagram(VoronoiDiagram* voronoiDiagram, const char * filename,
-		bool plotIndex) {
-	std::fstream fs;
-	fs.open(filename, std::fstream::out);
-	EpsIO::PSwriteHeader(&fs, voronoiDiagram->xMin[0] * 10,
-			voronoiDiagram->xMax[0] * 10, voronoiDiagram->xMin[1] * 10,
-			voronoiDiagram->xMax[1] * 10);
-	for (int t = 0; t < voronoiDiagram->countTetrahedra; t++) {
-		double vp1[2], vp2[2];
-		getCircumCenter(voronoiDiagram->tetrahedra[t], vp1);
-		for (int n = 0;
-				n < voronoiDiagram->tetrahedra[t]->countNeighborTetrahedra;
-				n++) {
-			getCircumCenter(
-					voronoiDiagram->tetrahedra[t]->neighborTetrahedra[n], vp2);
-			EpsIO::PSwriteLine(&fs, vp1[0] * 10,
-					vp1[1] * 10,
-					//voronoiDiagram->voronoiCells[c]->neighborCells[n]->position[0]*10,
-					//voronoiDiagram->voronoiCells[c]->neighborCells[n]->position[1]*10,
-					(vp1[0] + vp2[0]) / 2. * 10, (vp1[1] + vp2[1]) / 2. * 10,
-					0.1, (char*) (" 0 0 0 setrgbcolor"));
-		}
-	}
-
-	for (int c = 0; c < voronoiDiagram->countVoronoiCells; c++) {
-		if (voronoiDiagram->voronoiCells[c]->countNeighborCells > 0) {
-			char color[200];
-			float radius;
-
-			if (voronoiDiagram->voronoiCells[c]->refined) {
-				radius = 0.5;
-			} else {
-				radius = 2.;
-			}
-
-			switch (voronoiDiagram->voronoiCells[c]->getState()) {
-			case FREE:
-				sprintf(color, " 0 0 0 setrgbcolor");
-				break;
-			case ACTIVE:
-				sprintf(color, " 1 0 0 setrgbcolor");
-				break;
-			case NONACTIVE:
-				sprintf(color, " 0 1 0 setrgbcolor");
-				break;
-			case COMPARTMENT:
-				if (GetAgent(voronoiDiagram->voronoiCells[c])->countFree
-						== GetAgent(voronoiDiagram->voronoiCells[c])->maxCellCount)
-					sprintf(color, " 0 0 0 setrgbcolor");
-				else if (GetAgent(voronoiDiagram->voronoiCells[c])->countActive
-						== GetAgent(voronoiDiagram->voronoiCells[c])->maxCellCount)
-					sprintf(color, " 1 0 0 setrgbcolor");
-				else if (GetAgent(voronoiDiagram->voronoiCells[c])->countNonactive
-						== GetAgent(voronoiDiagram->voronoiCells[c])->maxCellCount)
-					sprintf(color, " 0 1 0 setrgbcolor");
-				else
-					sprintf(color, " 1 0 1 setrgbcolor");
-				radius = 2.;
-				break;
-			}
-
-			if (voronoiDiagram->voronoiCells[c]->getState() != FREE)
-				EpsIO::PSwriteCircle(&fs,
-						voronoiDiagram->voronoiCells[c]->position[0] * 10,
-						voronoiDiagram->voronoiCells[c]->position[1] * 10,
-						radius, 0., color); //" 1 0 0 setrgbcolor");
-		}
-	}
-
-	fs.close();
-
-}
 
 void performMigration(VoronoiDiagram *voronoiDiagram, AgentList *agentArray,
 		ActionTree *actionList, Action *selected_action,
@@ -3875,7 +3753,7 @@ VoronoiCell* performGrowth(VoronoiDiagram *voronoiDiagram,
 		fprintf( stderr, "ERROR in performDivision(): cell: %i has no coarse parent!\n", occupiedLocation->index);
 		fprintf( stderr, "growing agent sits on cell %i\n", selected_action->originalCell->location[0]->index);
 		printVoronoiDiagram( voronoiDiagram, "errorVD.eps", true);
-		printTriangulation( voronoiDiagram, "errorT.eps", true);
+
 	}
 	if( GetAgent(occupiedLocation->coarseParent)->countFree == GetAgent(occupiedLocation->coarseParent)->maxCellCount) {
 		refineNeighborhood( voronoiDiagram, occupiedLocation, actionList, agentArray, pow( GetAgent(occupiedLocation->coarseParent)->maxCellCount,1./DIMENSIONS ));
