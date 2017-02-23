@@ -1241,7 +1241,6 @@ void Molecule::BuildMatrixRateWihtoutVessel(int axe, int posx, int posy, int pos
 			Mo->diagonal[axe][n] = 1 + 2*Mo->alpha  /  (1 + rate);
 			Mo->lowerdiagonal[axe][n] = -Mo->alpha  /  (1 + rate);
 			Mo->upperdiagonal[axe][n] = -Mo->alpha  /  (1 + rate);
-			//cout << "i=" << *i << "\tj=" << *j << "\tk="<< *k <<endl;
 			}
 		else
 			{
