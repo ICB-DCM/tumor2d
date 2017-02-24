@@ -401,9 +401,7 @@ void performDivision(VoronoiDiagram *voronoiDiagram, AgentList *agentArray,
 VoronoiCell* performGrowthAndDivision(VoronoiDiagram *voronoiDiagram,
 		AgentList *agentArray, ActionTree *actionList, Action *selected_action,
 		Statistix *myStatistics, double &Time, double &EndTime);
-void performFreeMigration(VoronoiDiagram *voronoiDiagram, AgentList *agentArray,
-		ActionTree *actionList, Action *selected_action,
-		Statistix *myStatistics, double &Time, double &EndTime);
+
 
 double getAvgGlucose(AgentList *agentList) {
 	double avg = 0.;
@@ -1530,7 +1528,7 @@ double montecarlo(double InitialRadius_in, double InitialQuiescentFraction_in, d
 		}
 		fprintf(fp_param, "Command Line:\n");
 		
-		fprintf(fp_param, "\n");
+		//fprintf(fp_param, "\n");
 
 		fprintf(fp_param, "******************************** \n");
 		fprintf(fp_param, "\nDefined Parameters: \n");
@@ -2933,149 +2931,6 @@ double getConnections(VoronoiCell *start, VoronoiCell *ignore, Agent *agent) {
 	return stackLength;
 }
 
-void performFreeMigration(VoronoiDiagram *voronoiDiagram, AgentList *agentArray,
-		ActionTree *actionList, Action *selected_action,
-		Statistix *myStatistics, double &Time, double &EndTime) {
-	VoronoiCell *centralCell = GetVoronoiCell( selected_action->originalCell);
-
-	if (selected_action->originalCell->state == COMPARTMENT) {
-		int countFreeNeighbors =
-				selected_action->originalCell->countFreeNeighbors();
-
-		if (countFreeNeighbors == 0) {
-			fprintf(
-					stderr,
-					"ERROR in performFreeMigration(): countFreeNeighbors = %i (%i)\n",
-					countFreeNeighbors,
-					selected_action->originalCell->location[0]->countFreeNeighborCells);
-			fprintf(stderr, "cells: %i/%i -> g:%i, d:%i, n:%i\n",
-					GetAgent(centralCell)->cellCount,
-					GetAgent(centralCell)->maxCellCount,
-					GetAgent(centralCell)->growingTumorCellCount,
-					GetAgent(centralCell)->dividingTumorCellCount,
-					GetAgent(centralCell)->necroticCellCount);
-			for (int v = 0; v < centralCell->countNeighborCells; v++)
-				fprintf(
-						stderr,
-						"%i. neighbor(%i): %i/%i -> g:%i, d:%i, n:%i\n",
-						v + 1,
-						GetAgent(centralCell->neighborCells[v])->index,
-						GetAgent(centralCell->neighborCells[v])->cellCount,
-						GetAgent(centralCell->neighborCells[v])->maxCellCount,
-						GetAgent(centralCell->neighborCells[v])->growingTumorCellCount,
-						GetAgent(centralCell->neighborCells[v])->dividingTumorCellCount,
-						GetAgent(centralCell->neighborCells[v])->necroticCellCount);
-
-			exit(0);
-		}
-
-		// randomly chose neighbor
-		int i = (int) myRandE((double) countFreeNeighbors);
-
-		for (int ni = 0; ni < centralCell->countNeighborCells; ni++) {
-			if (centralCell->neighborCells[ni]->isFree()) {
-				if (i == 0) {
-					//fprintf( stderr, "FOUND\n");
-					VoronoiCell *oldLocation = centralCell, *newLocation =
-							centralCell->neighborCells[ni];
-					if (newLocation->agent == NULL) {
-						agentArray->activateAgent()->attach(newLocation);
-						GetAgent( newLocation)->state = COMPARTMENT;
-					}
-					//fprintf( stderr, "MIGRATION: %i -> %i\n", GetAgent(oldLocation)->index, GetAgent(newLocation)->index);
-
-					int whichCell =
-							(int) myRandE(
-									(double) selected_action->originalCell->growingTumorCellCount);
-					int sumCells = 0;
-					int randM = -1;
-					for (int m = 0; m <= M_gro && randM < 0; m++) {
-						if (selected_action->originalCell->actions[INDEX_GROWTH]->internalStateM[m]
-								> 0) {
-							sumCells +=
-									selected_action->originalCell->actions[INDEX_GROWTH]->internalStateM[m];
-							if (sumCells > whichCell) {
-								randM = m;
-							}
-						}
-					}
-
-					GetAgent( oldLocation)->cellCount--;
-					GetAgent( oldLocation)->growingTumorCellCount--;
-					update_surrounding_reduced_compartment(actionList,
-							GetAgent( oldLocation), voronoiDiagram);
-					GetAgent( newLocation)->cellCount++;
-					GetAgent( newLocation)->growingTumorCellCount++;
-					update_surrounding_expanded_compartment(actionList,
-							newLocation, voronoiDiagram);
-					GetAgent( oldLocation)->actualize(actionList);
-					GetAgent( newLocation)->actualize(actionList);
-					actionList->actualizeRate(
-							GetAgent( oldLocation)->actions[INDEX_GROWTH],
-							GetAgent( oldLocation)->actions[INDEX_GROWTH]->getActualRate());
-					actionList->actualizeRate(
-							GetAgent( newLocation)->actions[INDEX_GROWTH],
-							GetAgent( newLocation)->actions[INDEX_GROWTH]->getActualRate());
-					actionList->actualizeRate(
-							GetAgent( oldLocation)->actions[INDEX_MIGRATION],
-							GetAgent( oldLocation)->actions[INDEX_MIGRATION]->getActualRate());
-					actionList->actualizeRate(
-							GetAgent( newLocation)->actions[INDEX_MIGRATION],
-							GetAgent( newLocation)->actions[INDEX_MIGRATION]->getActualRate());
-
-					GetAgent( oldLocation)->actions[INDEX_GROWTH]->internalStateM[randM]--;
-					GetAgent( newLocation)->actions[INDEX_GROWTH]->internalStateM[randM]++;
-				}
-				i--;
-			}
-		}
-		return;
-	}
-
-	// randomly chose neighbor
-	int i = (int) myRandE((double) centralCell->countFreeNeighborCells);
-
-	for (int ni = 0; ni < centralCell->countNeighborCells; ni++) {
-		if (centralCell->neighborCells[ni]->isFree()) {
-			if (i == 0) {
-				VoronoiCell *oldLocation = centralCell, *newLocation =
-						centralCell->neighborCells[ni];
-
-				selected_action->originalCell->detach(oldLocation);
-				update_surrounding_reduced_cell(actionList, oldLocation,
-						voronoiDiagram);
-
-				// exchange FREE and migrating cell
-				if (newLocation->agent != NULL) {
-					Agent *freeAgent = GetAgent( newLocation);
-					freeAgent->detach(newLocation);
-					freeAgent->attach(oldLocation);
-				}
-				// place FREE agent and migrating cell
-				else {
-					Agent* oldAgent = agentArray->activateAgent();
-					oldAgent->attach(oldLocation);
-					oldAgent->state = FREE;
-				}
-
-				selected_action->originalCell->attach(newLocation);
-				update_surrounding_expanded_cell(actionList, newLocation,
-						voronoiDiagram);
-
-				// exchange concentrations
-				double temp_oxy = newLocation->oxygen;
-				double temp_glu = newLocation->glucose;
-				newLocation->oxygen = oldLocation->oxygen;
-				newLocation->glucose = oldLocation->glucose;
-				oldLocation->oxygen = temp_oxy;
-				oldLocation->glucose = temp_glu;
-			}
-			i--;
-		}
-	}
-
-	return;
-}
 
 void performMigration(VoronoiDiagram *voronoiDiagram, AgentList *agentArray,
 		ActionTree *actionList, Action *selected_action,

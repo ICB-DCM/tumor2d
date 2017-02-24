@@ -773,13 +773,7 @@ void vectorScale( double *vector, double scalar, double *vectorxscalar, int dim)
 #pragma omp parallel for
 	for( int i=0; i<dim; i++){
 		vectorxscalar[i] = vector[i]*scalar;
-#if DEBUG > 0
-		if( isnan(vectorxscalar[i])){
-			fprintf( stderr, "nan occures in vectorScale: %lf * %lf = %lf\n", vector[i], scalar, vector[i]*scalar);
-			//exit( 0);
-			vectorxscalar[i] = 0.;
-		}
-#endif
+
 	}
 }
 /*****************************************************************************/
@@ -789,13 +783,6 @@ void vectorScale( float *vector, float scalar, float *vectorxscalar, int dim)
 {
 	for( int i=0; i<dim; i++){
 		vectorxscalar[i] = vector[i]*scalar;
-#if DEBUG > 0
-		if( isnan(vectorxscalar[i])){
-			fprintf( stderr, "nan occures in vectorScale: %lf * %lf = %lf\n", vector[i], scalar, vector[i]*scalar);
-			//exit( 0);
-			vectorxscalar[i] = 0.;
-		}
-#endif
 	}
 }
 /*****************************************************************************/

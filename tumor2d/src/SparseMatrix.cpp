@@ -3266,7 +3266,7 @@ void ConjugateGradientSparse( SparseMatrix *A, double *b, double *x, int maxit, 
 		}
 		myError = sqrt( errSqr);*/
 
-		fprintf( stderr, "\r\t\t\t\t\t\t\t\t\t\t  CG: error = %e \b", myError);
+		//fprintf( stderr, "\r\t\t\t\t\t\t\t\t\t\t  CG: error = %e \b", myError);
 
 		myError = 0;
 		double myError2 = 0;
@@ -3710,9 +3710,9 @@ int SolveBiCGSTAB( SparseMatrix *A, double *b, double *x, int maxit, double mine
 #endif
 		}
 
-		fprintf( fp, "%i %e %e %e \n", i, (float)(clock() - passedTime) / (float)CLOCKS_PER_SEC, myError, myError2);
+		//fprintf( fp, "%i %e %e %e \n", i, (float)(clock() - passedTime) / (float)CLOCKS_PER_SEC, myError, myError2);
 
-		fprintf( stderr, "\r\t\t\t\t\t\t\t\t\t\t  CG: error = %e \b", myError);
+		//fprintf( stderr, "\r\t\t\t\t\t\t\t\t\t\t  CG: error = %e \b", myError);
 		if( myError < minerr){
 			fprintf( stderr, "ConjugateGradientSparse: reached error %e < %e after %i iterations\n", myError, minerr, i+1);
 			return i+1;
@@ -4120,7 +4120,7 @@ double PreconditionedConjugateGradientSparse( SparseMatrix *A, SparseMatrix *M, 
 #endif
 		}
 
-		fprintf( fp, "%i %e %e %e\n", i, (float)(clock() - passedTime) / (float)CLOCKS_PER_SEC, myError, myError2);
+		//fprintf( fp, "%i %e %e %e\n", i, (float)(clock() - passedTime) / (float)CLOCKS_PER_SEC, myError, myError2);
 
 		if( myError < minerr){
 			//fprintf( stderr, "ConjugateGradientSparse: reached error %e < %e after %i iterations\n", myError, err, i+1);

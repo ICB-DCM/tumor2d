@@ -1862,7 +1862,7 @@ void printTetrahedronNeighbors( Tetrahedron* tetrahedron)
 	}*/
 	fprintf( stderr, "Tetrahedron %p has %i neighbors: ", tetrahedron, tetrahedron->countNeighborTetrahedra);
 	for( j=0; j<tetrahedron->countNeighborTetrahedra; j++){
-		fprintf( stderr, "%p ", tetrahedron->neighborTetrahedra[j]);
+		//fprintf( stderr, "%p ", tetrahedron->neighborTetrahedra[j]);
 	}
 	//fprintf( stderr, "\n");
 }
@@ -2198,9 +2198,7 @@ void removeVoronoiCell( VoronoiDiagram* voronoiDiagram, VoronoiCell* removedVoro
 			{
 				if( voronoiDiagram->voronoiCells[v] == removedVoronoiCell){
 					fprintf( stderr, "Algorithm imprisoned in endless loop while trying to remove point %i (in output file: %i)!\n", removedVoronoiCell->index, index);
-					for( int p=0; p<DIMENSIONS; p++)
-						fprintf( stderr, "%lf ", voronoiDiagram->voronoiCells[v]->position[p]);
-					//fprintf( stderr, "\n");
+
 				}
 				fwrite( voronoiDiagram->voronoiCells[v]->position , sizeof(voronoiDiagram->voronoiCells[v]->position), 1, pFile );
 				index++;
@@ -3466,9 +3464,6 @@ VoronoiDiagram* VoronoiDiagram::newVoronoiDiagram( int x, int y, int z){
 			for( int iz = 0; iz<z; iz++ )
 #endif
 		{
-#if _COMMENTS_ > 2
-		fprintf( stderr, "\rInitialize VoronoiDiagram %.3lf%%                              \b", 100.*(i+1.)/newVoronoiDiagram->countVoronoiCells);
-#endif
 
 #if DIMENSIONS == 3
 		newVoronoiDiagram->voronoiCells[i] = new VoronoiCell( (float)(ix+myRandE(1.)), (float)(iy+myRandE(1.)), (float)(iz+myRandE(1.)));
@@ -3490,7 +3485,6 @@ VoronoiDiagram* VoronoiDiagram::newVoronoiDiagram( int x, int y, int z){
 
 		i++;
 	}
-	fprintf( stderr, "\n");
 
 	newVoronoiDiagram->setFramePoints();
 	newVoronoiDiagram->triangulate();

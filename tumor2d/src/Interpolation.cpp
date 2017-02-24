@@ -767,7 +767,7 @@ void cubicSplines1Dcubic( int N, double *X, double *Y,
 
 			//printf( "%10.3lf %10.3lf\n", X[i], Y[i]);
 			//fprintf( fp, "%10.3lf %10.3lf\n", x, a[i]*pow(x - X[i],3.) + b[i]*pow(x - X[i],2.) + c[i]*(x - X[i]) + d[i]);
-			fprintf( fp, "%10.3lf %10.3lf\n", x, a[i]*pow(x - X[i],3.) + b[i]*pow(x - X[i],2.) + c[i]*(x - X[i]) + d[i]);
+			//fprintf( fp, "%10.3lf %10.3lf\n", x, a[i]*pow(x - X[i],3.) + b[i]*pow(x - X[i],2.) + c[i]*(x - X[i]) + d[i]);
 			/*fprintf( fp, "%10.3lf %10.3lf\n", X,
 				(x[i+1]*pow(X-X[i],3)+x[i]*pow(X[i+1]-X,3)) / 6. / (X[i+1]-X[i])
 				+(Y[i+1] / (X[i+1]-X[i]) - (X[i+1]-X[i]) / 6. * x[i+1]) * (X-f[i  ][0])
@@ -856,7 +856,7 @@ void cubicSplines1Dconstraint( int N, double *X, double *Y,
 
 			//printf( "%10.3lf %10.3lf\n", X[i], Y[i]);
 			//fprintf( fp, "%10.3lf %10.3lf\n", x, a[i]*pow(x - X[i],3.) + b[i]*pow(x - X[i],2.) + c[i]*(x - X[i]) + d[i]);
-			fprintf( fp, "%10.3lf %10.3lf\n", x, d[i]*pow(x,3.) + c[i]*pow(x,2.) + b[i]*(x) + a[i]);
+			//fprintf( fp, "%10.3lf %10.3lf\n", x, d[i]*pow(x,3.) + c[i]*pow(x,2.) + b[i]*(x) + a[i]);
 			/*fprintf( fp, "%10.3lf %10.3lf\n", X,
 				(x[i+1]*pow(X-X[i],3)+x[i]*pow(X[i+1]-X,3)) / 6. / (X[i+1]-X[i])
 				+(Y[i+1] / (X[i+1]-X[i]) - (X[i+1]-X[i]) / 6. * x[i+1]) * (X-f[i  ][0])
