@@ -61,7 +61,7 @@ This returns a dictionary containing the
 * ``proliferation_profile``
 
 which can be used as summary statistics for ABC-SMC inference
-with pyABC.
+with [pyABC](http://pyabc.readthedocs.io/en/latest/).
 
 ### Distribution ###
 
