@@ -8,6 +8,7 @@ __all__ = ["simulate", "nr_valid", "log_model"]
 
 
 stored_data_db = os.path.join(os.path.dirname(__file__), "db1.db")
+stored_data_db_2 = os.path.join(os.path.dirname(__file__), "db2.db")
 
 
 def load_default():
