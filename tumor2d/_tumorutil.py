@@ -3,9 +3,9 @@ import logging
 
 max_seed = 2147483647
 
-logging.basicConfig(level="DEBUG")
+#logging.basicConfig(level="DEBUG")
 logger = logging.getLogger("TUMOR2D")
-logger.setLevel("ERROR")
+#logger.setLevel("ERROR")
 
 
 class Tumor2dExperiment:
