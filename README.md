@@ -31,13 +31,37 @@ It is required,
     if you're running anaconda (e.g. the MKL or OpenBLAS)
 
 
+Python requirements are:
+
+* numpy.
+
+
 Then,
 
-* clone the repository
+* clone the repository ``git clone https://github.com/ICB-DCM/tumor2d``
+* chane into the repository directory ``cd tumor2d``
 * and run ``python setup.py build_ext --inplace`` from within the repository
 * if the repo is in your ``PYTHONPATH``, you should be able to use it now
+* if you want to install the package run ``pip install .``
 
 
+### Usage ###
+
+The function ``tumor2d.simulate`` is the main entry point.
+To run it with the default parameters do
+
+```
+from tumor2d import simulate
+simulate()
+```
+
+This returns a dictionary containing the
+* ``growth_curve``
+* ``extra_cellular_matrix_profile``
+* ``proliferation_profile``
+
+which can be used as summary statistics for ABC-SMC inference
+with pyABC.
 
 ### Distribution ###
 
