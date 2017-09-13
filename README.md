@@ -1,6 +1,6 @@
 # README #
 
-Tumor2d simulation **not** precisely according to the paper but **heavily** based on
+Tumor2d simulation is not precisely according to but heavily based on
 the original source code found [here](https://github.com/ICB-DCM/pABC-SMC) from the paper
 
 
