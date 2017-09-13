@@ -55,7 +55,19 @@ from tumor2d import simulate
 simulate()
 ```
 
-This returns a dictionary containing the
+It takes 8 parameters as input:
+
+* ``division_rate``
+* ``initial_spheroid_radius``
+* ``initial_quiescent_cell_fraction``
+* ``division_depth``
+* ``ecm_production_rate``
+* ``ecm_degradation_rate``
+* ``ecm_division_threshold``
+* ``randseed``
+
+
+The function returns a dictionary containing the
 * ``growth_curve``
 * ``extra_cellular_matrix_profile``
 * ``proliferation_profile``
