@@ -1,3 +1,5 @@
+from functools import wraps
+
 def log_transform(f):
     """
     Log transform a function. For example, given
