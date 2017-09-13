@@ -26,7 +26,7 @@ def simulate(division_rate=4.17e-2,
         Jagiella, Nick, Dennis Rickert, Fabian J. Theis, and Jan Hasenauer.
         “Parallelization and High-Performance Computing Enables Automated
         Statistical Inference of Multi-Scale Models.”
-        Cell Systems 0, no. 0 (January 11, 2017). doi:10.1016/j.cels.2016.12.002.
+        Cell Systems 0, no. 0 (2017). doi:10.1016/j.cels.2016.12.002.
 
         First table on page e4
 

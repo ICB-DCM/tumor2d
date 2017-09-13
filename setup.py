@@ -34,5 +34,6 @@ setup(
     name="tumor2d",
     version="0.1.0",
     packages=find_packages(),
+    include_package_data=True,
     cmdclass={'install': Build_ext_first}
 )
