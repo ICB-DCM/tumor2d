@@ -1,7 +1,6 @@
 import os
-import numpy as np
 from functools import wraps
-
+import numpy as np
 from .simulate import simulate, nr_valid
 from .distance import Tumor2DDistance 
 from .log_transform import log_transform

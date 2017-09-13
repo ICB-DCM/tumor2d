@@ -1,3 +1,6 @@
+from .simulate import nr_valid
+import numpy as np
+
 class Tumor2DDistance:
     __name__ 
     def __init__(self, variances: dict):
