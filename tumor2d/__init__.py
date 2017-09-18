@@ -34,3 +34,34 @@ def log_model(x):
     
 distance = Tumor2DDistance(load_default()[2])
 
+
+def animated_gif(db, output):
+    from pyabc import History
+    from pyabc.visualization import plot_kde_matrix
+    import matplotlib.pyplot as plt
+    import subprocess
+    import tempfile
+    tempdir = tempfile.mkdtemp()
+    print("tmpdir", tempdir)
+    import os
+    h_loaded = History("sqlite:///" + db)
+
+    limits = dict(log_division_rate=(-3, -1),
+                  log_division_depth=(1, 3),
+                  log_initial_spheroid_radius=(0, 1.2),
+                  log_initial_quiescent_cell_fraction=(-5, 0),
+                  log_ecm_production_rate=(-5, 0),
+                  log_ecm_degradation_rate=(-5, 0),
+                  log_ecm_division_threshold=(-5, 0))
+
+    for t in range(h_loaded.n_populations):
+        print("Plot population {t/h_loaded.n_populations}")
+        df, w = h_loaded.get_distribution(m=0, t=t)
+        plot_kde_matrix(df, w, limits=limits)
+        plt.savefig(os.path.join(tempdir, f"{t:0>2}.png"))
+
+    subprocess.run(["convert", "-delay", "15",
+                    os.path.join(tempdir, "%02d.png"),
+                    output + ".gif"])
+
+
