@@ -21,14 +21,13 @@ the original source code found [here](https://github.com/ICB-DCM/pABC-SMC) from 
 
 ### Installation ###
 
-It is required,
+It is required that
 
-* that SWIG is installed,
+* SWIG is installed,
   * either use your system package manager, or ``conda install swig``
     if running anaconda
 * BLAS is installed
-  * use your system package manager, if not installed. It should be already installed
-    if you're running anaconda (e.g. the MKL or OpenBLAS)
+  * use your system package manager, if not installed. It should be already installed if you're running anaconda (e.g. the MKL or OpenBLAS)
 
 
 Python requirements are:
@@ -39,16 +38,16 @@ Python requirements are:
 Then,
 
 * clone the repository ``git clone https://github.com/ICB-DCM/tumor2d``
-* chane into the repository directory ``cd tumor2d``
+* change into the repository directory ``cd tumor2d``
 * and run ``python setup.py build_ext --inplace`` from within the repository
 * if the repo is in your ``PYTHONPATH``, you should be able to use it now
-* if you want to install the package run ``pip install .``
+* if you want to install the package, run ``pip install .``
 
 
 ### Usage ###
 
 The function ``tumor2d.simulate`` is the main entry point.
-To run it with the default parameters do
+To run it with the default parameters, do
 
 ```
 from tumor2d import simulate
@@ -73,20 +72,13 @@ The function returns a dictionary containing the
 * ``proliferation_profile``
 
 which can be used as summary statistics for ABC-SMC inference
-with [pyABC](http://pyabc.readthedocs.io/en/latest/).
+with [pyABC](http://pyabc.readthedocs.io/en/latest/). In the documentation of pyABC, there is an [example](http://pyabc.readthedocs.io/en/latest/examples/multiscale_agent_based.html) included, showing how to perform analysis for this model.
 
 ### Distribution ###
 
 
-Currently not possible to make a package via ``python setup.py bdist_wheel``
-reliably.
-The reason is, that ``build_ext`` has to be run before the other installation steps
-so that the SWIG generated ``.py`` is properly included.
-There are indications online on how to achieve running SWIG first.
-However, these did not work so far.
-However, it works to run ``python setup.py build_ext --inplace``, possibly followed
-by ``python setup.py bdist_wheel``, as the SWIG generated ``.py`` file is
-then already there.
+Currently, it is not possible to make a package via ``python setup.py bdist_wheel`` reliably. The reason i, that ``build_ext`` has to be run before the other installation steps, so that the SWIG generated ``.py`` is properly included.
+There are indications online on how to achieve running SWIG first. However, these did not work so far. Meanwhile, it works to run ``python setup.py build_ext --inplace``, possibly followed by ``python setup.py bdist_wheel``, as the SWIG generated ``.py`` file is then already there.
 
 
 
