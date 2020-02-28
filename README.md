@@ -1,8 +1,9 @@
-# README #
+# tumor2d README
+
+[![DOI](https://zenodo.org/badge/103364345.svg)](https://zenodo.org/badge/latestdoi/103364345)
 
 Tumor2d simulation is not precisely according to but heavily based on
 the original source code found [here](https://github.com/ICB-DCM/pABC-SMC) from the paper
-
 
 ```
 @article{JagiellaRic2017,
@@ -19,7 +20,7 @@ the original source code found [here](https://github.com/ICB-DCM/pABC-SMC) from 
 ```
 
 
-### Installation ###
+## Installation
 
 It is required that
 
@@ -29,11 +30,9 @@ It is required that
 * BLAS is installed
   * use your system package manager, if not installed. It should be already installed if you're running anaconda (e.g. the MKL or OpenBLAS)
 
-
 Python requirements are:
 
 * numpy.
-
 
 Then,
 
@@ -44,7 +43,7 @@ Then,
 * if you want to install the package, run ``pip install .``
 
 
-### Usage ###
+## Usage
 
 The function ``tumor2d.simulate`` is the main entry point.
 To run it with the default parameters, do
@@ -65,7 +64,6 @@ It takes 8 parameters as input:
 * ``ecm_division_threshold``
 * ``randseed``
 
-
 The function returns a dictionary containing the
 * ``growth_curve``
 * ``extra_cellular_matrix_profile``
@@ -74,14 +72,13 @@ The function returns a dictionary containing the
 which can be used as summary statistics for ABC-SMC inference
 with [pyABC](http://pyabc.readthedocs.io/en/latest/). In the documentation of pyABC, there is an [example](http://pyabc.readthedocs.io/en/latest/examples/multiscale_agent_based.html) included, showing how to perform analysis for this model.
 
-### Distribution ###
 
+## Distribution
 
 Currently, it is not possible to make a package via ``python setup.py bdist_wheel`` reliably. The reason i, that ``build_ext`` has to be run before the other installation steps, so that the SWIG generated ``.py`` is properly included.
 There are indications online on how to achieve running SWIG first. However, these did not work so far. Meanwhile, it works to run ``python setup.py build_ext --inplace``, possibly followed by ``python setup.py bdist_wheel``, as the SWIG generated ``.py`` file is then already there.
 
 
-
-### Running the tests ###
+## Running the tests
 
 Run ``pytest test``.
