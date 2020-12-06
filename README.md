@@ -1,5 +1,7 @@
 # tumor2d README
 
+:warning: This package is no longer actively maintained.
+
 [![DOI](https://zenodo.org/badge/103364345.svg)](https://zenodo.org/badge/latestdoi/103364345)
 
 Tumor2d simulation is not precisely according to but heavily based on
